@@ -209,28 +209,28 @@ if(!$isDataFolderExists){
 			<div class="control-group">
 				<label class="control-label" for="APP_DB">MySql Database Name</label>
 				<div class="controls">
-				  	<input class="input-xxlarge" type="text" id="APP_DB" name="APP_DB" value="icehrmdb"/>
+				  	<input class="input-xxlarge" type="text" id="APP_DB" name="APP_DB" value="icehrm"/>
 				  	<span class="help-inline p1">Application DB Name</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="APP_USERNAME">Database User</label>
 				<div class="controls">
-				  	<input class="input-xxlarge" type="text" id="APP_USERNAME" name="APP_USERNAME" value="icehrmuser"/>
+				  	<input class="input-xxlarge" type="text" id="APP_USERNAME" name="APP_USERNAME" value="dev"/>
 				  	<span class="help-inline p1">Database username</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="APP_PASSWORD">Database User Password</label>
 				<div class="controls">
-				  	<input class="input-xxlarge" type="password" id="APP_PASSWORD" name="APP_PASSWORD" value=""/>
+				  	<input class="input-xxlarge" type="password" id="APP_PASSWORD" name="APP_PASSWORD" value="dev"/>
 				  	<span class="help-inline p1">Database user's password</span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="APP_HOST">Database Host</label>
 				<div class="controls">
-				  	<input class="input-xxlarge" type="text" id="APP_HOST" name="APP_HOST" value="localhost"/>
+				  	<input class="input-xxlarge" type="text" id="APP_HOST" name="APP_HOST" value="mysql"/>
 				  	<span class="help-inline p1">MySql DB Host</span>
 				</div>
 			</div>
