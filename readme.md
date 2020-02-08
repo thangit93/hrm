@@ -1,6 +1,6 @@
 # IceHrm
 
-This is a docker based development environment for the Symfony App Imageserver. It's based on 2 containers:
+This is a docker based development environment for the IceHrm. It's based on 2 containers:
 
 - php (7.3.11)
 - mysql (5.5)
