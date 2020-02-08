@@ -1,0 +1,25 @@
+version: "3.5"
+services:
+    php:
+        working_dir: /var/www/dev-php
+        image: ducnhat/icehrm:1.0.0
+        volumes:
+            - .:/var/www/dev-php:cached
+        environment:
+            APP_DEBUG: "true"
+        ports:
+            - 127.0.0.1:80:80
+        links:
+            - mysql
+        depends_on:
+            - mysql
+
+    mysql:
+        image: percona:5.5
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: icehrm
+            MYSQL_USER: dev
+            MYSQL_PASSWORD: dev
+        ports:
+            - 127.0.0.1:3306:3306
