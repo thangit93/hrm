@@ -2,7 +2,7 @@ version: "3.5"
 services:
     php:
         working_dir: /var/www/dev-php
-        image: ducnhat/icehrm:1.0.1
+        image: ducnhat/icehrm
         volumes:
             - .:/var/www/dev-php:cached
         environment:
