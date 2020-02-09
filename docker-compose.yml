@@ -2,7 +2,7 @@ version: "3.5"
 services:
     php:
         working_dir: /var/www/dev-php
-        image: ducnhat/icehrm
+        image: ducnhat/icehrm:latest
         volumes:
             - .:/var/www/dev-php:cached
         environment:
@@ -22,4 +22,4 @@ services:
             MYSQL_USER: dev
             MYSQL_PASSWORD: dev
         ports:
-            - 3306:3306
+            - 3307:3306

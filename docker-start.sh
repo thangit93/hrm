@@ -3,7 +3,7 @@
 git pull
 
 echo "STARTING DOCKER ENVIRONMENT..."
-docker-compose up -d --build php
+docker-compose up -d
 
-#echo "INSTALLING ICE HRM"
-#docker-compose exec -T php bash -c '/bin/start.sh'
+echo "INSTALLING ICE HRM"
+docker-compose exec -T php bash -c '/init-icehrm.sh'
