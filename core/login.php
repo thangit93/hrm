@@ -363,18 +363,18 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							<div class="clearfix">
 								<div class="input-prepend">
 									<span class="add-on"><i class="icon-user"></i></span>
-									<input class="span2" type="text" id="username" name="username" placeholder="Username">
+									<input class="span2" type="text" id="username" name="username" placeholder="Tên đăng nhập">
 								</div>
 							</div>
 							<div class="clearfix">
 								<div class="input-prepend">
 									<span class="add-on"><i class="icon-lock"></i></span>
-									<input class="span2" type="password" id="password" name="password" placeholder="Password">
+									<input class="span2" type="password" id="password" name="password" placeholder="Mật khẩu">
 								</div>
 							</div>
 							<div class="clearfix">
 								<div class="checkbox">
-									<label><input id="remember" name="remember" type="checkbox" value="remember">Remember me</label>
+									<label><input id="remember" name="remember" type="checkbox" value="remember">Nhớ đăng nhập</label>
 								</div>
 							</div>
 							<?php if (isset($_REQUEST['f'])) {?>
@@ -393,7 +393,7 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							<button class="btn" style="margin-top: 5px;" type="button" onclick="submitLogin();return false;">Sign in&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
 						</fieldset>
 						<div class="clearfix">
-							<a href="" onclick="showForgotPassword();return false;" style="float:left;margin-top: 10px;">Forgot password</a>
+							<a href="" onclick="showForgotPassword();return false;" style="float:left;margin-top: 10px;">Quên mật khẩu</a>
 						</div>
 					</form>
 					<form id="requestPasswordChangeForm" style="display:none;" action="">
