@@ -1,24 +1,23 @@
 <?php
 namespace Classes\Migration;
+use Metadata\Common\Model\SupportedLanguage;
 
 class v20200221_260007_y_viet_language extends AbstractMigration{
 
     public function up(){
+        $supportedLanguage = new SupportedLanguage();
+        $tableName = $supportedLanguage->table;
 
-        $sql = <<<'SQL'
-		delete from supportedlanguages where id;
-SQL;
-    $this->executeQuery($sql);
+        $sql = "delete from $tableName where id;";
+        $this->executeQuery($sql);
 
-        $sql = <<<'SQL'
-		ALTER TABLE supportedlanguages AUTO_INCREMENT = 1;
-SQL;
-    $this->executeQuery($sql);
+        $sql = "ALTER TABLE $tableName AUTO_INCREMENT = 1;";
+        $this->executeQuery($sql);
 
-        $sql = <<<'SQL'
-		insert supportedlanguages (name, description) values ('vn', 'Vietnamese');
-SQL;
-        return $this->executeQuery($sql);
+        $supportedLanguage->name = 'vn';
+        $supportedLanguage->description = 'Vietnamese';
+        $supportedLanguage->Save();
+
     }
 
     public function down(){
