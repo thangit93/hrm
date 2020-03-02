@@ -379,7 +379,7 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							</div>
 							<?php if (isset($_REQUEST['f'])) {?>
 								<div class="clearfix alert alert-error" style="font-size:11px;width:147px;margin-bottom: 5px;">
-									Login failed
+									Đăng nhập thất bại
 									<?php if (isset($_REQUEST['fm'])) {
 										echo $_REQUEST['fm'];
 									}?>
@@ -387,10 +387,10 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							<?php } ?>
 							<?php if (isset($_REQUEST['c'])) {?>
 								<div class="clearfix alert alert-info" style="font-size:11px;width:147px;margin-bottom: 5px;">
-									Password changed successfully
+									Đổi mật khẩu thành cong
 								</div>
 							<?php } ?>
-							<button class="btn" style="margin-top: 5px;" type="button" onclick="submitLogin();return false;">Sign in&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
+							<button class="btn" style="margin-top: 5px;" type="button" onclick="submitLogin();return false;">Đăng nhập&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
 						</fieldset>
 						<div class="clearfix">
 							<a href="" onclick="showForgotPassword();return false;" style="float:left;margin-top: 10px;">Quên mật khẩu</a>
@@ -401,13 +401,13 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							<div class="clearfix">
 								<div class="input-prepend">
 									<span class="add-on"><i class="icon-user"></i></span>
-									<input class="span2" type="text" id="usernameChange" name="usernameChange" placeholder="Username or Email">
+									<input class="span2" type="text" id="usernameChange" name="usernameChange" placeholder="Tên tài khoản hoặc Email">
 								</div>
 							</div>
 							<div id="requestPasswordChangeFormAlert" class="clearfix alert alert-info" style="font-size:11px;width:147px;margin-bottom: 5px;display:none;">
 
 							</div>
-							<button class="btn" style="margin-top: 5px;" type="button" onclick="requestPasswordChange();return false;">Request Password Change&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
+							<button class="btn" style="margin-top: 5px;" type="button" onclick="requestPasswordChange();return false;">Yêu cầu đổi mật khẩu&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
 						</fieldset>
 					</form>
 				<?php } else {?>
@@ -416,13 +416,13 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							<div class="clearfix">
 								<div class="input-prepend">
 									<span class="add-on"><i class="icon-lock"></i></span>
-									<input class="span2" type="password" id="password" name="password" placeholder="New Password">
+									<input class="span2" type="password" id="password" name="password" placeholder="Mật khẩu mới">
 								</div>
 							</div>
 							<div id="newPasswordFormAlert" class="clearfix alert alert-error" style="font-size:11px;width:147px;margin-bottom: 5px;display:none;">
 
 							</div>
-							<button class="btn" style="margin-top: 5px;" type="button" onclick="changePassword();return false;">Change Password&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
+							<button class="btn" style="margin-top: 5px;" type="button" onclick="changePassword();return false;">Đổi mật khẩu&nbsp;&nbsp;<span class="icon-arrow-right"></span></button>
 						</fieldset>
 					</form>
 				<?php }?>
