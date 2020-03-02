@@ -12,7 +12,7 @@ msgstr ""
 "Language-Team: \n"
 
 msgid "Save"
-msgstr "Lưu"
+msgstr "Cập nhật"
 
 msgid "Cancel"
 msgstr "Hủy"
@@ -90,7 +90,7 @@ msgid "Projects/Client Setup"
 msgstr "Thiết lập dự án / ứng dụng khách"
 
 msgid "Leave Settings"
-msgstr "Thiết lập nghỉ"
+msgstr "Thiết lập nghỉ phép"
 
 msgid "Company Loans"
 msgstr "Cho vay công ty"
@@ -189,10 +189,10 @@ msgid "Emergency Contacts"
 msgstr "Liên hệ khẩn cấp"
 
 msgid "Leave"
-msgstr "Nghỉ"
+msgstr "Nghỉ Phép"
 
 msgid "Leave Management"
-msgstr "Quản lý nghỉ"
+msgstr "Quản lý Nghỉ Phép"
 
 msgid "Time Management"
 msgstr "Quản lý thời gian"
