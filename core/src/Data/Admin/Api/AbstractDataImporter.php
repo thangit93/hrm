@@ -46,7 +46,7 @@ abstract class AbstractDataImporter implements DataImporter
             //Update related columns
             if (($column->type == "Reference" || $column->type == "Attached") && $column->isKeyField == "Yes") {
                 $this->relatedColumns[$counter] = array();
-                for ($i = 0; $i< count($headers); $i++) {
+                for ($i = 0; $i < count($headers); $i++) {
                     $columnNew = $headers[$i];
                     if ($columnNew->id != $column->id &&
                         $columnNew->dependOn == $column->dependOn && $column->dependOn != "NULL") {
@@ -118,7 +118,7 @@ abstract class AbstractDataImporter implements DataImporter
     public function processData($row, $column, $data, $allData)
     {
 
-        LogManager::getInstance()->debug("processData:".json_encode($data));
+        LogManager::getInstance()->debug("processData:" . json_encode($data));
         if ($this->isCellCompleted($row, $column)) {
             LogManager::getInstance()->debug("Already Competed");
             return new IceResponse(IceResponse::SUCCESS, "Already Competed");
@@ -153,7 +153,7 @@ abstract class AbstractDataImporter implements DataImporter
                 /* @var \Model\BaseModel $hcObject */
                 $hcObject = new $hcClass();
                 if ($headerColumn->type == "Attached" && !empty($this->rowObjects[$row]->id)) {
-                    $hcObject->Load("$hcField = ? and employee = ?", array($data,$this->rowObjects[$row]->id));
+                    $hcObject->Load("$hcField = ? and employee = ?", array($data, $this->rowObjects[$row]->id));
                 } else {
                     $hcObject->Load("$hcField = ?", array($data));
                 }
@@ -189,7 +189,7 @@ abstract class AbstractDataImporter implements DataImporter
 
         $result = array();
 
-        LogManager::getInstance()->debug("processDataRow:".json_encode($data));
+        LogManager::getInstance()->debug("processDataRow:" . json_encode($data));
         $counter = 0;
         foreach ($data as $cell) {
             $this->processData($row, $counter, $cell, $data);
@@ -206,6 +206,7 @@ abstract class AbstractDataImporter implements DataImporter
                 );
                 $result['Error'] = "Row Object Error Saving Employee :" . $this->rowObjects[$row]->ErrorMsg();
             } else {
+                $this->fixAfterSave($this->rowObjects[$row]);
                 $result['MainId'] = $this->rowObjects[$row]->id;
                 $class = $this->getModelObject();
                 $ele = new $class();
@@ -238,10 +239,12 @@ abstract class AbstractDataImporter implements DataImporter
     }
 
     abstract public function getModelObject();
+
     public function isDuplicate($obj)
     {
         return false;
     }
+
     abstract public function fixBeforeSave($object, $data);
 
 
@@ -256,7 +259,7 @@ abstract class AbstractDataImporter implements DataImporter
 
         $counter = 0;
 
-        LogManager::getInstance()->info("Line Count:".count($lines));
+        LogManager::getInstance()->info("Line Count:" . count($lines));
 
         $res = array();
 
@@ -268,7 +271,7 @@ abstract class AbstractDataImporter implements DataImporter
                 $headerProcessed = true;
             } else {
                 $result = $this->processDataRow($counter, $cells);
-                $res[] = array($cells,$result);
+                $res[] = array($cells, $result);
             }
             $counter++;
         }
@@ -279,5 +282,10 @@ abstract class AbstractDataImporter implements DataImporter
     public function getLastStatus()
     {
         return IceResponse::SUCCESS;
+    }
+
+    public function fixAfterSave($object)
+    {
+
     }
 }
