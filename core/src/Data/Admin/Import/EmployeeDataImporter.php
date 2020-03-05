@@ -225,7 +225,7 @@ class EmployeeDataImporter extends AbstractDataImporter
         return $birthday;
     }
 
-    private function createUser($firstName, $lastName, $birthday, $employee)
+    public function createUser($firstName, $lastName, $birthday, $employee)
     {
         $birthday = $this->getBirthDay($birthday);
         $username = $this->getUsername($firstName, $lastName, $birthday->format('Y'));

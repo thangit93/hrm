@@ -88,6 +88,7 @@ class UIManager
                 "profileImage"=>$profileCurrent->image,
                 "firstName"=>$profileCurrent->first_name,
                 "lastName"=>$profileCurrent->last_name,
+                "userLevel"=>LanguageManager::tran($this->user->user_level),
                 "profile_url"=>CLIENT_BASE_URL.'?g=admin&n=employees&m=admin_Employees',
             );
 
@@ -95,6 +96,7 @@ class UIManager
                 "profileImage"=>$profileSwitched->image,
                 "firstName"=>$profileSwitched->first_name,
                 "lastName"=>$profileSwitched->last_name,
+                "userLevel"=>LanguageManager::tran($this->user->user_level),
                 "profile_url"=>CLIENT_BASE_URL.'?g=modules&n=employees&m=module_Personal_Information',
             );
         } elseif (!empty($profileCurrent)) {
@@ -102,6 +104,7 @@ class UIManager
                 "profileImage"=>$profileCurrent->image,
                 "firstName"=>$profileCurrent->first_name,
                 "lastName"=>$profileCurrent->last_name,
+                "userLevel"=>LanguageManager::tran($this->user->user_level),
                 "profile_url"=>CLIENT_BASE_URL.'?g=modules&n=employees&m=module_Personal_Information',
             );
         } elseif (!empty($profileSwitched)) {
@@ -109,6 +112,7 @@ class UIManager
                 "profileImage"=>BASE_URL."images/user_male.png",
                 "firstName"=>$this->user->username,
                 "lastName"=>"",
+                "userLevel"=>LanguageManager::tran($this->user->user_level),
                 "profile_url"=>CLIENT_BASE_URL.'?g=admin&n=employees&m=admin_Employees',
             );
 
@@ -116,6 +120,7 @@ class UIManager
                 "profileImage"=>$profileSwitched->image,
                 "firstName"=>$profileSwitched->first_name,
                 "lastName"=>$profileSwitched->last_name,
+                "userLevel"=>LanguageManager::tran($this->user->user_level),
                 "profile_url"=>CLIENT_BASE_URL.'?g=modules&n=employees&m=module_Personal_Information',
             );
         } else {
@@ -123,6 +128,7 @@ class UIManager
                 "profileImage"=>BASE_URL."images/user_male.png",
                 "firstName"=>$this->user->username,
                 "lastName"=>"",
+                "userLevel"=>LanguageManager::tran($this->user->user_level),
                 "profile_url"=>CLIENT_BASE_URL.'?g=admin&n=employees&m=admin_Employees',
             );
         }
