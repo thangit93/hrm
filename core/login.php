@@ -379,7 +379,7 @@ $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL);
 							</div>
 							<?php if (isset($_REQUEST['f'])) {?>
 								<div class="clearfix alert alert-error" style="font-size:11px;width:147px;margin-bottom: 5px;">
-									Đăng nhập thất bại
+									Tên đăng nhập hoặc mật khẩu không đúng
 									<?php if (isset($_REQUEST['fm'])) {
 										echo $_REQUEST['fm'];
 									}?>

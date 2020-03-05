@@ -495,7 +495,7 @@ msgid "Contact Email"
 msgstr "Địa chỉ email liên lạc"
 
 msgid "Company Url"
-msgstr "Công ty Url"
+msgstr "Địa chỉ website công ty"
 
 msgid "First Contact Date"
 msgstr "Ngày liên lạc đầu tiên"
