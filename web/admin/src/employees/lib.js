@@ -765,7 +765,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
   saveSuccessItemCallback(data) {
     this.lastSavedEmployee = data;
     if (this.currentId === null) {
-      $('#createUserModel').modal('show');
+      // $('#createUserModel').modal('show');
     }
   }
 
