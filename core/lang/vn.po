@@ -1981,3 +1981,12 @@ msgstr "Ly hôn"
 
 msgid "Widowed"
 msgstr "Góa phụ"
+
+msgid "Role_Admin"
+msgstr "Super Admin"
+
+msgid "Role_Manager"
+msgstr "Admin"
+
+msgid "Role_Employee"
+msgstr "Staff"
