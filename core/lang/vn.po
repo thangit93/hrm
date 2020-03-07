@@ -1966,3 +1966,12 @@ msgstr "Một email đã được gửi cho bạn với hướng dẫn thay đ�
 
 msgid "You have entered an incorrect email or user id"
 msgstr "Bạn đã nhập email hoặc id người dùng không chính xác"
+
+msgid "Role_Admin"
+msgstr "Super Admin"
+
+msgid "Role_Manager"
+msgstr "Admin"
+
+msgid "Role_Employee"
+msgstr "Staff"
