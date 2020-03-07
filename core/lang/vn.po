@@ -1983,7 +1983,7 @@ msgid "Widowed"
 msgstr "Góa phụ"
 
 msgid "Role_Admin"
-msgstr "Super Admin 1"
+msgstr "Super Admin"
 
 msgid "Role_Manager"
 msgstr "Admin"
