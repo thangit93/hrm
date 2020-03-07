@@ -17,6 +17,6 @@ pipelines:
             variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd /opt/docker/icehrm && git pull && cd core/robo && php robo.phar migrate:all app && docker-compose exec -T php bash -c "gulp"'
+                COMMAND: 'cd /opt/docker/icehrm && git pull && docker-compose exec -T php bash -c "cd core/robo && php robo.phar migrate:all app" && docker-compose exec -T php bash -c "gulp"'
 
   
