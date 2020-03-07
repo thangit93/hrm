@@ -10,5 +10,6 @@ pipelines:
     - step:
         deployment: staging
         script:
+          - npm install
           - gulp
           - cd core/robo && php robo.phar migrate:all app
