@@ -3,20 +3,17 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: ducnhat/icehrm
+#image: ducnhat/icehrm
 
 pipelines:
   default:
     - step:
         deployment: staging
         script:
-          - git pull
-          #- gulp
-          - cd core/robo && php robo.phar migrate:all app
           - pipe: atlassian/ssh-run:0.2.2
             variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd /opt/docker/icehrm && git pull && docker-compose exec -T php bash -c "cd core/robo && php robo.phar migrate:all app"'
+                COMMAND: 'cd /opt/docker/icehrm && git reset --hard && git pull && docker-compose exec -T php bash -c "cd core/robo && php robo.phar migrate:all app"'
 
   
