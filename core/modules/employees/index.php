@@ -11,6 +11,14 @@ include APP_BASE_PATH.'header.php';
 include APP_BASE_PATH.'modulejslibs.inc.php';
 $fieldNameMap = \Classes\BaseService::getInstance()->getFieldNameMappings("Employee");
 $customFields = \Classes\BaseService::getInstance()->getCustomFields("Employee");
+// remove some fields not use by HaTran 07/03/2020
+$notUseFields = ['ssn_num', 'nic_num', 'province'];
+foreach($fieldNameMap as $k => $item){
+    if(isset($item->name) && in_array($item->name, $notUseFields)){
+        unset($fieldNameMap[$k]);
+    }
+}
+// end script by HaTran 07/03/2020
 
 $restApiBase = '';
 $user = \Classes\BaseService::getInstance()->getCurrentUser();
