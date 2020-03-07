@@ -18,14 +18,14 @@ $customFields = \Classes\BaseService::getInstance()->getCustomFields("Employee")
         <?php }?>
 
         <?php if ($user->user_level == "Admin") { ?>
-		<li><a id="tabEmployeeSkill" href="#tabPageEmployeeSkill"><?=t('Skills')?></a></li>
-		<li><a id="tabEmployeeEducation" href="#tabPageEmployeeEducation"><?=t('Education')?></a></li>
-		<li><a id="tabEmployeeCertification" href="#tabPageEmployeeCertification"><?=t('Certifications')?></a></li>
-		<li><a id="tabEmployeeLanguage" href="#tabPageEmployeeLanguage"><?=t('Languages')?></a></li>
-		<li><a id="tabEmployeeDependent" href="#tabPageEmployeeDependent"><?=t('Dependents')?></a></li>
-		<li><a id="tabEmergencyContact" href="#tabPageEmergencyContact"><?=t('Emergency Contacts')?></a></li>
+<!--		<li><a id="tabEmployeeSkill" href="#tabPageEmployeeSkill">--><?//=t('Skills')?><!--</a></li>-->
+<!--		<li><a id="tabEmployeeEducation" href="#tabPageEmployeeEducation">--><?//=t('Education')?><!--</a></li>-->
+<!--		<li><a id="tabEmployeeCertification" href="#tabPageEmployeeCertification">--><?//=t('Certifications')?><!--</a></li>-->
+<!--		<li><a id="tabEmployeeLanguage" href="#tabPageEmployeeLanguage">--><?//=t('Languages')?><!--</a></li>-->
+<!--		<li><a id="tabEmployeeDependent" href="#tabPageEmployeeDependent">--><?//=t('Dependents')?><!--</a></li>-->
+<!--		<li><a id="tabEmergencyContact" href="#tabPageEmergencyContact">--><?//=t('Emergency Contacts')?><!--</a></li>-->
             <?php if (class_exists('\\Documents\\Admin\\Api\\DocumentsAdminManager')) {?>
-                <li><a id="tabEmployeeDocument" href="#tabPageEmployeeDocument"><?=t('Documents')?></a></li>
+<!--                <li><a id="tabEmployeeDocument" href="#tabPageEmployeeDocument">--><?//=t('Documents')?><!--</a></li>-->
             <?php } ?>
         <?php }?>
         <?php if ($user->user_level == "Admin"){ ?>

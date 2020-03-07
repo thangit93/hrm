@@ -562,8 +562,8 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
 
   preProcessRemoteTableData(data, cell, id) {
     if (id === 1) {
-      const tmp = '<img src="_img_" class="img-circle" style="width:45px;height: 45px;" alt="User Image">';
-      return tmp.replace('_img_', cell);
+      // const tmp = '<img src="_img_" class="img-circle" style="width:45px;height: 45px;" alt="User Image">';
+      // return tmp.replace('_img_', cell);
     }
     return cell;
   }
@@ -575,13 +575,14 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
   getTableFields() {
     return [
       'id',
-      'image',
+      // 'image',
       'employee_id',
-      'first_name',
       'last_name',
-      'mobile_phone',
+      'middle_name',
+      'first_name',
+      // 'mobile_phone',
       'department',
-      'gender',
+      // 'gender',
       'supervisor',
     ];
   }
@@ -604,7 +605,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     const tableFields = this.getTableFields();
     const headers = [
       { sTitle: 'ID', bVisible: false },
-      { sTitle: '', bSortable: false },
+      // { sTitle: '', bSortable: false },
     ];
     let title = '';
 
@@ -623,7 +624,6 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
         }
       }
     }
-
     return headers;
   }
 
@@ -765,7 +765,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
   saveSuccessItemCallback(data) {
     this.lastSavedEmployee = data;
     if (this.currentId === null) {
-      $('#createUserModel').modal('show');
+      // $('#createUserModel').modal('show');
     }
   }
 
