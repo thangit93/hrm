@@ -246,7 +246,7 @@ msgid "User Reports"
 msgstr "Báo cáo người dùng"
 
 msgid "People"
-msgstr "Mọi người"
+msgstr "Nhân Viên"
 
 msgid "Manage"
 msgstr "Quản lý"
@@ -615,10 +615,10 @@ msgid "Monthly Installment"
 msgstr "Trả góp hằng tháng"
 
 msgid "Employee Number"
-msgstr "Số nhân viên"
+msgstr "Mã nhân viên"
 
 msgid "First Name"
-msgstr "Tên đầu tiên"
+msgstr "Tên"
 
 msgid "Middle Name"
 msgstr "Tên đệm"
@@ -918,7 +918,7 @@ msgid "Authentication Email"
 msgstr "Email xác thực"
 
 msgid "User Level"
-msgstr "Cấp độ người dùng"
+msgstr "Phân Quyền"
 
 msgid "Email"
 msgstr "E-mail"
@@ -1731,10 +1731,10 @@ msgid "Rented Vehicle"
 msgstr "Xe thuê"
 
 msgid "Female"
-msgstr "Giống cái"
+msgstr "Nữ"
 
 msgid "Male"
-msgstr "Nam giới"
+msgstr "Nam"
 
 msgid "Active"
 msgstr "Hoạt động"
@@ -1966,6 +1966,21 @@ msgstr "Một email đã được gửi cho bạn với hướng dẫn thay đ�
 
 msgid "You have entered an incorrect email or user id"
 msgstr "Bạn đã nhập email hoặc id người dùng không chính xác"
+
+msgid "Select"
+msgstr "Chọn"
+
+msgid "Married"
+msgstr "Kết hôn"
+
+msgid "Single"
+msgstr "Độc thân"
+
+msgid "Divorced"
+msgstr "Ly hôn"
+
+msgid "Widowed"
+msgstr "Góa phụ"
 
 msgid "Role_Admin"
 msgstr "Super Admin"

@@ -2,7 +2,7 @@
 namespace Classes\Migration;
 use Metadata\Common\Model\SupportedLanguage;
 
-class v20200221_260007_y_viet_language extends AbstractMigration{
+class v20200221_260008_y_viet_language extends AbstractMigration{
 
     public function up(){
         $supportedLanguage = new SupportedLanguage();
