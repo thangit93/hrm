@@ -135,8 +135,8 @@ class EmployeeAdapter extends AdapterBase {
       ['birthday', { label: 'Date of Birth', type: 'date', validation: '' }],
       ['gender', { label: 'Gender', type: 'select', source: [['Male', 'Male'], ['Female', 'Female']] }],
       ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Divorced', 'Divorced'], ['Widowed', 'Widowed'], ['Other', 'Other']] }],
-      ssn_num,
-      ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
+      // ssn_num,
+      // ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
       ['other_id', { label: 'Other ID', type: 'text', validation: 'none' }],
       ['driving_license', { label: 'Driving License No', type: 'text', validation: 'none' }],
       employment_status,
@@ -147,9 +147,9 @@ class EmployeeAdapter extends AdapterBase {
       ['address2', { label: 'Address Line 2', type: 'text', validation: 'none' }],
       ['city', { label: 'City', type: 'text', validation: 'none' }],
       country,
-      ['province', {
+      /*['province', {
         label: 'Province', type: 'select2', 'allow-null': true, 'remote-source': ['Province', 'id', 'name'],
-      }],
+      }],*/
       ['postal_code', { label: 'Postal/Zip Code', type: 'text', validation: 'none' }],
       ['home_phone', { label: 'Home Phone', type: 'text', validation: 'none' }],
       ['mobile_phone', { label: 'Mobile Phone', type: 'text', validation: 'none' }],

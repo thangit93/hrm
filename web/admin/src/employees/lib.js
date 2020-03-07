@@ -647,8 +647,8 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       ['immigration_status', {
         label: 'Immigration Status', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['ImmigrationStatus', 'id', 'name'],
       }],
-      ['ssn_num', { label: 'SSN/NRIC', type: 'text', validation: 'none' }],
-      ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
+      // ['ssn_num', { label: 'SSN/NRIC', type: 'text', validation: 'none' }],
+      // ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
       ['other_id', { label: 'Other ID', type: 'text', validation: 'none' }],
       ['driving_license', { label: 'Driving License No', type: 'text', validation: 'none' }],
       ['employment_status', { label: 'Employment Status', type: 'select2', 'remote-source': ['EmploymentStatus', 'id', 'name'] }],
@@ -661,9 +661,9 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       ['address2', { label: 'Address Line 2', type: 'text', validation: 'none' }],
       ['city', { label: 'City', type: 'text', validation: 'none' }],
       ['country', { label: 'Country', type: 'select2', 'remote-source': ['Country', 'code', 'name'] }],
-      ['province', {
+      /*['province', {
         label: 'State', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['Province', 'id', 'name'],
-      }],
+      }],*/
       ['postal_code', { label: 'Postal/Zip Code', type: 'text', validation: 'none' }],
       ['home_phone', { label: 'Home Phone', type: 'text', validation: 'none' }],
       ['mobile_phone', { label: 'Mobile Phone', type: 'text', validation: 'none' }],
