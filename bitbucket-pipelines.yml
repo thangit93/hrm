@@ -10,6 +10,13 @@ pipelines:
     - step:
         deployment: staging
         script:
-          #- npm install
+          - git pull
           #- gulp
           - cd core/robo && php robo.phar migrate:all app
+          - pipe: atlassian/ssh-run:0.2.2
+            variables:
+                SSH_USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                COMMAND: 'cd /opt/docker/icehrm && git pull && cd core/robo && php robo.phar migrate:all app && docker-compose exec -T php bash -c "gulp"'
+
+  
