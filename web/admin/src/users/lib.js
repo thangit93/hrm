@@ -12,7 +12,7 @@ class UserAdapter extends AdapterBase {
         return [
             'id',
             'username',
-            'email',
+            // 'email',
             'employee',
             'user_level',
         ];
@@ -24,16 +24,16 @@ class UserAdapter extends AdapterBase {
             aoColumnDefs: [
                 {
                     fnRender(data, cell) {
-                        return that.preProcessRemoteTableData(data, cell, 4);
+                        return that.preProcessRemoteTableData(data, cell, 3);
                     },
-                    aTargets: [4],
+                    aTargets: [3],
                 },
             ],
         };
     }
 
     preProcessRemoteTableData(data, cell, id) {
-        if (id === 4) {
+        if (id === 3) {
             return this.gt("Role_" + cell)
         }
         return cell;
@@ -41,9 +41,9 @@ class UserAdapter extends AdapterBase {
 
     getHeaders() {
         return [
-            {sTitle: 'ID'},
+            {sTitle: 'ID', bVisible: false},
             {sTitle: 'User Name'},
-            {sTitle: 'Authentication Email'},
+            // {sTitle: 'Authentication Email'},
             {sTitle: 'Employee'},
             {sTitle: 'User Level'},
         ];
@@ -53,7 +53,7 @@ class UserAdapter extends AdapterBase {
         return [
             ['id', {label: 'ID', type: 'hidden', validation: ''}],
             ['username', {label: 'User Name', type: 'text', validation: 'username'}],
-            ['email', {label: 'Email', type: 'text', validation: 'email'}],
+            // ['email', {label: 'Email', type: 'text', validation: 'email'}],
             ['employee', {
                 label: 'Employee',
                 type: 'select2',
@@ -91,7 +91,7 @@ class UserAdapter extends AdapterBase {
         if (callBackData[1]) {
             this.showMessage('Create User', `An email has been sent to ${user.email} with a temporary password to login to IceHrm.`);
         } else {
-            this.showMessage('Create User', 'User created successfully. But there was a problem sending welcome email.');
+            this.showMessage('Create User', 'User created successfully.');
         }
         this.get([]);
     }

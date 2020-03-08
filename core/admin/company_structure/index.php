@@ -39,7 +39,7 @@ path.link {
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		<li class="active"><a id="tabCompanyStructure" href="#tabPageCompanyStructure"><?=t('Company Structure')?></a></li>
-		<li><a id="tabCompanyGraph" href="#tabPageCompanyGraph"><?=t('Company Graph')?></a></li>
+<!--		<li><a id="tabCompanyGraph" href="#tabPageCompanyGraph">--><?//=t('Company Graph')?><!--</a></li>-->
 	</ul>
 
 	<div class="tab-content">
@@ -51,9 +51,9 @@ path.link {
 
 			</div>
 		</div>
-		<div class="tab-pane reviewBlock" id="tabPageCompanyGraph" style="overflow-x: scroll;">
+		<!--<div class="tab-pane reviewBlock" id="tabPageCompanyGraph" style="overflow-x: scroll;">
 
-		</div>
+		</div>-->
 	</div>
 
 </div>
@@ -72,7 +72,7 @@ modJsList['tabCompanyStructure'].setShowEdit(false);
 <?php }?>
 
 
-modJsList['tabCompanyGraph'] = new CompanyGraphAdapter('CompanyStructure');
+// modJsList['tabCompanyGraph'] = new CompanyGraphAdapter('CompanyStructure');
 
 var modJs = modJsList['tabCompanyStructure'];
 

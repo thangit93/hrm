@@ -21,25 +21,25 @@ $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
 $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
     'SystemSetting','Setting','System','SettingAdapter','{"name":["System:"]}','name',false,$options1
 ));
-if (!defined('CLOUD_INSTALLATION')) {
+/*if (!defined('CLOUD_INSTALLATION')) {
     $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
         'EmailSetting', 'Setting', 'Email', 'SettingAdapter', '{"name":["Email:"]}', 'name', false, $options1
     ));
-}
-$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
+}*/
+/*$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
     'LeaveSetting','Setting','Leave / PTO','SettingAdapter','{"name":["Leave:"]}','name',false,$options1
-));
-if(!defined('LDAP_ENABLED') || LDAP_ENABLED == true){
+));*/
+/*if(!defined('LDAP_ENABLED') || LDAP_ENABLED == true){
     $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
         'LDAPSetting','Setting','LDAP','SettingAdapter','{"name":["LDAP:"]}','name',false,$options1
     ));
-}
+}*/
 $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
     'AttendanceSetting','Setting','Attendance','SettingAdapter','{"name":["Attendance:"]}','name',false,$options1
 ));
-$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
+/*$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
     'OtherSetting','Setting','Other','SettingAdapter','{"name":["Projects:","Recruitment:","Notifications:","Expense:","Travel:","Api:","Overtime:"]}','name',false,$options1
-));
+));*/
 echo \Classes\UIManager::getInstance()->renderModule($moduleBuilder);
 ?>
 </div>

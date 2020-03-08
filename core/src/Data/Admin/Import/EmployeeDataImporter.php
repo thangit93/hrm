@@ -55,7 +55,7 @@ class EmployeeDataImporter extends AbstractDataImporter
                 $department = $this->addCompany($value);
                 $object->department = $department->id;
             } elseif (in_array($column->name, ['birthday', 'joined_date'])) {
-                $value = \DateTime::createFromFormat('d/m/Y', $value);
+                $value = \DateTime::createFromFormat('m/d/Y', $value);
                 if ($value) {
                     $object->{$column->name} = $value->format('Y-m-d');
                 } else {
