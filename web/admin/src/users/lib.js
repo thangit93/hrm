@@ -65,12 +65,12 @@ class UserAdapter extends AdapterBase {
                 type: 'select',
                 source: [['Admin', 'Super Admin'], ['Manager', 'Role_Manager'], ['Employee', 'Staff']]
             }],
-            ['lang', {
+            /*['lang', {
                 label: 'Language',
                 type: 'select2',
                 'allow-null': true,
                 'remote-source': ['SupportedLanguage', 'id', 'description'],
-            }],
+            }],*/
         ];
     }
 
