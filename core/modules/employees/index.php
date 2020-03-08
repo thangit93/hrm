@@ -61,7 +61,7 @@ path.link {
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		<li class="active"><a id="tabEmployee" href="#tabPageEmployee"><?=t('My Details')?></a></li>
-		<li><a id="tabCompanyGraph" href="#tabPageCompanyGraph"><?=t('Company')?></a></li>
+<!--		<li><a id="tabCompanyGraph" href="#tabPageCompanyGraph">--><?//=t('Company')?><!--</a></li>-->
 		<?php if (\Classes\SettingsManager::getInstance()->getSetting("Api: REST Api Enabled") == "1") { ?>
 		<li><a id="tabApiAccess" href="#tabPageApiAccess"><?=t('Api Access')?></a></li>
 		<?php } ?>
@@ -76,9 +76,9 @@ path.link {
 
 			</div>
 		</div>
-		<div class="tab-pane reviewBlock" id="tabPageCompanyGraph" style="overflow-x: scroll;">
+		<!--<div class="tab-pane reviewBlock" id="tabPageCompanyGraph" style="overflow-x: scroll;">
 
-		</div>
+		</div>-->
 		<?php if (\Classes\SettingsManager::getInstance()->getSetting("Api: REST Api Enabled") == "1") { ?>
 		<div class="tab-pane reviewBlock" id="tabPageApiAccess" style="overflow-x: scroll;">
 			<div class="row">
@@ -104,7 +104,7 @@ var modJsList = new Array();
 modJsList['tabEmployee'] = new EmployeeAdapter('Employee');
 modJsList['tabEmployee'].setFieldNameMap(<?=json_encode($fieldNameMap)?>);
 modJsList['tabEmployee'].setCustomFields(<?=json_encode($customFields)?>);
-modJsList['tabCompanyGraph'] = new CompanyGraphAdapter('CompanyStructure');
+// modJsList['tabCompanyGraph'] = new CompanyGraphAdapter('CompanyStructure');
 modJsList['tabApiAccess'] = new ApiAccessAdapter('ApiAccess');
 
 modJsList['tabApiAccess'].setApiUrl('<?=$restApiBase?>');
