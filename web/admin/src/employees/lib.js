@@ -576,7 +576,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     return [
       'id',
       // 'image',
-      'employee_id',
+      // 'employee_id',
       'last_name',
       'middle_name',
       'first_name',

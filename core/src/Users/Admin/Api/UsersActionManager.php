@@ -3,6 +3,7 @@
  Copyright (c) 2018 [Glacies UG, Berlin, Germany] (http://glacies.de)
  Developer: Thilina Hasantha (http://lk.linkedin.com/in/thilinah | https://github.com/thilinah)
  */
+
 namespace Users\Admin\Api;
 
 use Users\Common\Model\User;
@@ -51,14 +52,14 @@ class UsersActionManager extends SubActionManager
         }
         if ($this->user->user_level == 'Admin') {
             $user = new User();
-            $user->Load("email = ?", array($req->email));
+            /*$user->Load("email = ?", array($req->email));
 
             if ($user->email == $req->email) {
                 return new IceResponse(
                     IceResponse::ERROR,
                     "User with same email already exists"
                 );
-            }
+            }*/
 
             $user->Load("username = ?", array($req->username));
 
@@ -72,9 +73,10 @@ class UsersActionManager extends SubActionManager
             $user = new User();
             $user->email = $req->email;
             $user->username = $req->username;
-            $password = $this->generateRandomString(6);
+//            $password = $this->generateRandomString(6);
+            $password = trim($user->username);
             $user->password = md5($password);
-            $user->employee = (empty($req->employee) || $req->employee == "NULL" )?null:$req->employee;
+            $user->employee = (empty($req->employee) || $req->employee == "NULL") ? null : $req->employee;
             $user->user_level = $req->user_level;
             $user->last_login = date("Y-m-d H:i:s");
             $user->last_update = date("Y-m-d H:i:s");
@@ -87,13 +89,13 @@ class UsersActionManager extends SubActionManager
 
             $ok = $user->Save();
             if (!$ok) {
-                LogManager::getInstance()->info($user->ErrorMsg()."|".json_encode($user));
+                LogManager::getInstance()->info($user->ErrorMsg() . "|" . json_encode($user));
                 return new IceResponse(IceResponse::ERROR, "Error occurred while saving the user");
             }
             $user->password = "";
             $user = $this->baseService->cleanUpAdoDB($user);
 
-            $mailResponse = false;
+            $mailResponse = true;
             if (!empty($this->emailSender)) {
                 $usersEmailSender = new UsersEmailSender($this->emailSender, $this);
                 $mailResponse = $usersEmailSender->sendWelcomeUserEmail($user, $password, $employee);
