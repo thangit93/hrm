@@ -6,15 +6,15 @@
 #image: ducnhat/icehrm
 
 pipelines:
-  branches:
-    '{develop}':
-      - step:
-          deployment: staging
-          script:
-            - pipe: atlassian/ssh-run:0.2.2
-              variables:
-                SSH_USER: 'root'
-                SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd /opt/docker/icehrm && git reset --hard && git pull && docker-compose exec -T php bash -c "cd core/robo && php robo.phar migrate:all app"'
+    branches:
+        '{develop}':
+            -   step:
+                    deployment: staging
+                    script:
+                        -   pipe: atlassian/ssh-run:0.2.2
+                            variables:
+                                SSH_USER: 'root'
+                                SERVER: 'hrm.antnest.vn'
+                                COMMAND: 'cd /opt/docker/icehrm && git reset --hard && git pull && docker-compose exec -T php bash -c "cd core/robo && php robo.phar migrate:all app"'
 
   
