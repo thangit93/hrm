@@ -384,7 +384,7 @@ msgid "Manage Expenses"
 msgstr "Quản lý chi phí"
 
 msgid "ID"
-msgstr "TÔI"
+msgstr "ID"
 
 msgid "Name"
 msgstr "Tên"
