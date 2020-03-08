@@ -41,7 +41,7 @@ class UserAdapter extends AdapterBase {
 
     getHeaders() {
         return [
-            {sTitle: 'ID'},
+            {sTitle: 'ID', bVisible: false},
             {sTitle: 'User Name'},
             // {sTitle: 'Authentication Email'},
             {sTitle: 'Employee'},
