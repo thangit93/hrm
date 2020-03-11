@@ -12,7 +12,7 @@ pipelines:
           deployment: test
           script:
             #- npm install 
-            - gulp
+            - /usr/local/bin/gulp
             #- pipe: atlassian/ssh-run:0.2.2
             #  variables:
             #    SSH_USER: 'root'
