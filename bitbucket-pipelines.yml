@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: ducnhat/icehrm
+image: node:12
 
 pipelines:
   branches:
@@ -11,8 +11,9 @@ pipelines:
       - step:
           deployment: test
           script:
-            #- npm install 
-            - /usr/local/bin/gulp
+            - npm install
+            - npm install gulp
+            - gulp
             #- pipe: atlassian/ssh-run:0.2.2
             #  variables:
             #    SSH_USER: 'root'
