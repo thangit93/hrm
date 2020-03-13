@@ -4,7 +4,7 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 #image: node:12
-image: atlassian/default-image:2
+#image: atlassian/default-image:2
 
 pipelines:
   branches:
@@ -15,7 +15,7 @@ pipelines:
             - npm install --global gulp-cli
             - npm install
             - gulp
-            - zip $BITBUCKET_COMMIT.zip * -x node_modules
+            - zip -r $BITBUCKET_COMMIT.zip * -x node_modules
             - pipe: atlassian/scp-deploy:0.3.10
               variables:
                 USER: 'root'
@@ -26,6 +26,6 @@ pipelines:
               variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_COMMIT} && unzip ${BITBUCKET_COMMIT}.zip -d ./${BITBUCKET_COMMIT} && rm ${BITBUCKET_COMMIT}.zip'
+                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_COMMIT} && unzip ${BITBUCKET_COMMIT}.zip -d ./${BITBUCKET_COMMIT} && rm ${BITBUCKET_COMMIT}.zip && rm -rf ${CURRENT_PATH} && ln -S ${RELEASES_PATH}/${BITBUCKET_COMMIT} ${CURRENT_PATH} && chown -R www-data:www-data ${CURRENT_PATH}'
 
   
