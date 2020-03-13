@@ -15,17 +15,17 @@ pipelines:
             - npm install --global gulp-cli
             - npm install
             - gulp
-            - tar -zcf $BITBUCKET_COMMIT.tar.gz . --exclude=/node_modules --exclude-vcs
+            - zip $BITBUCKET_COMMIT.zip . -x node_modules
             - pipe: atlassian/scp-deploy:0.3.10
               variables:
                 USER: 'root'
                 SERVER: 'hrm.antnest.vn'
                 REMOTE_PATH: '${RELEASES_PATH}'
-                LOCAL_PATH: '${BITBUCKET_COMMIT}.tar.gz'
+                LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/${BITBUCKET_COMMIT}.zip'
             - pipe: atlassian/ssh-run:0.2.2
               variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd ${RELEASES_PATH} && tar -xf ${BITBUCKET_COMMIT}.tar.gz -C ${RELEASES_PATH}/${BITBUCKET_COMMIT} && rm ${BITBUCKET_COMMIT}.tar.gz'
+                COMMAND: 'cd ${RELEASES_PATH} && unzip ${BITBUCKET_COMMIT}.zip rm ${BITBUCKET_COMMIT}.zip'
 
   
