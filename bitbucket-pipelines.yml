@@ -3,7 +3,8 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: node:12
+#image: node:12
+image: atlassian/default-image:2
 
 pipelines:
   branches:
@@ -11,9 +12,7 @@ pipelines:
       - step:
           deployment: test
           script:
-            - npm install
-            - npm install --global gulp-cli
-            - npm install aes
+            - npm install --global gulp-cli && npm install
             - gulp
             #- pipe: atlassian/ssh-run:0.2.2
             #  variables:
