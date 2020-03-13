@@ -15,7 +15,7 @@ pipelines:
             - npm install --global gulp-cli
             - npm install
             - gulp
-            - zip $BITBUCKET_COMMIT.zip . -x node_modules
+            - zip $BITBUCKET_COMMIT.zip * -x node_modules
             - pipe: atlassian/scp-deploy:0.3.10
               variables:
                 USER: 'root'
