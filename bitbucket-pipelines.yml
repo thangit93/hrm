@@ -12,12 +12,20 @@ pipelines:
       - step:
           deployment: test
           script:
-            - npm install --global gulp-cli && npm install
+            - npm install --global gulp-cli
+            - npm install
             - gulp
-            #- pipe: atlassian/ssh-run:0.2.2
-            #  variables:
-            #    SSH_USER: 'root'
-            #    SERVER: 'hrm.antnest.vn'
-            #    COMMAND: 'cd /opt/docker/icehrm && git reset --hard && git pull && docker-compose exec -T php bash -c "cd core/robo && php robo.phar migrate:all app"'
+            - tar -zcf $BITBUCKET_COMMIT.tar.gz . --exclude=/node_modules --exclude-vcs
+            - pipe: atlassian/scp-deploy:0.3.10
+              variables:
+                USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                REMOTE_PATH: '${RELEASES_PATH}'
+                LOCAL_PATH: '${BITBUCKET_COMMIT}.tar.gz'
+            - pipe: atlassian/ssh-run:0.2.2
+              variables:
+                SSH_USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                COMMAND: 'cd ${RELEASES_PATH} && tar -xf ${BITBUCKET_COMMIT}.tar.gz -C ${RELEASES_PATH}/${BITBUCKET_COMMIT} && rm ${BITBUCKET_COMMIT}.tar.gz'
 
   
