@@ -26,6 +26,6 @@ pipelines:
               variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd ${RELEASES_PATH} && unzip ${BITBUCKET_COMMIT}.zip && rm ${BITBUCKET_COMMIT}.zip'
+                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_COMMIT} && unzip ${BITBUCKET_COMMIT}.zip -d ./${BITBUCKET_COMMIT} && rm ${BITBUCKET_COMMIT}.zip'
 
   
