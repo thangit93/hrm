@@ -15,17 +15,17 @@ pipelines:
             - npm install --global gulp-cli
             - npm install
             - gulp
-            - zip -r $BITBUCKET_COMMIT.zip * -x node_modules
+            - zip -r $BITBUCKET_BUILD_NUMBER.zip * -x node_modules
             - pipe: atlassian/scp-deploy:0.3.10
               variables:
                 USER: 'root'
                 SERVER: 'hrm.antnest.vn'
                 REMOTE_PATH: '${RELEASES_PATH}'
-                LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/${BITBUCKET_COMMIT}.zip'
+                LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/${BITBUCKET_BUILD_NUMBER}.zip'
             - pipe: atlassian/ssh-run:0.2.2
               variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_COMMIT} && unzip ${BITBUCKET_COMMIT}.zip -d ./${BITBUCKET_COMMIT} && rm ${BITBUCKET_COMMIT}.zip && rm -rf ${CURRENT_PATH} && ln -S ${RELEASES_PATH}/${BITBUCKET_COMMIT} ${CURRENT_PATH} && chown -R www-data:www-data ${CURRENT_PATH}'
+                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_BUILD_NUMBER} && unzip ${BITBUCKET_BUILD_NUMBER}.zip -d ./${BITBUCKET_BUILD_NUMBER} && rm ${BITBUCKET_BUILD_NUMBER}.zip && rm -rf ${CURRENT_PATH} && ln -s ${RELEASES_PATH}/${BITBUCKET_BUILD_NUMBER} ${CURRENT_PATH} && chown -R www-data:www-data ${CURRENT_PATH}'
 
   
