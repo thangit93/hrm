@@ -26,6 +26,11 @@ pipelines:
               variables:
                 SSH_USER: 'root'
                 SERVER: 'hrm.antnest.vn'
-                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_BUILD_NUMBER} && unzip ${BITBUCKET_BUILD_NUMBER}.zip -d ./${BITBUCKET_BUILD_NUMBER} && rm ${BITBUCKET_BUILD_NUMBER}.zip && rm -rf ${CURRENT_PATH} && ln -s ${RELEASES_PATH}/${BITBUCKET_BUILD_NUMBER} ${CURRENT_PATH} && chown -R www-data:www-data ${CURRENT_PATH}'
+                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_BUILD_NUMBER} && unzip ${BITBUCKET_BUILD_NUMBER}.zip -x node_modules -d ./${BITBUCKET_BUILD_NUMBER}'
+            - pipe: atlassian/ssh-run:0.2.2
+              variables:
+                SSH_USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                COMMAND: 'cd ${RELEASES_PATH} && rm ${BITBUCKET_BUILD_NUMBER}.zip && rm -rf ${CURRENT_PATH} && ln -s ${RELEASES_PATH}/${BITBUCKET_BUILD_NUMBER} ${CURRENT_PATH} && chown -R www-data:www-data ${CURRENT_PATH}'
 
   
