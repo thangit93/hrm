@@ -562,8 +562,8 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
 
   preProcessRemoteTableData(data, cell, id) {
     if (id === 1) {
-      const tmp = '<img src="_img_" class="img-circle" style="width:45px;height: 45px;" alt="User Image">';
-      return tmp.replace('_img_', cell);
+      // const tmp = '<img src="_img_" class="img-circle" style="width:45px;height: 45px;" alt="User Image">';
+      // return tmp.replace('_img_', cell);
     }
     return cell;
   }
@@ -575,13 +575,14 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
   getTableFields() {
     return [
       'id',
-      'image',
-      'employee_id',
-      'first_name',
+      // 'image',
+      // 'employee_id',
       'last_name',
-      'mobile_phone',
+      'middle_name',
+      'first_name',
+      // 'mobile_phone',
       'department',
-      'gender',
+      // 'gender',
       'supervisor',
     ];
   }
@@ -604,7 +605,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     const tableFields = this.getTableFields();
     const headers = [
       { sTitle: 'ID', bVisible: false },
-      { sTitle: '', bSortable: false },
+      // { sTitle: '', bSortable: false },
     ];
     let title = '';
 
@@ -623,7 +624,6 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
         }
       }
     }
-
     return headers;
   }
 
@@ -642,28 +642,28 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       ['gender', { label: 'Gender', type: 'select', source: [['Male', 'Male'], ['Female', 'Female']] }],
       ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Divorced', 'Divorced'], ['Widowed', 'Widowed'], ['Other', 'Other']] }],
       ['ethnicity', {
-        label: 'Ethnicity', type: 'select2', 'allow-null': true, 'remote-source': ['Ethnicity', 'id', 'name'],
+        label: 'Ethnicity', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['Ethnicity', 'id', 'name'],
       }],
       ['immigration_status', {
-        label: 'Immigration Status', type: 'select2', 'allow-null': true, 'remote-source': ['ImmigrationStatus', 'id', 'name'],
+        label: 'Immigration Status', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['ImmigrationStatus', 'id', 'name'],
       }],
-      ['ssn_num', { label: 'SSN/NRIC', type: 'text', validation: 'none' }],
-      ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
+      // ['ssn_num', { label: 'SSN/NRIC', type: 'text', validation: 'none' }],
+      // ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
       ['other_id', { label: 'Other ID', type: 'text', validation: 'none' }],
-      ['driving_license', { label: 'Driving License No', type: 'text', validation: 'none' }],
+      //['driving_license', { label: 'Driving License No', type: 'text', validation: 'none' }],
       ['employment_status', { label: 'Employment Status', type: 'select2', 'remote-source': ['EmploymentStatus', 'id', 'name'] }],
       ['job_title', { label: 'Job Title', type: 'select2', 'remote-source': ['JobTitle', 'id', 'name'] }],
       ['pay_grade', {
-        label: 'Pay Grade', type: 'select2', 'allow-null': true, 'remote-source': ['PayGrade', 'id', 'name'],
+        label: 'Pay Grade', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['PayGrade', 'id', 'name'],
       }],
-      ['work_station_id', { label: 'Work Station Id', type: 'text', validation: 'none' }],
+      //['work_station_id', { label: 'Work Station Id', type: 'text', validation: 'none' }],
       ['address1', { label: 'Address Line 1', type: 'text', validation: 'none' }],
       ['address2', { label: 'Address Line 2', type: 'text', validation: 'none' }],
       ['city', { label: 'City', type: 'text', validation: 'none' }],
       ['country', { label: 'Country', type: 'select2', 'remote-source': ['Country', 'code', 'name'] }],
-      ['province', {
-        label: 'State', type: 'select2', 'allow-null': true, 'remote-source': ['Province', 'id', 'name'],
-      }],
+      /*['province', {
+        label: 'State', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['Province', 'id', 'name'],
+      }],*/
       ['postal_code', { label: 'Postal/Zip Code', type: 'text', validation: 'none' }],
       ['home_phone', { label: 'Home Phone', type: 'text', validation: 'none' }],
       ['mobile_phone', { label: 'Mobile Phone', type: 'text', validation: 'none' }],
@@ -675,10 +675,10 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       ['termination_date', { label: 'Termination Date', type: 'date', validation: 'none' }],
       ['department', { label: 'Department', type: 'select2', 'remote-source': ['CompanyStructure', 'id', 'title'] }],
       ['supervisor', {
-        label: 'Direct Supervisor', type: 'select2', 'allow-null': true, 'remote-source': ['Employee', 'id', 'first_name+last_name'],
+        label: 'Direct Supervisor', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['Employee', 'id', 'first_name+last_name'],
       }],
       ['indirect_supervisors', {
-        label: 'Indirect Supervisors', type: 'select2multi', 'allow-null': true, 'remote-source': ['Employee', 'id', 'first_name+last_name'],
+        label: 'Indirect Supervisors', type: 'select2multi', 'allow-null': true, "null-label": "Select", 'remote-source': ['Employee', 'id', 'first_name+last_name'],
       }],
       ['approver1', {
         label: 'First Level Approver', type: 'select2', 'allow-null': true, 'null-label': 'None', 'remote-source': ['Employee', 'id', 'first_name+last_name'],
@@ -765,7 +765,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
   saveSuccessItemCallback(data) {
     this.lastSavedEmployee = data;
     if (this.currentId === null) {
-      $('#createUserModel').modal('show');
+      // $('#createUserModel').modal('show');
     }
   }
 

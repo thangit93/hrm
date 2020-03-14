@@ -244,10 +244,10 @@ if($action == 'get'){
 }else if($action == 'rpc'){
 	if($emailSender->sendResetPasswordEmail($_REQUEST['id'])){
 		$ret['status'] = "SUCCESS";
-		$ret['message'] = "An email has been sent to you with instructions for changing password";
+		$ret['message'] = "Một email đã được gửi cho bạn với hướng dẫn thay đổi mật khẩu";
 	}else{
 		$ret['status'] = "ERROR";
-		$ret['message'] = "You have entered an incorrect email or user id";
+		$ret['message'] = "Bạn đã nhập email hoặc id người dùng không chính xác";
 	}
 
 }else if($action == 'getNotifications'){

@@ -9,6 +9,9 @@ if (php_sapi_name() != 'cli') {
  * @see http://robo.li/
  */
 error_reporting(0);
+define('ALL_CLIENT_BASE_PATH', dirname(__FILE__).'/../../');
+define('CLIENT_BASE_PATH', ALL_CLIENT_BASE_PATH . 'app/');
+define('APP_BASE_PATH', ALL_CLIENT_BASE_PATH . 'core/');
 class RoboFile extends \Robo\Tasks
 {
     private function includeCientConfig($client){
