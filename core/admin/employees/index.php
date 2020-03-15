@@ -10,7 +10,7 @@ $customFields = \Classes\BaseService::getInstance()->getCustomFields("Employee")
 ?><div class="span9">
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
-        <?php if($user->user_level != "Admin"){
+        <?php if($user->user_level == "Employee"){
         ?>
 		    <li class="active"><a id="tabEmployee" href="#tabPageEmployee"><?=t('Employees (Direct Reports)')?></a></li>
         <?php }else{ ?>
@@ -130,12 +130,11 @@ $customFields = \Classes\BaseService::getInstance()->getCustomFields("Employee")
 </div>
 <script>
 var modJsList = new Array();
-<?php if($user->user_level != "Admin"){ ?>
 modJsList['tabEmployee'] = new EmployeeAdapter('Employee','Employee',{"status":"Active"});
+<?php if($user->user_level == "Employee" ){ ?>
 modJsList['tabEmployee'].setShowAddNew(false);
 modJsList['tabEmployee'].setShowDelete(false);
-<?php }else{ ?>
-modJsList['tabEmployee'] = new EmployeeAdapter('Employee','Employee',{"status":"Active"});
+// modJsList['tabEmployee'] = new EmployeeAdapter('Employee','Employee',{"status":"Active"});*/
 <?php } ?>
 
 modJsList['tabEmployee'].setRemoteTable(true);

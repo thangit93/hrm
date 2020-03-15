@@ -50,7 +50,12 @@ class UsersActionManager extends SubActionManager
                 "Error saving user"
             );
         }
-        if ($this->user->user_level == 'Admin') {
+
+        if ($this->user->user_level == 'Manager' && $req->user_level == 'Admin') {
+            return new IceResponse(IceResponse::ERROR, "Not Allowed");
+        }
+
+        if (in_array($this->user->user_level, ['Admin', 'Manager'])) {
             $user = new User();
             /*$user->Load("email = ?", array($req->email));
 
@@ -95,11 +100,11 @@ class UsersActionManager extends SubActionManager
             $user->password = "";
             $user = $this->baseService->cleanUpAdoDB($user);
 
-            $mailResponse = true;
-            if (!empty($this->emailSender)) {
+            $mailResponse = false;
+            /*if (!empty($this->emailSender)) {
                 $usersEmailSender = new UsersEmailSender($this->emailSender, $this);
                 $mailResponse = $usersEmailSender->sendWelcomeUserEmail($user, $password, $employee);
-            }
+            }*/
             return new IceResponse(IceResponse::SUCCESS, [$user, $mailResponse]);
         }
         return new IceResponse(IceResponse::ERROR, "Not Allowed");

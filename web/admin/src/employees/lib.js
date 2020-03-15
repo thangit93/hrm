@@ -510,7 +510,7 @@ class EmployeeSubDocumentAdapter extends SubAdapterBase {
 
 class SubProfileEnabledAdapterBase extends AdapterBase {
   isSubProfileTable() {
-    if (this.user.user_level === 'Admin') {
+    if (this.user.user_level === 'Admin' || this.user.user_level === 'Manager') {
       return false;
     }
     return true;
