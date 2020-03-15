@@ -1,0 +1,36 @@
+# This is a sample build configuration for PHP.
+# Check our guides at https://confluence.atlassian.com/x/e8YWN for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+# test 1
+image: atlassian/default-image:2
+
+pipelines:
+  branches:
+    '{testing}':
+      - step:
+          deployment: test
+          script:
+            - npm install --global gulp-cli
+            - npm install
+            - gulp
+            - zip -r $BITBUCKET_BUILD_NUMBER.zip * -x node_modules
+            - pipe: atlassian/scp-deploy:0.3.10
+              variables:
+                USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                REMOTE_PATH: '${RELEASES_PATH}'
+                LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/${BITBUCKET_BUILD_NUMBER}.zip'
+            - pipe: atlassian/ssh-run:0.2.2
+              variables:
+                SSH_USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                COMMAND: 'cd ${RELEASES_PATH} && mkdir ${BITBUCKET_BUILD_NUMBER} && unzip ${BITBUCKET_BUILD_NUMBER}.zip -x node_modules -d ./${BITBUCKET_BUILD_NUMBER}'
+            - pipe: atlassian/ssh-run:0.2.2
+              variables:
+                SSH_USER: 'root'
+                SERVER: 'hrm.antnest.vn'
+                COMMAND: 'cd ${RELEASES_PATH} && rm ${BITBUCKET_BUILD_NUMBER}.zip && rm -rf ${CURRENT_PATH} && ln -s ${RELEASES_PATH}/${BITBUCKET_BUILD_NUMBER} ${CURRENT_PATH} && chown -R www-data:www-data ${CURRENT_PATH}'
+
+  
