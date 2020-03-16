@@ -106,7 +106,7 @@ class UserAdapter extends AdapterBase {
             msg = 'For this user type, you have to assign an employee when adding or editing the user.<br/>';
             msg += " You may create a new employee through 'Admin'->'Employees' menu";
         }
-        return msg;
+        return this.gt(msg);
     }
 
     save() {
