@@ -8,6 +8,7 @@
 
 namespace Salary\Common\Model;
 
+use Classes\IceResponse;
 use Model\BaseModel;
 
 class EmployeeSalary extends BaseModel
@@ -37,5 +38,26 @@ class EmployeeSalary extends BaseModel
     public function getUserOnlyMeSwitchedAccess()
     {
         return array();
+    }
+
+    public function executePreSaveActions($obj)
+    {
+        return new IceResponse(IceResponse::SUCCESS, $this->removeNonNumericCharacters($obj));
+    }
+
+    public function executePreUpdateActions($obj)
+    {
+        return new IceResponse(IceResponse::SUCCESS, $this->removeNonNumericCharacters($obj));
+    }
+
+    /**
+     * @param $obj
+     * @return mixed
+     */
+    private function removeNonNumericCharacters($obj)
+    {
+        $obj->amount = preg_replace('/[\D]/', '', $obj->amount);
+
+        return $obj;
     }
 }
