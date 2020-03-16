@@ -856,7 +856,7 @@ class ModuleBase {
 
   deleteRow(id) {
     this.deleteParams.id = id;
-    this.renderModel('delete', 'Confirm Deletion', 'Are you sure you want to delete this item ?');
+    this.renderModel('delete', this.gt('Confirm Deletion'), this.gt('Are you sure you want to delete this item ?'));
     $('#deleteModel').modal('show');
   }
 
@@ -884,9 +884,9 @@ class ModuleBase {
     $(modelId).off();
 
     if (isPlain) {
-      this.renderModel('plainMessage', title, message);
+      this.renderModel('plainMessage', this.gt(title), this.gt(message));
     } else {
-      this.renderModel('message', title, message);
+      this.renderModel('message', this.gt(title), this.gt(message));
     }
 
     if (closeCallback !== null && closeCallback !== undefined) {
@@ -914,9 +914,9 @@ class ModuleBase {
     $(modelId).unbind('hide');
 
     if (isPlain) {
-      this.renderModelFromDom('dataMessage', title, element);
+      this.renderModelFromDom('dataMessage', this.gt(title), element);
     } else {
-      this.renderModelFromDom('message', title, element);
+      this.renderModelFromDom('message', this.gt(title), element);
     }
 
 

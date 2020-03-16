@@ -1990,3 +1990,22 @@ msgstr "Admin"
 
 msgid "Role_Employee"
 msgstr "Staff"
+
+msgid "User created successfully."
+msgstr "Tạo tài khoản mới thành công"
+
+msgid 'Password changed successfully'
+msgstr "Cập nhật mật khẩu mới thành công"
+
+msgid "Passwords don't match"
+msgstr "Mật khẩu không khớp"
+
+msgid "Password should be longer than 7 characters"
+msgstr "Mật khẩu phải có nhiều hơn 7 ký tự"
+
+msgid "Not Allowed"
+msgstr "Bạn không được phép thực hiện tác vụ này"
+
+msgid "Error"
+msgstr "Lỗi"
+

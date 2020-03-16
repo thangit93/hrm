@@ -89,9 +89,9 @@ class UserAdapter extends AdapterBase {
     saveUserSuccessCallBack(callBackData, serverData) {
         const user = callBackData[0];
         if (callBackData[1]) {
-            this.showMessage('Create User', `An email has been sent to ${user.email} with a temporary password to login to IceHrm.`);
+            this.showMessage('Create User', this.gt(`An email has been sent to ${user.email} with a temporary password to login to IceHrm.`));
         } else {
-            this.showMessage('Create User', 'User created successfully.');
+            this.showMessage('Create User', this.gt('User created successfully.'));
         }
         this.get([]);
     }
@@ -153,7 +153,7 @@ class UserAdapter extends AdapterBase {
         const password = $('#adminUsersChangePwd #newpwd').val();
 
         if (!passwordValidation(password)) {
-            $('#adminUsersChangePwd_error').html('Password should be longer than 7 characters');
+            $('#adminUsersChangePwd_error').html(this.gt('Password should be longer than 7 characters'));
             $('#adminUsersChangePwd_error').show();
             return;
         }
@@ -161,7 +161,7 @@ class UserAdapter extends AdapterBase {
         const conPassword = $('#adminUsersChangePwd #conpwd').val();
 
         if (conPassword !== password) {
-            $('#adminUsersChangePwd_error').html("Passwords don't match");
+            $('#adminUsersChangePwd_error').html(this.gt("Passwords don't match"));
             $('#adminUsersChangePwd_error').show();
             return;
         }
@@ -183,7 +183,7 @@ class UserAdapter extends AdapterBase {
 
     changePasswordSuccessCallBack(callBackData, serverData) {
         this.closeChangePassword();
-        this.showMessage('Password Change', 'Password changed successfully');
+        this.showMessage('Password Change', this.gt('Password changed successfully'));
     }
 
     changePasswordFailCallBack(callBackData, serverData) {
