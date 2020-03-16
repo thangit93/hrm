@@ -6,6 +6,7 @@
 
 namespace Users\Admin\Api;
 
+use Classes\LanguageManager;
 use Users\Common\Model\User;
 use Classes\IceResponse;
 use Classes\SubActionManager;
@@ -25,7 +26,13 @@ class UsersActionManager extends SubActionManager
 
         $user = new User();
         $user->Load("id = ?", array($req->id));
-        if ($this->user->user_level == 'Admin' || $this->user->id == $user->id) {
+
+        //Manage can only change Employee password
+        if ($this->user->user_level == 'Manager' && $user->user_level != 'Employee') {
+            return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
+        }
+
+        if (in_array($this->user->user_level, ['Admin', 'Manager']) || $this->user->id == $user->id) {
             if (empty($user->id)) {
                 return new IceResponse(
                     IceResponse::ERROR,
@@ -51,8 +58,8 @@ class UsersActionManager extends SubActionManager
             );
         }
 
-        if ($this->user->user_level == 'Manager' && $req->user_level == 'Admin') {
-            return new IceResponse(IceResponse::ERROR, "Not Allowed");
+        if ($this->user->user_level == 'Manager' && $req->user_level != 'Employee') {
+            return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
         }
 
         if (in_array($this->user->user_level, ['Admin', 'Manager'])) {
@@ -71,7 +78,7 @@ class UsersActionManager extends SubActionManager
             if ($user->username == $req->username) {
                 return new IceResponse(
                     IceResponse::ERROR,
-                    "User with same username already exists"
+                    LanguageManager::tran("User with same username already exists")
                 );
             }
 
@@ -107,7 +114,7 @@ class UsersActionManager extends SubActionManager
             }*/
             return new IceResponse(IceResponse::SUCCESS, [$user, $mailResponse]);
         }
-        return new IceResponse(IceResponse::ERROR, "Not Allowed");
+        return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
     }
 
     private function generateRandomString($length = 10)
