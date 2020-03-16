@@ -1374,7 +1374,7 @@ msgid "Salary Component Types"
 msgstr "Các loại thành phần lương"
 
 msgid "Employee Salary Components"
-msgstr "Thành phần lương nhân viên"
+msgstr "Bảng lương nhân viên"
 
 msgid "Company Payroll"
 msgstr "Biên chế công ty"

@@ -85,6 +85,32 @@ class EmployeeSalaryAdapter extends AdapterBase {
     ];
   }
 
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 3);
+          },
+          aTargets: [3],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 3) {
+      cell = parseInt(cell)
+      cell = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(cell)
+    }
+    return cell;
+  }
+
   getHeaders() {
     return [
       { sTitle: 'ID', bVisible: false },
@@ -100,7 +126,7 @@ class EmployeeSalaryAdapter extends AdapterBase {
       ['id', { label: 'ID', type: 'hidden' }],
       ['employee', { label: 'Employee', type: 'select2', 'remote-source': ['Employee', 'id', 'first_name+last_name'] }],
       ['component', { label: 'Salary Component', type: 'select2', 'remote-source': ['SalaryComponent', 'id', 'name'] }],
-      ['amount', { label: 'Amount', type: 'text', validation: 'float' }],
+      ['amount', { label: 'Amount', type: 'text', validation: 'integer' }],
       ['details', { label: 'Details', type: 'textarea', validation: 'none' }],
     ];
   }
