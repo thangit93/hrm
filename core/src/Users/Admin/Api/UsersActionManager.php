@@ -83,8 +83,7 @@ class UsersActionManager extends SubActionManager
             }
 
             $employee = null;
-            $birthday = null;
-            $password = $password = trim($req->username);
+            $password = trim($req->username);
 
             if (!empty($req->employee)) {
                 $employee = $this->baseService->getElement('Employee', $req->employee, null, true);
@@ -98,8 +97,6 @@ class UsersActionManager extends SubActionManager
             $user = new User();
             $user->email = "{$req->username}@yviet.com";
             $user->username = $req->username;
-//            $password = $this->generateRandomString(6);
-
             $user->password = md5($password);
             $user->employee = (empty($req->employee) || $req->employee == "NULL") ? null : $req->employee;
             $user->user_level = $req->user_level;
