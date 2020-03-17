@@ -417,7 +417,7 @@ msgid "Job Title Code"
 msgstr "Mã chức danh công việc"
 
 msgid "Job Title"
-msgstr "Chức danh công việc"
+msgstr "Chức danh"
 
 msgid "Description"
 msgstr "Sự miêu tả"
@@ -705,10 +705,10 @@ msgid "Department"
 msgstr "Phòng ban"
 
 msgid "Supervisor"
-msgstr "Giám sát"
+msgstr "Báo cáo trực tiếp"
 
 msgid "Indirect Supervisors"
-msgstr "Giám sát gián tiếp"
+msgstr "Báo cáo gián tiếp"
 
 msgid "First Level Approver"
 msgstr "Người phê duyệt cấp đầu tiên"

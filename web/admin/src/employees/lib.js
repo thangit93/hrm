@@ -580,8 +580,8 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       'last_name',
       'middle_name',
       'first_name',
-      // 'mobile_phone',
-      'department',
+      'job_title',
+      // 'department',
       // 'gender',
       'supervisor',
     ];
