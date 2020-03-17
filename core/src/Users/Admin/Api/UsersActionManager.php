@@ -82,11 +82,24 @@ class UsersActionManager extends SubActionManager
                 );
             }
 
+            $employee = null;
+            $birthday = null;
+            $password = $password = trim($req->username);
+
+            if (!empty($req->employee)) {
+                $employee = $this->baseService->getElement('Employee', $req->employee, null, true);
+
+                if (!empty($employee->birthday)) {
+                    $birthday = \DateTime::createFromFormat('Y-m-d', $employee->birthday);
+                    $password = $birthday->format('dmY');
+                }
+            }
+
             $user = new User();
-            $user->email = $req->email;
+            $user->email = "{$req->username}@yviet.com";
             $user->username = $req->username;
 //            $password = $this->generateRandomString(6);
-            $password = trim($user->username);
+
             $user->password = md5($password);
             $user->employee = (empty($req->employee) || $req->employee == "NULL") ? null : $req->employee;
             $user->user_level = $req->user_level;
@@ -94,7 +107,6 @@ class UsersActionManager extends SubActionManager
             $user->last_update = date("Y-m-d H:i:s");
             $user->created = date("Y-m-d H:i:s");
 
-            $employee = null;
             if (!empty($user->employee)) {
                 $employee = $this->baseService->getElement('Employee', $user->employee, null, true);
             }
