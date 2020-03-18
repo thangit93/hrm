@@ -3,6 +3,7 @@
  Copyright (c) 2018 [Glacies UG, Berlin, Germany] (http://glacies.de)
  Developer: Thilina Hasantha (http://lk.linkedin.com/in/thilinah | https://github.com/thilinah)
  */
+
 namespace Users\Common\Model;
 
 use Classes\BaseService;
@@ -13,12 +14,12 @@ class User extends BaseModel
 {
     public function getAdminAccess()
     {
-        return array("get","element","save","delete");
+        return array("get", "element", "save", "delete");
     }
 
     public function getManagerAccess()
     {
-        return array("get","element","save","delete");
+        return array("get", "element", "save", "delete");
     }
 
     public function getUserAccess()
@@ -28,6 +29,10 @@ class User extends BaseModel
 
     public function validateSave($obj)
     {
+        if ($this->checkPermission($obj)) {
+            return new IceResponse(IceResponse::ERROR, 'Not Allowed');
+        }
+
         $userTemp = new User();
 
         if (empty($obj->id)) {
@@ -44,6 +49,11 @@ class User extends BaseModel
             //Check if you are trying to change user level
             $oldUser = new User();
             $oldUser->Load("id = ?", array($obj->id));
+
+            if ($this->checkPermission($oldUser)) {
+                return new IceResponse(IceResponse::ERROR, 'Not Allowed');
+            }
+
             if ($oldUser->user_level != $obj->user_level && $oldUser->user_level == 'Admin') {
                 $adminUsers = $userTemp->Find("user_level = ?", array("Admin"));
                 if (count($adminUsers) == 1 && $adminUsers[0]->id == $obj->id) {
@@ -59,5 +69,37 @@ class User extends BaseModel
         return new IceResponse(IceResponse::SUCCESS, "");
     }
 
+    public function executePreUpdateActions($obj)
+    {
+        return $this->checkUserPermission($obj);
+    }
+
+    public function executePreSaveActions($obj)
+    {
+        return $this->checkUserPermission($obj);
+    }
+
     public $table = 'Users';
+
+    /**
+     * @param $obj
+     * @return IceResponse
+     */
+    private function checkUserPermission($obj)
+    {
+        if ($this->user->user_level == 'Manager' && $obj->user_level != 'Employee') {
+            return new IceResponse(IceResponse::ERROR, 'Not Allowed');
+        }
+
+        return new IceResponse(IceResponse::SUCCESS, $obj);
+    }
+
+    /**
+     * @param User $targetUser
+     * @return bool
+     */
+    private function checkPermission(User $targetUser)
+    {
+        return BaseService::getInstance()->getCurrentUser()->user_level == 'Manager' && $targetUser->user_level != 'Employee';
+    }
 }

@@ -27,7 +27,7 @@ class UsersActionManager extends SubActionManager
         $user = new User();
         $user->Load("id = ?", array($req->id));
 
-        //Manage can only change Employee password
+        //Manager can only change Employee password
         if ($this->user->user_level == 'Manager' && $user->user_level != 'Employee') {
             return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
         }
