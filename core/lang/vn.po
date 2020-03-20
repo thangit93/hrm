@@ -663,10 +663,10 @@ msgid "Work Station Id"
 msgstr "Id trạm làm việc"
 
 msgid "Address Line 1"
-msgstr "Địa chỉ dòng 1"
+msgstr "Địa chỉ"
 
 msgid "Address Line 2"
-msgstr "Địa chỉ 2"
+msgstr "Quận / Huyện"
 
 msgid "City"
 msgstr "Thành phố"
@@ -690,22 +690,22 @@ msgid "Work Email"
 msgstr "Email công việc"
 
 msgid "Private Email"
-msgstr "Email riêng"
+msgstr "Email Cá Nhân"
 
 msgid "Joined Date"
-msgstr "Ngày tham gia"
+msgstr "Ngày Gia Nhập"
 
 msgid "Confirmation Date"
-msgstr "Ngày xác nhận"
+msgstr "Ngày ký hợp đồng chính thức"
 
 msgid "Termination Date"
 msgstr "Ngày kết thúc"
 
 msgid "Department"
-msgstr "Phòng ban"
+msgstr "Công Ty"
 
 msgid "Supervisor"
-msgstr "Báo cáo trực tiếp"
+msgstr "Báo cáo trực tiếp "
 
 msgid "Indirect Supervisors"
 msgstr "Báo cáo gián tiếp"

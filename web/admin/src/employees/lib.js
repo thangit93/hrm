@@ -640,7 +640,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       ['nationality', { label: 'Nationality', type: 'select2', 'remote-source': ['Nationality', 'id', 'name'] }],
       ['birthday', { label: 'Date of Birth', type: 'date', validation: '' }],
       ['gender', { label: 'Gender', type: 'select', source: [['Male', 'Male'], ['Female', 'Female']] }],
-      ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Divorced', 'Divorced'], ['Widowed', 'Widowed'], ['Other', 'Other']] }],
+      ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Other', 'Other']] }],
       ['ethnicity', {
         label: 'Ethnicity', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['Ethnicity', 'id', 'name'],
       }],
@@ -653,9 +653,9 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       //['driving_license', { label: 'Driving License No', type: 'text', validation: 'none' }],
       ['employment_status', { label: 'Employment Status', type: 'select2', 'remote-source': ['EmploymentStatus', 'id', 'name'] }],
       ['job_title', { label: 'Job Title', type: 'select2', 'remote-source': ['JobTitle', 'id', 'name'] }],
-      ['pay_grade', {
+      /*['pay_grade', {
         label: 'Pay Grade', type: 'select2', 'allow-null': true, "null-label": "Select", 'remote-source': ['PayGrade', 'id', 'name'],
-      }],
+      }],*/
       //['work_station_id', { label: 'Work Station Id', type: 'text', validation: 'none' }],
       ['address1', { label: 'Address Line 1', type: 'text', validation: 'none' }],
       ['address2', { label: 'Address Line 2', type: 'text', validation: 'none' }],
@@ -903,6 +903,10 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     const currentId = data[1];
     const userEmpId = data[2];
     data = data[0];
+    data.marital_status = this.gt(data.marital_status);
+    data.gender = this.gt(data.gender);
+    data.birthday = this.dt(data.birthday);
+    data.joined_date = this.dt(data.joined_date);
     this.currentEmployee = data;
     let html = this.getCustomTemplate('myDetails.html');
 
@@ -1142,7 +1146,7 @@ class TerminatedEmployeeAdapter extends EmployeeAdapter {
       ['nationality', { label: 'Nationality', type: 'select2', 'remote-source': ['Nationality', 'id', 'name'] }],
       ['birthday', { label: 'Date of Birth', type: 'date', validation: '' }],
       ['gender', { label: 'Gender', type: 'select', source: [['Male', 'Male'], ['Female', 'Female']] }],
-      ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Divorced', 'Divorced'], ['Widowed', 'Widowed'], ['Other', 'Other']] }],
+      ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Other', 'Other']] }],
       ['ssn_num', { label: 'SSN/NRIC', type: 'text', validation: 'none' }],
       ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
       ['other_id', { label: 'Other ID', type: 'text', validation: 'none' }],
@@ -1150,9 +1154,9 @@ class TerminatedEmployeeAdapter extends EmployeeAdapter {
       /* [ "driving_license_exp_date", {"label":"License Exp Date","type":"date","validation":"none"}], */
       ['employment_status', { label: 'Employment Status', type: 'select2', 'remote-source': ['EmploymentStatus', 'id', 'name'] }],
       ['job_title', { label: 'Job Title', type: 'select2', 'remote-source': ['JobTitle', 'id', 'name'] }],
-      ['pay_grade', {
+      /*['pay_grade', {
         label: 'Pay Grade', type: 'select2', 'allow-null': true, 'remote-source': ['PayGrade', 'id', 'name'],
-      }],
+      }],*/
       ['work_station_id', { label: 'Work Station Id', type: 'text', validation: 'none' }],
       ['address1', { label: 'Address Line 1', type: 'text', validation: 'none' }],
       ['address2', { label: 'Address Line 2', type: 'text', validation: 'none' }],
