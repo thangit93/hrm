@@ -161,12 +161,14 @@ class Employee extends BaseModel
         if (empty($obj->status)) {
             $obj->status = 'Active';
         }
+        $this->setEmployeeId($obj);
         return new IceResponse(IceResponse::SUCCESS, $obj);
     }
 
     public function executePreUpdateActions($obj)
     {
         $this->initHistory($obj);
+        $this->setEmployeeId($obj);
         return new IceResponse(IceResponse::SUCCESS, $obj);
     }
 
@@ -244,5 +246,12 @@ class Employee extends BaseModel
     {
         $importer = new EmployeeDataImporter();
         $importer->createUser($object->first_name, $object->last_name, $object->birthday, $object);
+    }
+
+    public function setEmployeeId(&$employee)
+    {
+        $birthday = \DateTime::createFromFormat('Y-m-d', $employee->birthday);
+        $importer = new EmployeeDataImporter();
+        $employee->employee_id = $importer->convert_vi_to_en("{$employee->first_name}{$employee->last_name}{$birthday->format('Y')}");
     }
 }

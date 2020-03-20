@@ -38,6 +38,17 @@ $csrf = \Classes\BaseService::getInstance()->generateCsrf('User');
 <script>
 var modJsList = new Array();
 modJsList['tabUser'] = new UserAdapter('User');
+
+<?php if(isset($modulePermissions['perm']['Add User']) && $modulePermissions['perm']['Add User'] == "No"){?>
+modJsList['tabUser'].setShowAddNew(false);
+<?php }?>
+<?php if(isset($modulePermissions['perm']['Delete User']) && $modulePermissions['perm']['Delete User'] == "No"){?>
+modJsList['tabUser'].setShowDelete(false);
+<?php }?>
+<?php if(isset($modulePermissions['perm']['Edit User']) && $modulePermissions['perm']['Edit User'] == "No"){?>
+modJsList['tabUser'].setShowEdit(false);
+<?php }?>
+
 modJsList['tabUser'].setCSRFRequired(true);
 <?php if(isset($_GET['action']) && $_GET['action'] == "new" && isset($_GET['object'])){?>
 modJsList['tabUser'].newInitObject = JSON.parse(Base64.decode('<?=$_GET['object']?>'));

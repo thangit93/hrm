@@ -6,6 +6,7 @@
 
 namespace Users\Admin\Api;
 
+use Classes\LanguageManager;
 use Users\Common\Model\User;
 use Classes\IceResponse;
 use Classes\SubActionManager;
@@ -25,7 +26,13 @@ class UsersActionManager extends SubActionManager
 
         $user = new User();
         $user->Load("id = ?", array($req->id));
-        if ($this->user->user_level == 'Admin' || $this->user->id == $user->id) {
+
+        //Manager can only change Employee password
+        if ($this->user->user_level == 'Manager' && $user->user_level != 'Employee') {
+            return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
+        }
+
+        if (in_array($this->user->user_level, ['Admin', 'Manager']) || $this->user->id == $user->id) {
             if (empty($user->id)) {
                 return new IceResponse(
                     IceResponse::ERROR,
@@ -50,7 +57,12 @@ class UsersActionManager extends SubActionManager
                 "Error saving user"
             );
         }
-        if ($this->user->user_level == 'Admin') {
+
+        if ($this->user->user_level == 'Manager' && $req->user_level != 'Employee') {
+            return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
+        }
+
+        if (in_array($this->user->user_level, ['Admin', 'Manager'])) {
             $user = new User();
             /*$user->Load("email = ?", array($req->email));
 
@@ -66,15 +78,25 @@ class UsersActionManager extends SubActionManager
             if ($user->username == $req->username) {
                 return new IceResponse(
                     IceResponse::ERROR,
-                    "User with same username already exists"
+                    LanguageManager::tran("User with same username already exists")
                 );
             }
 
+            $employee = null;
+            $password = trim($req->username);
+
+            if (!empty($req->employee)) {
+                $employee = $this->baseService->getElement('Employee', $req->employee, null, true);
+
+                if (!empty($employee->birthday)) {
+                    $birthday = \DateTime::createFromFormat('Y-m-d', $employee->birthday);
+                    $password = $birthday->format('dmY');
+                }
+            }
+
             $user = new User();
-            $user->email = $req->email;
+            $user->email = "{$req->username}@yviet.com";
             $user->username = $req->username;
-//            $password = $this->generateRandomString(6);
-            $password = trim($user->username);
             $user->password = md5($password);
             $user->employee = (empty($req->employee) || $req->employee == "NULL") ? null : $req->employee;
             $user->user_level = $req->user_level;
@@ -82,7 +104,6 @@ class UsersActionManager extends SubActionManager
             $user->last_update = date("Y-m-d H:i:s");
             $user->created = date("Y-m-d H:i:s");
 
-            $employee = null;
             if (!empty($user->employee)) {
                 $employee = $this->baseService->getElement('Employee', $user->employee, null, true);
             }
@@ -95,14 +116,14 @@ class UsersActionManager extends SubActionManager
             $user->password = "";
             $user = $this->baseService->cleanUpAdoDB($user);
 
-            $mailResponse = true;
-            if (!empty($this->emailSender)) {
+            $mailResponse = false;
+            /*if (!empty($this->emailSender)) {
                 $usersEmailSender = new UsersEmailSender($this->emailSender, $this);
                 $mailResponse = $usersEmailSender->sendWelcomeUserEmail($user, $password, $employee);
-            }
+            }*/
             return new IceResponse(IceResponse::SUCCESS, [$user, $mailResponse]);
         }
-        return new IceResponse(IceResponse::ERROR, "Not Allowed");
+        return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Not Allowed"));
     }
 
     private function generateRandomString($length = 10)

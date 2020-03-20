@@ -402,7 +402,7 @@ msgid "Time Zone"
 msgstr "Múi giờ"
 
 msgid "Parent Structure"
-msgstr "Cơ cấu phụ huynh"
+msgstr "Chi Nhánh"
 
 msgid "Details"
 msgstr "Chi tiết"
@@ -417,7 +417,7 @@ msgid "Job Title Code"
 msgstr "Mã chức danh công việc"
 
 msgid "Job Title"
-msgstr "Chức danh công việc"
+msgstr "Chức danh"
 
 msgid "Description"
 msgstr "Sự miêu tả"
@@ -663,10 +663,10 @@ msgid "Work Station Id"
 msgstr "Id trạm làm việc"
 
 msgid "Address Line 1"
-msgstr "Địa chỉ dòng 1"
+msgstr "Địa chỉ"
 
 msgid "Address Line 2"
-msgstr "Địa chỉ 2"
+msgstr "Quận / Huyện"
 
 msgid "City"
 msgstr "Thành phố"
@@ -690,25 +690,25 @@ msgid "Work Email"
 msgstr "Email công việc"
 
 msgid "Private Email"
-msgstr "Email riêng"
+msgstr "Email Cá Nhân"
 
 msgid "Joined Date"
-msgstr "Ngày tham gia"
+msgstr "Ngày Gia Nhập"
 
 msgid "Confirmation Date"
-msgstr "Ngày xác nhận"
+msgstr "Ngày ký hợp đồng chính thức"
 
 msgid "Termination Date"
 msgstr "Ngày kết thúc"
 
 msgid "Department"
-msgstr "Phòng ban"
+msgstr "Công Ty"
 
 msgid "Supervisor"
-msgstr "Giám sát"
+msgstr "Báo cáo trực tiếp "
 
 msgid "Indirect Supervisors"
-msgstr "Giám sát gián tiếp"
+msgstr "Báo cáo gián tiếp"
 
 msgid "First Level Approver"
 msgstr "Người phê duyệt cấp đầu tiên"
@@ -1344,7 +1344,7 @@ msgid "Languages"
 msgstr "Ngôn ngữ"
 
 msgid "Deactivated Employees"
-msgstr "Nhân viên bị vô hiệu hóa"
+msgstr "Danh sách nhân viên nghỉ việc"
 
 msgid "Temporarily Deactivated Employees"
 msgstr "Tạm thời vô hiệu hóa nhân viên"
@@ -1374,7 +1374,7 @@ msgid "Salary Component Types"
 msgstr "Các loại thành phần lương"
 
 msgid "Employee Salary Components"
-msgstr "Thành phần lương nhân viên"
+msgstr "Bảng lương nhân viên"
 
 msgid "Company Payroll"
 msgstr "Biên chế công ty"
@@ -1990,3 +1990,25 @@ msgstr "Admin"
 
 msgid "Role_Employee"
 msgstr "Staff"
+
+msgid "User created successfully."
+msgstr "Tạo tài khoản mới thành công"
+
+msgid 'Password changed successfully'
+msgstr "Cập nhật mật khẩu mới thành công"
+
+msgid "Passwords don't match"
+msgstr "Mật khẩu không khớp"
+
+msgid "Password should be longer than 7 characters"
+msgstr "Mật khẩu phải có nhiều hơn 7 ký tự"
+
+msgid "Not Allowed"
+msgstr "Bạn không được phép thực hiện tác vụ này"
+
+msgid "Error"
+msgstr "Lỗi"
+
+msgid "For this user type, you have to assign an employee when adding or editing the user.<br/> You may create a new employee through 'Admin'->'Employees' menu"
+msgstr "Đối với quyền Staff/Admin, bạn phải liên kết tới một nhân viên khi thêm/sửa người dùng.<br/> Bạn có thể tạo một nhân viên mới trong 'Nhân viên' -> 'Nhân viên' menu"
+
