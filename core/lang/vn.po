@@ -402,7 +402,7 @@ msgid "Time Zone"
 msgstr "Múi giờ"
 
 msgid "Parent Structure"
-msgstr "Cơ cấu phụ huynh"
+msgstr "Chi Nhánh"
 
 msgid "Details"
 msgstr "Chi tiết"
@@ -1344,7 +1344,7 @@ msgid "Languages"
 msgstr "Ngôn ngữ"
 
 msgid "Deactivated Employees"
-msgstr "Nhân viên bị vô hiệu hóa"
+msgstr "Danh sách nhân viên nghỉ việc"
 
 msgid "Temporarily Deactivated Employees"
 msgstr "Tạm thời vô hiệu hóa nhân viên"
