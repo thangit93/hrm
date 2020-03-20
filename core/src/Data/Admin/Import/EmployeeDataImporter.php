@@ -31,6 +31,7 @@ class EmployeeDataImporter extends AbstractDataImporter
         $object->custom2 = $object->bank_account;
         $object->nationality = $this->getNationality()->id;
         $object->country = 'VN';
+        $birthday = new \DateTime();
 
         if (array_key_exists($hash, $this->supervisors)) {
             $object = $this->supervisors[$hash];
@@ -58,12 +59,18 @@ class EmployeeDataImporter extends AbstractDataImporter
                 $value = \DateTime::createFromFormat('m/d/Y', $value);
                 if ($value) {
                     $object->{$column->name} = $value->format('Y-m-d');
+
+                    if ($column->name == 'birthday') {
+                        $birthday = $value;
+                    }
+
                 } else {
                     $object->{$column->name} = $value;
                 }
             }
         }
 
+        $object->employee_id = $this->convert_vi_to_en("{$firstName}{$lastName}{$birthday->format('Y')}");
         $this->supervisors[$hash] = $object;
 
         return $object;
@@ -245,7 +252,7 @@ class EmployeeDataImporter extends AbstractDataImporter
         return $user->Save();
     }
 
-    function convert_vi_to_en($str)
+    public function convert_vi_to_en($str)
     {
         $str = preg_replace("/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/", "a", $str);
         $str = preg_replace("/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/", "e", $str);
