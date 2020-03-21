@@ -138,6 +138,22 @@ class ModuleBase {
     return this.translations[key][0];
   }
 
+  // Ha Tran make method date translate
+  dt(dateTrans, dateFormat = null){
+    let date = Date.parse(dateTrans);
+
+    let options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+    var result = date.toLocaleDateString(navigator.languages[0], options);
+
+    if(dateFormat !== null){
+      result = date.toLocaleDateString(navigator.languages[0], dateFormat);
+    }
+
+    return result;
+  }
+  // Ha Tran make method date translate
+
   addToLangTerms(key) {
     let termsArr;
     const terms = localStorage.getItem('terms');

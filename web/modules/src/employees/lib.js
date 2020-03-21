@@ -92,13 +92,13 @@ class EmployeeAdapter extends AdapterBase {
     }
 
     if (this.checkPermission('Edit Pay Grade') === 'Yes') {
-      pay_grade = ['pay_grade', {
+      /*pay_grade = ['pay_grade', {
         label: 'Pay Grade', type: 'select2', 'allow-null': true, 'remote-source': ['PayGrade', 'id', 'name'],
-      }];
+      }];*/
     } else {
-      pay_grade = ['pay_grade', {
+      /*pay_grade = ['pay_grade', {
         label: 'Pay Grade', type: 'placeholder', 'allow-null': true, 'remote-source': ['PayGrade', 'id', 'name'],
-      }];
+      }];*/
     }
 
     if (this.checkPermission('Edit Joined Date') === 'Yes') {
@@ -134,14 +134,14 @@ class EmployeeAdapter extends AdapterBase {
       ['nationality', { label: 'Nationality', type: 'select2', 'remote-source': ['Nationality', 'id', 'name'] }],
       ['birthday', { label: 'Date of Birth', type: 'date', validation: '' }],
       ['gender', { label: 'Gender', type: 'select', source: [['Male', 'Male'], ['Female', 'Female']] }],
-      ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Divorced', 'Divorced'], ['Widowed', 'Widowed'], ['Other', 'Other']] }],
+      ['marital_status', { label: 'Marital Status', type: 'select', source: [['Married', 'Married'], ['Single', 'Single'], ['Other', 'Other']] }],
       // ssn_num,
       // ['nic_num', { label: 'NIC', type: 'text', validation: 'none' }],
       ['other_id', { label: 'Other ID', type: 'text', validation: 'none' }],
       //['driving_license', { label: 'Driving License No', type: 'text', validation: 'none' }],
       employment_status,
       job_title,
-      pay_grade,
+      // pay_grade,
       //['work_station_id', { label: 'Work Station Id', type: 'text', validation: 'none' }],
       ['address1', { label: 'Address Line 1', type: 'text', validation: 'none' }],
       ['address2', { label: 'Address Line 2', type: 'text', validation: 'none' }],
@@ -222,6 +222,10 @@ class EmployeeAdapter extends AdapterBase {
     const currentEmpId = data[1];
     const userEmpId = data[2];
     [data] = data;
+    data.marital_status = this.gt(data.marital_status);
+    data.gender = this.gt(data.gender);
+    data.birthday = this.dt(data.birthday, { year: 'numeric', month: 'numeric', day: 'numeric' });
+    data.joined_date = this.dt(data.joined_date, { year: 'numeric', month: 'numeric', day: 'numeric' });
     let html = this.getCustomTemplate('myDetails.html');
 
     for (let i = 0; i < fields.length; i++) {
