@@ -139,12 +139,16 @@ class ModuleBase {
   }
 
   // Ha Tran make method date translate
-  dt(dateTrans){
+  dt(dateTrans, dateFormat = null){
     let date = Date.parse(dateTrans);
 
     let options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-    let result = date.toLocaleDateString(navigator.languages[0], options);
+    var result = date.toLocaleDateString(navigator.languages[0], options);
+
+    if(dateFormat !== null){
+      result = date.toLocaleDateString(navigator.languages[0], dateFormat);
+    }
 
     return result;
   }
