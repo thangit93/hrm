@@ -905,8 +905,8 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     data = data[0];
     data.marital_status = this.gt(data.marital_status);
     data.gender = this.gt(data.gender);
-    data.birthday = this.dt(data.birthday);
-    data.joined_date = this.dt(data.joined_date);
+    data.birthday = this.dt(data.birthday, { year: 'numeric', month: 'numeric', day: 'numeric' });
+    data.joined_date = this.dt(data.joined_date, { year: 'numeric', month: 'numeric', day: 'numeric' });
     this.currentEmployee = data;
     let html = this.getCustomTemplate('myDetails.html');
 
