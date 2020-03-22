@@ -867,10 +867,10 @@ msgid "Receipt"
 msgstr "Biên lai"
 
 msgid "Time-In"
-msgstr "Thời gian trong"
+msgstr "Giờ vào làm"
 
 msgid "Time-Out"
-msgstr "Hết giờ"
+msgstr "Giờ kết thúc"
 
 msgid "Clocked In Status"
 msgstr "Đồng hồ trong trạng thái"
@@ -2012,3 +2012,5 @@ msgstr "Lỗi"
 msgid "For this user type, you have to assign an employee when adding or editing the user.<br/> You may create a new employee through 'Admin'->'Employees' menu"
 msgstr "Đối với quyền Staff/Admin, bạn phải liên kết tới một nhân viên khi thêm/sửa người dùng.<br/> Bạn có thể tạo một nhân viên mới trong 'Nhân viên' -> 'Nhân viên' menu"
 
+msgid "attendance working day"
+msgstr "công"
