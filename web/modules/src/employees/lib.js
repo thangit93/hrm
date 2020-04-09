@@ -222,6 +222,10 @@ class EmployeeAdapter extends AdapterBase {
     const currentEmpId = data[1];
     const userEmpId = data[2];
     [data] = data;
+    data.marital_status = this.gt(data.marital_status);
+    data.gender = this.gt(data.gender);
+    data.birthday = this.dt(data.birthday, { year: 'numeric', month: 'numeric', day: 'numeric' });
+    data.joined_date = this.dt(data.joined_date, { year: 'numeric', month: 'numeric', day: 'numeric' });
     let html = this.getCustomTemplate('myDetails.html');
 
     for (let i = 0; i < fields.length; i++) {
