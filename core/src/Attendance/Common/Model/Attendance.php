@@ -42,6 +42,10 @@ class Attendance extends BaseModel
                     continue;
                 }
 
+                if (stripos($value, '/') === false) {
+                    continue;
+                }
+
                 $value = str_replace('%', '', $value);
                 $value = explode('/', $value);
                 if ((int)$value[0] < 10) {
