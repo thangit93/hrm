@@ -14,9 +14,11 @@ class EmployeeLeaveAdapter extends AdapterBase {
     getDataMapping() {
         return [
             "id",
+            //"number",
             "leave_type",
             "date_start",
             "date_end",
+            "supervisor",
             "status"
         ];
     }
@@ -24,9 +26,11 @@ class EmployeeLeaveAdapter extends AdapterBase {
     getHeaders() {
         return [
             {"sTitle": "ID", "bVisible": false},
+            //{"sTitle": "No."},
             {"sTitle": "Leave Type"},
             {"sTitle": "Leave Start Date"},
             {"sTitle": "Leave End Date"},
+            {"sTitle": "Supervisor"},
             {"sTitle": "Status"}
         ];
     }

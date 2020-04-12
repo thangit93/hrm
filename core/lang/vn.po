@@ -2029,3 +2029,6 @@ msgstr "Đã gửi xin nghỉ phép thành công. Bạn sẽ được thông bá
 
 msgid "Employee Leaves"
 msgstr "Nhân viên nghỉ phép"
+
+msgid "No."
+msgstr "Số thứ tự"

@@ -563,10 +563,6 @@ class LeavesActionManager extends SubActionManager
 
     public function getSubEmployeeLeaves($req)
     {
-        echo '<pre>';
-        print_r('debug');
-        echo '</pre>';
-        die;
         $employee = $this->baseService->getElement('Employee', $this->getCurrentProfileId(), null, true);
 
         $subordinate = new Employee();
