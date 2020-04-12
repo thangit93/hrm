@@ -542,7 +542,7 @@ msgstr "Montant reporté maximum"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Période de disponibilité des congés reportés"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Partage proportionnel à la date d'adhésion"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Rendez-vous amoureux"
 msgid "Leave Type"
 msgstr "Type de congé"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionate part à la date d'inscription"
 
 msgid "Leaves Period"

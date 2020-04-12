@@ -542,7 +542,7 @@ msgstr "Maksimi läpikäyneet Määrä"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Läpikäyneet Jätä saatavuusaika"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Suhteutettuja lähtee Liittymispäivä"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Treffi"
 msgid "Leave Type"
 msgstr "leave Tyyppi"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionate lähtee Liittymispäivä"
 
 msgid "Leaves Period"
@@ -1812,7 +1812,7 @@ msgid "Download Payslips"
 msgstr "Lataa Ruotsin vakuutuskassa"
 
 msgid "Leaves Report"
-msgstr "leaves Raportti"
+msgstr "leaveman Raportti"
 
 msgid "Time Entry Report"
 msgstr "Aika Saapumisilmoitus"

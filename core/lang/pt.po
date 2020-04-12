@@ -542,7 +542,7 @@ msgstr "Quantidade máxima transportada"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Período de disponibilidade deixado para a frente"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Folhas Proporcionais na Data de Adesão"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Encontro"
 msgid "Leave Type"
 msgstr "Deixe o tipo"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionate sai na data de adesão"
 
 msgid "Leaves Period"

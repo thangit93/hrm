@@ -43,7 +43,7 @@ class Google_Service_Vault_Resource_MattersHoldsAccounts extends Google_Service_
     return $this->call('create', array($params), "Google_Service_Vault_HeldAccount");
   }
   /**
-   * Removes a HeldAccount from a hold. If this request leaves the hold with no
+   * Removes a HeldAccount from a hold. If this request leaveman the hold with no
    * held accounts, the hold will not apply to any accounts. (accounts.delete)
    *
    * @param string $matterId The matter ID.

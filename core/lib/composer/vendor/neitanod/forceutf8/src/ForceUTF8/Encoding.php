@@ -154,7 +154,7 @@ class Encoding {
   /**
    * Function \ForceUTF8\Encoding::toUTF8
    *
-   * This function leaves UTF8 characters alone, while converting almost all non-UTF8 to UTF8.
+   * This function leaveman UTF8 characters alone, while converting almost all non-UTF8 to UTF8.
    *
    * It assumes that the encoding of the original string is either Windows-1252 or ISO 8859-1.
    *

@@ -9543,8 +9543,8 @@ CodeMirror.overlayMode = function(base, overlay, combine) {
     signalLater(doc, "change", doc, change);
   }
 
-  // The document is represented as a BTree consisting of leaves, with
-  // chunk of lines in them, and branches, with up to ten leaves or
+  // The document is represented as a BTree consisting of leaveman, with
+  // chunk of lines in them, and branches, with up to ten leaveman or
   // other branch nodes below them. The top node is always a branch
   // node, and is the document object itself (meaning it has
   // additional methods and properties).
