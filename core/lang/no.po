@@ -542,7 +542,7 @@ msgstr "Maksimum Carried Forward Amount"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Bragt fremover Forlengelsesperiode"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Proportionelle blader på Forbundet dato"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Dato"
 msgid "Leave Type"
 msgstr "Forlat Type"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionate forlater på Forbundet dato"
 
 msgid "Leaves Period"

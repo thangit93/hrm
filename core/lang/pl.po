@@ -542,7 +542,7 @@ msgstr "Maksymalna kwota przeniesienia"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Przenieś do przodu Opuść okres dostępności"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Proporcjonalne liście w dniu połączenia"
 
 msgid "Send Notification Emails"
@@ -572,8 +572,8 @@ msgstr "Data"
 msgid "Leave Type"
 msgstr "Pozostaw typ"
 
-msgid "Propotionate leaves on Joined Date"
-msgstr "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
+msgstr "Propotionate leaveman on Joined Date"
 
 msgid "Leaves Period"
 msgstr "Okres liści"

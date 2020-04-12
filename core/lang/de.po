@@ -542,7 +542,7 @@ msgstr "Maximal übertragbare Tage"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Zeitpunkt, bis zu dem Urlaubstage des letzten Abschnitts übernommen werden können"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Anteilige Urlaubstage zum Zeitpunkt des Beitritts"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Datum"
 msgid "Leave Type"
 msgstr "Abwesenheitsart"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Anteilige Urlaubstage zum Zeitpunkt des Beitritts"
 
 msgid "Leaves Period"

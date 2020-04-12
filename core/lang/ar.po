@@ -542,7 +542,7 @@ msgstr "الحد الاقصي للمبلغ  المنفذ"
 msgid "Carried Forward Leave Availability Period"
 msgstr "الفترة الزمنية المتبقية"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "الاجازات  حسب تاريخ الالتحاق"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "تاريخ"
 msgid "Leave Type"
 msgstr "نوع الإجازة"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionate يترك في تاريخ الانضمام"
 
 msgid "Leaves Period"

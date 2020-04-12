@@ -228,7 +228,7 @@ msgid "Training"
 msgstr "Đào tạo"
 
 msgid "Travel Management"
-msgstr "Sự quản ly du lịch"
+msgstr "Quản lý du lịch"
 
 msgid "Travel"
 msgstr "Du lịch"
@@ -306,7 +306,7 @@ msgid "Expense"
 msgstr "Chi phí"
 
 msgid "Permission"
-msgstr "Giấy phép"
+msgstr "Quyền hạn"
 
 msgid "Permissions"
 msgstr "Quyền"
@@ -351,7 +351,7 @@ msgid "Record Attendance"
 msgstr "Tham dự kỷ lục"
 
 msgid "Pending Leaves"
-msgstr "Lá chờ"
+msgstr "Nghỉ phép đang chờ"
 
 msgid "Check Leave Status"
 msgstr "Kiểm tra trạng thái nghỉ"
@@ -507,16 +507,16 @@ msgid "Project"
 msgstr "Dự án"
 
 msgid "Leave Name"
-msgstr "Để lại tên"
+msgstr "Loại nghỉ phép"
 
 msgid "Leave Accrue Enabled"
-msgstr "Để lại tích lũy kích hoạt"
+msgstr "Nghỉ phép tích lũy kích hoạt"
 
 msgid "Leave Carried Forward"
-msgstr "Rời khỏi Carried Forward"
+msgstr "Nghỉ phép được chuyển tiếp"
 
 msgid "Leaves Per Year"
-msgstr "Lá mỗi năm"
+msgstr "Nghỉ phép mỗi năm"
 
 msgid "Leaves Group"
 msgstr "Nhóm lá"
@@ -534,7 +534,7 @@ msgid "Employees can apply beyond the current leave balance"
 msgstr "Nhân viên có thể nộp đơn vượt quá số dư nghỉ phép hiện tại"
 
 msgid "Percentage of Leaves Carried Forward"
-msgstr "Tỷ lệ lá được chuyển tiếp"
+msgstr "Tỷ lệ nghỉ phép được chuyển tiếp"
 
 msgid "Maximum Carried Forward Amount"
 msgstr "Số tiền chuyển tiếp tối đa"
@@ -542,7 +542,7 @@ msgstr "Số tiền chuyển tiếp tối đa"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Đã chuyển tiếp Thời gian nghỉ phép"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Lá tỷ lệ vào ngày tham gia"
 
 msgid "Send Notification Emails"
@@ -552,7 +552,7 @@ msgid "Leave Group"
 msgstr "Rời khỏi nhóm"
 
 msgid "Leave Color"
-msgstr "Để lại màu sắc"
+msgstr "Màu của nghỉ phép"
 
 msgid "Period Start"
 msgstr "Giai đoạn bắt đầu"
@@ -570,9 +570,9 @@ msgid "Date"
 msgstr "Ngày"
 
 msgid "Leave Type"
-msgstr "Loại rời"
+msgstr "Loại nghỉ phép"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Tuyên truyền lá vào ngày tham gia"
 
 msgid "Leaves Period"
@@ -1227,7 +1227,7 @@ msgid "Referred By"
 msgstr "Gọi bằng"
 
 msgid "Leave Start Date"
-msgstr "Rời khỏi ngày bắt đầu"
+msgstr "Ngày bắt đầu nghỉ"
 
 msgid "Leave End Date"
 msgstr "Ngày kết thúc"
@@ -1236,19 +1236,19 @@ msgid "Reason"
 msgstr "Lý do"
 
 msgid "Available Leaves"
-msgstr "Lá có sẵn"
+msgstr "Nghỉ phép hiện có"
 
 msgid "Approved Leaves"
-msgstr "Lá đã được phê duyệt"
+msgstr "Nghỉ phép đã được phê duyệt"
 
 msgid "Rejected Leaves"
-msgstr "Lá bị từ chối"
+msgstr "Nghỉ phép bị từ chối"
 
 msgid "Leaves to be Accrued"
-msgstr "Lá được tích lũy"
+msgstr "Nghỉ phép được tích lũy"
 
 msgid "Leaves Carried Forward"
-msgstr "Lá tiến về phía trước"
+msgstr "Nghỉ phép được chuyển tiếp"
 
 msgid "Apply Leave"
 msgstr "Áp dụng nghỉ phép"
@@ -1425,7 +1425,7 @@ msgid "Employee Projects"
 msgstr "Dự án nhân viên"
 
 msgid "Leave Types"
-msgstr "Để lại các loại"
+msgstr "Các loại nghỉ phép"
 
 msgid "Work Week"
 msgstr "Tuần làm việc"
@@ -1491,16 +1491,16 @@ msgid "My Details"
 msgstr "Chi tiết của tôi"
 
 msgid "All My Leaves"
-msgstr "Tất cả lá của tôi"
+msgstr "Nghỉ phép của tôi"
 
 msgid "Leave Entitlement"
-msgstr "Quyền rời bỏ"
+msgstr "Thông tin nghỉ phép"
 
 msgid "Approved Leave"
-msgstr "Nghỉ phép"
+msgstr "Nghỉ phép được duyệt"
 
 msgid "Pending Leave"
-msgstr "Nghỉ phép"
+msgstr "Nghỉ phép đợi duyệt"
 
 msgid "Subordinate Leave"
 msgstr "Nghỉ phép cấp dưới"
@@ -1509,7 +1509,7 @@ msgid "Cancellation Requests"
 msgstr "Yêu cầu hủy"
 
 msgid "Approval Requests"
-msgstr "Yêu cầu phê duyệt"
+msgstr "Xin nghỉ phép"
 
 msgid "Approved TimeSheets"
 msgstr "Thời gian được phê duyệt"
@@ -1572,28 +1572,28 @@ msgid "Status Change Note"
 msgstr "Lưu ý thay đổi trạng thái"
 
 msgid "Leave Summary"
-msgstr "Để lại Tóm tắt"
+msgstr "Tóm tắt nghỉ phép"
 
 msgid "Approved Leave Count"
-msgstr "Số lượng nghỉ phép được chấp thuận"
+msgstr "Số ngày nghỉ phép được chấp thuận"
 
 msgid "Pending Leave Count"
-msgstr "Thời gian chờ nghỉ"
+msgstr "Số ngày chờ nghỉ"
 
 msgid "Available Leave Count"
-msgstr "Số lượng nghỉ phép có sẵn"
+msgstr "Số ngày nghỉ phép có sẵn"
 
 msgid "Leave Dates"
-msgstr "Rời khỏi ngày"
+msgstr "Số ngày nghỉ"
 
 msgid "Leave Date"
-msgstr "Ngày khởi hành"
+msgstr "Ngày nghỉ"
 
 msgid "Leave Notes"
-msgstr "Để lại ghi chú"
+msgstr "Ghi chú nghỉ phép"
 
 msgid "Apply"
-msgstr "Ứng dụng"
+msgstr "Gửi yêu cầu"
 
 msgid "Back"
 msgstr "Trở lại"
@@ -2014,3 +2014,18 @@ msgstr "Đối với quyền Staff/Admin, bạn phải liên kết tới một n
 
 msgid "attendance working day"
 msgstr "công"
+
+msgid "Total Leave Days"
+msgstr "Tổng ngày nghỉ"
+
+msgid "Total Leave Hourss"
+msgstr "Tổng giờ nghỉ"
+
+msgid "Leaves to be Accured"
+msgstr "Nghỉ phép tích lũy"
+
+msgid "Leave application successful. You will be notified once your supervisor approve your leaveman"
+msgstr "Đã gửi xin nghỉ phép thành công. Bạn sẽ được thông báo khi người giám sát của bạn chấp thuận nghỉ phép của bạn."
+
+msgid "Employee Leaves"
+msgstr "Nhân viên nghỉ phép"

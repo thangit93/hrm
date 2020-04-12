@@ -542,7 +542,7 @@ msgstr "最大運ばフォワード額"
 msgid "Carried Forward Leave Availability Period"
 msgstr "運ばフォワード休暇の開始期間"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "入社日に比例葉"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "日付"
 msgid "Leave Type"
 msgstr "タイプを残します"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionateは、入社日に葉"
 
 msgid "Leaves Period"
