@@ -522,7 +522,7 @@ msgid "Leaves Group"
 msgstr "Nhóm lá"
 
 msgid "Leaves Per Leave Period"
-msgstr "Lá mỗi kỳ nghỉ"
+msgstr "Phép mỗi kỳ nghỉ"
 
 msgid "Admin can assign leave to employees"
 msgstr "Quản trị viên có thể phân công nghỉ phép cho nhân viên"
@@ -1434,7 +1434,7 @@ msgid "Holidays"
 msgstr "Ngày lễ"
 
 msgid "Leave Rules"
-msgstr "Rời khỏi quy tắc"
+msgstr "Quy tắc nghỉ phép"
 
 msgid "Paid Time Off"
 msgstr "Thời gian nghỉ"

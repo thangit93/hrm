@@ -208,7 +208,7 @@ class LeavePeriodAdapter extends AdapterBase {
         var object = {"leave_id": leaveId};
         var reqJson = JSON.stringify(object);
 
-        const callBackData = [];
+        var callBackData = [];
         callBackData.callBackData = [];
         callBackData['callBackSuccess'] = 'getLeaveDaysReadonlySuccessCallBack';
         callBackData['callBackFail'] = 'getLeaveDaysReadonlyFailCallBack';
@@ -216,7 +216,7 @@ class LeavePeriodAdapter extends AdapterBase {
         this.customAction('getLeaveDaysReadonly', 'admin=leaveman', reqJson, callBackData);
     }
 
-    getLeaveDaysReadonlySuccessCallBack(callbackData) {
+    getLeaveDaysReadonlySuccessCallBack(callBackData) {
         var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Leave Date</th><th>Leave Type</th></tr></thead><tbody>_days_</tbody></table> ';
         var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
         var row = '<tr><td>_date_</td><td>_type_</td></tr>';
@@ -480,7 +480,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
         var object = {"leave_id":leaveId};
         var reqJson = JSON.stringify(object);
 
-        const callBackData = [];
+        var callBackData = [];
         callBackData.callBackData = [];
         callBackData['callBackSuccess'] = 'getLeaveDaysReadonlySuccessCallBack';
         callBackData['callBackFail'] = 'getLeaveDaysReadonlyFailCallBack';
@@ -488,7 +488,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
         this.customAction('getLeaveDaysReadonly','admin=leaveman',reqJson,callBackData);
     }
 
-    getLeaveDaysReadonlySuccessCallBack(callbackData){
+    getLeaveDaysReadonlySuccessCallBack(callBackData){
 
         var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Leave Date</th><th>Leave Type</th></tr></thead><tbody>_days_</tbody></table> ';
         var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
@@ -615,7 +615,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
 
         var reqJson = JSON.stringify(object);
 
-        const callBackData = [];
+        var callBackData = [];
         callBackData.callBackData = [];
         callBackData['callBackSuccess'] = 'changeLeaveStatusSuccessCallBack';
         callBackData['callBackFail'] = 'changeLeaveStatusFailCallBack';
