@@ -836,7 +836,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
 
 
   terminateEmployeeSuccessCallback(callBackData) {
-    this.showMessage('Success', 'Employee contract terminated. You can find terminated employee information under Terminated Employees menu.');
+    this.showMessage('Success', this.gt('Employee contract terminated. You can find terminated employee information under Terminated Employees menu.'));
     this.get([]);
   }
 
@@ -1111,7 +1111,7 @@ class TerminatedEmployeeAdapter extends EmployeeAdapter {
   getDataMapping() {
     return [
       'id',
-      'image',
+      //'image',
       'employee_id',
       'first_name',
       'last_name',
@@ -1125,7 +1125,7 @@ class TerminatedEmployeeAdapter extends EmployeeAdapter {
   getHeaders() {
     return [
       { sTitle: 'ID' },
-      { sTitle: '', bSortable: false },
+      //{ sTitle: '', bSortable: false },
       { sTitle: 'Employee Number' },
       { sTitle: 'First Name' },
       { sTitle: 'Last Name' },

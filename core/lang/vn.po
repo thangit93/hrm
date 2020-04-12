@@ -306,7 +306,7 @@ msgid "Expense"
 msgstr "Chi phí"
 
 msgid "Permission"
-msgstr "Quyền hạn"
+msgstr "Chức năng"
 
 msgid "Permissions"
 msgstr "Quyền"
@@ -1623,7 +1623,7 @@ msgid "Share Employees"
 msgstr "Chia sẻ nhân viên"
 
 msgid "Data Importers"
-msgstr "Nhập khẩu dữ liệu"
+msgstr "Quản lý nhập dữ liệu"
 
 msgid "Data Import Files"
 msgstr "Nhập tệp dữ liệu"
@@ -2032,3 +2032,6 @@ msgstr "Nhân viên nghỉ phép"
 
 msgid "No."
 msgstr "Số thứ tự"
+
+msgid "Employee contract terminated. You can find terminated employee information under Terminated Employees menu."
+msgstr "Hợp đồng của nhân viên đã chấm dứt. Bạn có thể tìm thấy nhân viên chấm dứt hợp đồng trong menu nhân viên chấm dứt hợp đồng."
