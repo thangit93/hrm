@@ -2,6 +2,7 @@
 
 namespace Data\Admin\Import;
 
+use Attendance\Admin\Api\AttendanceUtil;
 use Attendance\Common\Model\Attendance;
 use Classes\BaseService;
 use Data\Admin\Api\AbstractDataImporter;
@@ -144,7 +145,7 @@ class AttendanceDataImporter extends AbstractDataImporter
                         $attendance['out_time'] = $startDate->setTime($hour, $minute, 0)->format('Y-m-d H:i:s');
                     }
 
-                    $workingDay = $this->calculateWorkingDay($attendance['in_time'], $attendance['out_time']);
+                    $workingDay = AttendanceUtil::calculateWorkingDay($attendance['in_time'], $attendance['out_time']);
                     $attendance['note'] = $workingDay;
                     $attendances[] = $attendance;
                 }
@@ -190,6 +191,7 @@ class AttendanceDataImporter extends AbstractDataImporter
         $startDate->setDate($year, $month, 26);
         $startDate->setTime(00, 00, 00);
         $startDate->sub(DateInterval::createFromDateString('1 month'));
+
         return $startDate;
     }
 
@@ -204,46 +206,8 @@ class AttendanceDataImporter extends AbstractDataImporter
         $endDate = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
         $endDate->setDate($year, $month, 26);
         $endDate->setTime(0, 0, 0);
+//        $endDate->add(DateInterval::createFromDateString('1 month'));
+
         return $endDate;
-    }
-
-    /**
-     * @param string|null $checkIn
-     * @param string|null $checkOut
-     * @return int
-     */
-    private function calculateWorkingDay($checkIn, $checkOut)
-    {
-        if (empty($checkIn) || empty($checkOut)) {
-            return 0;
-        }
-
-        $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn);
-        $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut);
-
-        /** @var DateTime $timeStart */
-        $timeStart = clone $checkIn;
-        $timeStart->setTime(9, 0, 0);
-
-        /** @var DateTime $timeEnd */
-        $timeEnd = clone $checkOut;
-        $timeEnd->setTime(17, 0, 0);
-
-        //start after 09:00 and left after 17:00
-        if ($timeStart < $checkIn && $timeEnd <= $checkOut) {
-            return 0.5;
-        }
-
-        //start before 09:00 and left after 17:00
-        if ($timeStart > $checkIn && $timeEnd <= $checkOut) {
-            return 1;
-        }
-
-        //start before 09:00 and left before 17:00
-        if ($timeStart > $checkIn && $timeEnd > $checkOut) {
-            return 0.5;
-        }
-
-        return 0;
     }
 }

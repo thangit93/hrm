@@ -74,7 +74,7 @@ abstract class AbstractDataImporter implements DataImporter
     public function updateCustomFields()
     {
         $customField = new CustomField();
-        $customFields = $customField->Find("type = ?", array($this->getModelObject()));
+        $customFields = $customField->Find("type = ?", array($this->getCustomFieldType()));
         $this->customFields = array();
         foreach ($customFields as $cf) {
             $this->customFields[$cf->name] = $cf;
@@ -84,7 +84,7 @@ abstract class AbstractDataImporter implements DataImporter
     public function addCustomField($column)
     {
         $customField = new CustomField();
-        $customField->type = $this->getModelObject();
+        $customField->type = $this->getCustomFieldType();
         $customField->name = $column->name;
         $customField->display = "Form";
         $customField->field_type = "text";
@@ -92,6 +92,13 @@ abstract class AbstractDataImporter implements DataImporter
         $customField->field_validation = "none";
         $customField->display_order = 0;
         $customField->Save();
+    }
+
+    public function getCustomFieldType(){
+        $model = $this->getModelObject();
+        $obj = new \ReflectionClass($model);
+
+        return $obj->getShortName();
     }
 
     public function markCellCompleted($row, $col)
@@ -216,7 +223,7 @@ abstract class AbstractDataImporter implements DataImporter
                 foreach ($this->rowObjects[$row] as $k => $v) {
                     if (isset($customFields[$k])) {
                         BaseService::getInstance()->customFieldManager
-                            ->addCustomField($class, $this->rowObjects[$row]->id, $k, $v);
+                            ->addCustomField($this->getCustomFieldType(), $this->rowObjects[$row]->id, $k, $v);
                         $result['CustomFields'][] = array($class, $this->rowObjects[$row]->id, $k, $v);
                     }
                 }

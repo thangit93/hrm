@@ -8,6 +8,7 @@
 
 namespace Salary\Common\Model;
 
+use Classes\CustomFieldManager;
 use Classes\IceResponse;
 use Model\BaseModel;
 
@@ -17,7 +18,7 @@ class EmployeeSalary extends BaseModel
 
     public function getAdminAccess()
     {
-        return array("get","element","save","delete");
+        return array("get", "element", "save", "delete");
     }
 
     public function getManagerAccess()
@@ -42,12 +43,14 @@ class EmployeeSalary extends BaseModel
 
     public function executePreSaveActions($obj)
     {
-        return new IceResponse(IceResponse::SUCCESS, $this->removeNonNumericCharacters($obj));
+        $obj = $this->removeNonNumericCharacters($obj);
+        return new IceResponse(IceResponse::SUCCESS, $obj);
     }
 
     public function executePreUpdateActions($obj)
     {
-        return new IceResponse(IceResponse::SUCCESS, $this->removeNonNumericCharacters($obj));
+        $obj = $this->removeNonNumericCharacters($obj);
+        return new IceResponse(IceResponse::SUCCESS, $obj);
     }
 
     /**
@@ -60,4 +63,19 @@ class EmployeeSalary extends BaseModel
 
         return $obj;
     }
+
+    public function postProcessGetData($obj)
+    {
+        $customFieldManager = new CustomFieldManager();
+        $customFields = $customFieldManager->getCustomField($obj->_table, $obj->id, 'start_date');
+
+        foreach ($customFields as $customField) {
+            if (!empty($customField->value) && $customField->value != "NULL") {
+                $obj->{$customField->name} = $customField->value;
+            }
+        }
+
+        return $obj;
+    }
+
 }

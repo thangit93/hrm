@@ -60,7 +60,7 @@ class PayrollActionManager extends SubActionManager
 
         if (!empty($col->calculation_hook)) {
             $sum = BaseService::getInstance()->executeCalculationHook(
-                array($employeeId, $payroll->date_start, $payroll->date_end),
+                array($employeeId, $payroll->date_start, $payroll->date_end, $col->salary_components),
                 $col->calculation_hook,
                 $col->calculation_function
             );

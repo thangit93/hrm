@@ -2012,6 +2012,9 @@ msgstr "Lỗi"
 msgid "For this user type, you have to assign an employee when adding or editing the user.<br/> You may create a new employee through 'Admin'->'Employees' menu"
 msgstr "Đối với quyền Staff/Admin, bạn phải liên kết tới một nhân viên khi thêm/sửa người dùng.<br/> Bạn có thể tạo một nhân viên mới trong 'Nhân viên' -> 'Nhân viên' menu"
 
+msgid "Total Days from Attendance"
+msgstr "Tổng Số Ngày Công Từ File Chấm Công"
+
 msgid "attendance working day"
 msgstr "công"
 
@@ -2035,3 +2038,12 @@ msgstr "Số thứ tự"
 
 msgid "Employee contract terminated. You can find terminated employee information under Terminated Employees menu."
 msgstr "Hợp đồng của nhân viên đã chấm dứt. Bạn có thể tìm thấy nhân viên chấm dứt hợp đồng trong menu nhân viên chấm dứt hợp đồng."
+
+msgid "Total Working Days In Month"
+msgstr "Tổng số ngày làm việc trong tháng"
+
+msgid "Salary Start Date"
+msgstr "Ngày bắt đầu tính lương"
+
+msgid "Salary End Date"
+msgstr "Ngày kết thúc tính lương"

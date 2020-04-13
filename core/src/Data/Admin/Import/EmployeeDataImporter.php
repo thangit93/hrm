@@ -4,7 +4,12 @@ namespace Data\Admin\Import;
 
 use Classes\BaseService;
 use Data\Admin\Api\AbstractDataImporter;
+use DateTime;
+use Employees\Common\Model\Employee;
+use Metadata\Common\Model\Nationality;
+use Model\BaseModel;
 use Users\Common\Model\User;
+use Utils\LogManager;
 
 class EmployeeDataImporter extends AbstractDataImporter
 {
@@ -16,7 +21,7 @@ class EmployeeDataImporter extends AbstractDataImporter
 
     public function getModelObject()
     {
-        return "\\Employees\\Common\\Model\\Employee";
+        return Employee::class;
     }
 
     public function fixBeforeSave($object, $data)
@@ -31,7 +36,7 @@ class EmployeeDataImporter extends AbstractDataImporter
         $object->custom2 = $object->bank_account;
         $object->nationality = $this->getNationality()->id;
         $object->country = 'VN';
-        $birthday = new \DateTime();
+        $birthday = new DateTime();
 
         if (array_key_exists($hash, $this->supervisors)) {
             $object = $this->supervisors[$hash];
@@ -44,6 +49,11 @@ class EmployeeDataImporter extends AbstractDataImporter
         $headerMapping = $this->getHeaderMapping();
         foreach ($data as $columnIndex => $value) {
             $value = $this->convertString($value);
+
+            if (empty($value)) {
+                continue;
+            }
+
             $column = $headerMapping[$columnIndex];
 
             if ($column->name == 'job_title') {
@@ -55,8 +65,18 @@ class EmployeeDataImporter extends AbstractDataImporter
             } elseif ($column->name == 'department') {
                 $department = $this->addCompany($value);
                 $object->department = $department->id;
+            } elseif ($column->name == 'indirect_supervisors') {
+                $value = explode('&', $value);
+                $indirectSupervisors = [];
+
+                foreach ($value as $name) {
+                    $indirectSupervisor = $this->addSupervisor(trim($name));
+                    $indirectSupervisors[] = "{$indirectSupervisor->id}";
+                }
+
+                $object->indirect_supervisors = "[" . implode(',', $indirectSupervisors) . "]";
             } elseif (in_array($column->name, ['birthday', 'joined_date'])) {
-                $value = \DateTime::createFromFormat('m/d/Y', $value);
+                $value = DateTime::createFromFormat('m/d/Y', $value);
                 if ($value) {
                     $object->{$column->name} = $value->format('Y-m-d');
 
@@ -85,7 +105,7 @@ class EmployeeDataImporter extends AbstractDataImporter
 
     /**
      * @param $value
-     * @return \Model\BaseModel
+     * @return BaseModel
      */
     private function addJobTitle($value)
     {
@@ -96,7 +116,7 @@ class EmployeeDataImporter extends AbstractDataImporter
         }
 
         $class = BaseService::getInstance()->getFullQualifiedModelClassName('JobTitle');
-        /* @var \Model\BaseModel $object */
+        /* @var BaseModel $object */
         $object = new $class();
         $object->Load("name = ?", ['name' => $value]);
         $object->code = $code;
@@ -122,9 +142,10 @@ class EmployeeDataImporter extends AbstractDataImporter
         }
         list($firstName, $lastName, $middleName) = $this->getFirstNameAndLastName($value);
         $class = BaseService::getInstance()->getFullQualifiedModelClassName('Employee');
-        /** @var \Model\BaseModel $class */
+        /** @var BaseModel $class */
         $object = new $class();
-        $object->Load("custom1 = ?", ['custom1' => $hash]);
+        $object->Load("first_name = ? and middle_name = ? and last_name = ?",
+            ['first_name' => $firstName, 'middle_name' => $middleName, 'last_name' => $lastName,]);
         $object->first_name = $firstName;
         $object->last_name = $lastName;
         $object->middle_name = $middleName;
@@ -145,13 +166,8 @@ class EmployeeDataImporter extends AbstractDataImporter
      */
     private function addCompany($value)
     {
-        $hash = md5($value);
-
-        if (array_key_exists($hash, $this->companies)) {
-            return $this->companies[$hash];
-        }
         $class = BaseService::getInstance()->getFullQualifiedModelClassName('CompanyStructure');
-        /** @var \Model\BaseModel $class */
+        /** @var BaseModel $class */
         $object = new $class();
 
         $object->Load("title = ?", ['title' => $value]);
@@ -162,28 +178,26 @@ class EmployeeDataImporter extends AbstractDataImporter
         $object->timezone = 'Asia/Ho_Chi_Minh';
         $object->Save();
 
-        $this->companies[$hash] = $object;
+        $this->companies[$value] = $object;
 
         return $object;
     }
 
 
     /**
-     * @return \Model\BaseModel
+     * @return BaseModel
      */
     private function getNationality()
     {
-        $class = BaseService::getInstance()->getFullQualifiedModelClassName('Nationality');
-        /* @var \Model\BaseModel $object */
-        $object = new $class();
-        $object->Load("name = ?", ['name' => 'Vietnamese']);
+        $object = new Nationality();
+        $object->Load("name = ?", ['name' => 'Việt Nam']);
 
         return $object;
     }
 
     private function convertString($value)
     {
-        return mb_convert_encoding($value, 'utf-8');
+        return mb_convert_encoding(trim($value), 'utf-8');
     }
 
     /**
@@ -220,14 +234,14 @@ class EmployeeDataImporter extends AbstractDataImporter
         return "{$username}@example.company";
     }
 
-    private function getPassword(\DateTime $birthday)
+    private function getPassword(DateTime $birthday)
     {
         return $birthday->format('dmY');
     }
 
     private function getBirthDay($birthday)
     {
-        $birthday = \DateTime::createFromFormat('Y-m-d', $birthday);
+        $birthday = DateTime::createFromFormat('Y-m-d', $birthday);
 
         return $birthday;
     }

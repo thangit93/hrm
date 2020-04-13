@@ -53,6 +53,17 @@ class CustomFieldManager
         return $list;
     }
 
+    public function getCustomField($type, $id, $name)
+    {
+        $customFieldValue = new CustomFieldValue();
+        $list = $customFieldValue->Find(
+            "type = ? and object_id = ? and name = ?",
+            array($type, $id, $name)
+        );
+
+        return $list;
+    }
+
     public function enrichObjectCustomFields($table, $object)
     {
         $customFieldsList = BaseService::getInstance()->getCustomFields($table);
