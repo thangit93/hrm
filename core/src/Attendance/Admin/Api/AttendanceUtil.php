@@ -11,6 +11,7 @@ namespace Attendance\Admin\Api;
 use Attendance\Common\Model\Attendance;
 use Classes\SettingsManager;
 use DateTime;
+use Employees\Common\Model\Employee;
 use Utils\LogManager;
 
 class AttendanceUtil
@@ -53,9 +54,10 @@ class AttendanceUtil
     /**
      * @param string|null $checkIn
      * @param string|null $checkOut
+     * @param null $employeeId
      * @return int
      */
-    public static function calculateWorkingDay($checkIn, $checkOut)
+    public static function calculateWorkingDay($checkIn, $checkOut, $employeeId = null)
     {
         if (empty($checkIn) || empty($checkOut)) {
             return 0;
@@ -72,6 +74,15 @@ class AttendanceUtil
         $timeEnd = clone $checkOut;
         $timeEnd->setTime(17, 0, 0);
 
+        if ($employeeId == 919) {
+            $debug = true;
+        }
+
+        if (!empty($employeeId) && self::isFullWorkingDay($employeeId, $checkIn)) {
+            $checkIn = $timeStart;
+            $checkOut = $timeEnd;
+        }
+
         //start after 09:00 and left after 17:00
         if ($timeStart < $checkIn && $timeEnd <= $checkOut) {
             return 0.5;
@@ -79,7 +90,13 @@ class AttendanceUtil
 
         //start before 09:00 and left after 17:00
         if ($timeStart > $checkIn && $timeEnd <= $checkOut) {
-            return 1;
+            $dayOfWeek = $checkIn->format('w');
+
+            if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
+                return 1;
+            }
+
+            return 0.5;
         }
 
         //start before 09:00 and left before 17:00
@@ -90,15 +107,50 @@ class AttendanceUtil
         return 0;
     }
 
+    private static function isFullWorkingDay($employeeId, $date)
+    {
+        $model = new Employee();
+        $employee = $model->Find('id = ?', ['id' => $employeeId]);
+        $employee = $model->postProcessGetData($employee);
+        $employee = array_shift($employee);
+
+        if (!empty($employee->full_working_days)) {
+            $fullWorkingDayFrom = DateTime::createFromFormat('Y-m-d', $employee->full_working_days);
+            $fullWorkingDayFrom->setTime(0, 0, 0);
+
+            if ($date >= $fullWorkingDayFrom) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getDaysWorked($employeeId, $startDate, $endDate)
     {
-        $atts = self::getAttendancesData($employeeId, $startDate, $endDate);
+        $startDate = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
+        $endDate = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
 
         $atSum = 0;
 
-        foreach ($atts as $att) {
-//            $atSum += (float)$att->note;
-            $atSum += AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time);
+        if($employeeId == 919){
+            $debug = true;
+        }
+
+        while ($startDate <= $endDate) {
+            if (self::isFullWorkingDay($employeeId, $startDate)) {
+                $atSum += AttendanceUtil::calculateWorkingDay($startDate->format('Y-m-d H:i:s'),
+                    $startDate->format('Y-m-d H:i:s'), $employeeId);
+            } else {
+                /** @var array $atts */
+                $atts = self::getAttendancesData($employeeId, $startDate->format('Y-m-d'), $startDate->format('Y-m-d'));
+
+                foreach ($atts as $att) {
+                    $atSum += AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
+                }
+            }
+
+            $startDate->add(\DateInterval::createFromDateString('1 days'));
         }
 
         return $atSum;

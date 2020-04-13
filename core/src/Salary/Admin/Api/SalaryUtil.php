@@ -129,7 +129,7 @@ class SalaryUtil
         foreach ($atts as $att) {
             $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
             $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
-            $atSum = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time);
+            $atSum = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
             $empSalary = self::getEmployeeSalaries($employeeId, $startDate, $checkOut->format('Y-m-d'),
                 $salaryComponents, true);
             /*$itemData = [

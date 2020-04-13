@@ -70,14 +70,8 @@ class EmployeeSalary extends BaseModel
         $customFields = $customFieldManager->getCustomField($obj->_table, $obj->id, 'start_date');
 
         foreach ($customFields as $customField) {
-            if (!empty($customField->value)) {
-                if ($customField->value != "NULL") {
-                    $value = $customField->value;
-                } else {
-                    $value = null;
-                }
-
-                $obj->{$customField->name} = $value;
+            if (!empty($customField->value) && $customField->value != "NULL") {
+                $obj->{$customField->name} = $customField->value;
             }
         }
 

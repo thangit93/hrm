@@ -3,6 +3,7 @@
 namespace Employees\Common\Model;
 
 use Classes\BaseService;
+use Classes\CustomFieldManager;
 use Classes\FileService;
 use Classes\IceResponse;
 use Company\Common\Model\CompanyStructure;
@@ -180,6 +181,15 @@ class Employee extends BaseModel
     public function postProcessGetData($obj)
     {
         $obj = FileService::getInstance()->updateSmallProfileImage($obj);
+
+        $customFieldManager = new CustomFieldManager();
+        $customFields = $customFieldManager->getCustomField('Employee', $obj->id, 'full_working_days');
+        $customField = array_shift($customFields);
+
+        if (!empty($customField->value) && $customField->value != "NULL") {
+            $obj->{$customField->name} = $customField->value;
+        }
+
         return $obj;
     }
 
