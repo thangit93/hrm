@@ -1,0 +1,10 @@
+{
+  "label": "Leave Settings",
+  "menu": "Admin",
+  "order": "8",
+  "icon": "fa-pause",
+  "user_levels": ["Admin"],
+  "permissions": [],
+  "model_namespace": "\\Leaves\\Common\\Model",
+  "manager": "\\Leaves\\User\\Api\\LeavesModulesManager"
+}

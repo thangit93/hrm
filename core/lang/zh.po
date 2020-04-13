@@ -542,7 +542,7 @@ msgstr "最大结转金额"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Periodo di Riporto Permessi Disponibili"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "已分配假期"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "日期"
 msgid "Leave Type"
 msgstr "休假类型"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "已分配假期"
 
 msgid "Leaves Period"

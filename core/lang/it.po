@@ -542,7 +542,7 @@ msgstr "Nr. Max Permessi Riportati"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Periodo di Riporto Permessi Disponibili"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Quota Permessi Disponibili (da Assunzione)"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Data"
 msgid "Leave Type"
 msgstr "Tipo Permesso"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Quota Assenze disponibili da Assunzione"
 
 msgid "Leaves Period"

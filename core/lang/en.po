@@ -542,8 +542,8 @@ msgstr "Maximum Carried Forward Amount"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Carried Forward Leave Availability Period"
 
-msgid "Proportionate leaves on Joined Date"
-msgstr "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
+msgstr "Proportionate leaveman on Joined Date"
 
 msgid "Send Notification Emails"
 msgstr "Send Notification Emails"
@@ -572,8 +572,8 @@ msgstr "Date"
 msgid "Leave Type"
 msgstr "Leave Type"
 
-msgid "Propotionate leaves on Joined Date"
-msgstr "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
+msgstr "Propotionate leaveman on Joined Date"
 
 msgid "Leaves Period"
 msgstr "Leaves Period"

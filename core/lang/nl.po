@@ -542,7 +542,7 @@ msgstr "Maximale doorgestuurde bedrag"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Doorgestroomd Verlof Beschikbaarheid Periode"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Proportioneel verlaat op toegetreden datum"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Datum"
 msgid "Leave Type"
 msgstr "Laat Type"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotioneel verlaat op toegetreden datum"
 
 msgid "Leaves Period"

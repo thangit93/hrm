@@ -542,7 +542,7 @@ msgstr "Maksimalni iznos prenet"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Пренесен одсуство Доступност период"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Сразмерне лишће на Датум регистрације"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "датум"
 msgid "Leave Type"
 msgstr "Оставите Тип"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Пропотионате оставља на Датум регистрације"
 
 msgid "Leaves Period"

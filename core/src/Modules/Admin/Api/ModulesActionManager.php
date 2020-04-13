@@ -50,9 +50,9 @@ class ModulesActionManager extends SubActionManager
         );
 
         $groupModules['leave'] = array(
-            "admin>leaves",
+            "admin>leaveman",
             "modules>leavecal",
-            "modules>leaves"
+            "modules>leaveman"
         );
 
         $groupModules['documents'] = array(
