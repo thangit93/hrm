@@ -320,6 +320,18 @@ class PayrollColumnAdapter extends AdapterBase {
           aTargets: [3],
         },
         {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 5);
+          },
+          aTargets: [5],
+        },
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 6);
+          },
+          aTargets: [6],
+        },
+        {
           fnRender: that.getActionButtons,
           aTargets: [that.getDataMapping().length],
         },
@@ -328,7 +340,7 @@ class PayrollColumnAdapter extends AdapterBase {
   }
 
   preProcessRemoteTableData(data, cell, id) {
-    if (id === 3) {
+    if (id === 3 || id === 5 || id === 6) {
       return this.gt(cell)
     }
     return cell;

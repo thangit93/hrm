@@ -2083,3 +2083,10 @@ msgstr "Tính tổng lương đã ứng"
 
 msgid "SalaryUtil_getBaseSalary"
 msgstr "Cơ bản"
+
+msgid "Yes"
+msgstr "Có"
+
+msgid "No"
+msgstr "Không"
+
