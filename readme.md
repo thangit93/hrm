@@ -13,3 +13,4 @@ There are three shell scripts to help you manage the containers: `./docker-start
 ## Accessing the website and MySQL
 
 The site is available at http://localhost/. MySQL is reachable via `host: mysql`, `port: 3307`, `user: dev`, `password: dev`, `database: icehrm`. See `.env.dev` and `docker-compose.yml` for more details.
+
