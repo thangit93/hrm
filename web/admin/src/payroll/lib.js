@@ -82,6 +82,37 @@ class PayrollAdapter extends AdapterBase {
     ];
   }
 
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 2);
+          },
+          aTargets: [2],
+        },
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 6);
+          },
+          aTargets: [6],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 2 || id === 6) {
+      return this.gt(cell)
+    }
+    return cell;
+  }
+
   getHeaders() {
     return [
       { sTitle: 'ID', bVisible: false },
@@ -278,6 +309,31 @@ class PayrollColumnAdapter extends AdapterBase {
     ];
   }
 
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 3);
+          },
+          aTargets: [3],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 3) {
+      return this.gt(cell)
+    }
+    return cell;
+  }
+
   getHeaders() {
     return [
       { sTitle: 'ID', bVisible: false },
@@ -381,6 +437,31 @@ class PayrollEmployeeAdapter extends AdapterBase {
       'deduction_group',
       'currency',
     ];
+  }
+
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 2);
+          },
+          aTargets: [2],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 2) {
+      return this.gt(cell)
+    }
+    return cell;
   }
 
   getHeaders() {
