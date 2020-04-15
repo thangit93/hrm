@@ -191,8 +191,119 @@ class EmployeeSalaryAdapter extends AdapterBase {
     }
 }
 
+/*
+ * EmployeeSalaryAdapter
+ */
+
+class EmployeeSalaryDepositAdapter extends AdapterBase {
+    getDataMapping() {
+        return this.getTableFields();
+    }
+
+    getTableFields() {
+        return [
+            'id',
+            'employee',
+            'amount',
+            'date',
+            'details',
+        ];
+    }
+
+    getCustomTableParams() {
+        const that = this;
+        return {
+            aoColumnDefs: [
+                {
+                    fnRender(data, cell) {
+                        return that.preProcessRemoteTableData(data, cell, 1);
+                    },
+                    aTargets: [1],
+                },
+                {
+                    fnRender(data, cell) {
+                        return that.preProcessRemoteTableData(data, cell, 2);
+                    },
+                    aTargets: [2],
+                },
+                {
+                    fnRender(data, cell) {
+                        return that.preProcessRemoteTableData(data, cell, 3);
+                    },
+                    aTargets: [3],
+                },
+                {
+                    fnRender: that.getActionButtons,
+                    aTargets: [that.getDataMapping().length],
+                },
+            ],
+        };
+    }
+
+    preProcessRemoteTableData(data, cell, id) {
+        if (id === 1) {
+            cell = cell.split(' ');
+            let birthday = cell.splice(cell.length - 1, 1);
+            birthday = Date.parse(birthday[0]);
+            let value = '';
+            cell.map(function(item) {
+                value += item + ' ';
+            })
+            cell = `${value} ${birthday.toString('yyyy')}` ;
+        } else if (id === 2) {
+            cell = parseInt(cell)
+            cell = new Intl.NumberFormat('en-VN').format(cell)
+        } else if (id === 3) {
+            if (!cell || cell === 'NULL' || cell.length < 1 || cell === '0000-00-00 00:00:00' || cell === '' || cell === undefined || cell == null) {
+                return '';
+            }
+            if (Date.parse(cell)) {
+                return Date.parse(cell).toString('d/M/yyyy');
+            }
+
+            return '';
+        }
+        return cell;
+    }
+
+    getHeaders() {
+        return [
+            {sTitle: 'ID', bVisible: false},
+            {sTitle: 'Employee'},
+            {sTitle: 'Amount'},
+            {sTitle: 'Date', bSort: false},
+            {sTitle: 'Details'},
+        ];
+    }
+
+    getFormFields() {
+        return [
+            ['id', {label: 'ID', type: 'hidden'}],
+            ['employee', {
+                label: 'Employee',
+                type: 'select2',
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday']
+            }],
+            ['amount', {label: 'Amount', type: 'text', validation: 'integer'}],
+            ['date', {label: 'Salary Start Date', type: 'date', validation: 'none'}],
+            ['details', {label: 'Details', type: 'textarea', validation: 'none'}],
+        ];
+    }
+
+    getFilters() {
+        return [
+            ['employee', {
+                label: 'Employee',
+                type: 'select2',
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday']
+            }],
+        ];
+    }
+}
+
 module.exports = {
     SalaryComponentTypeAdapter,
     SalaryComponentAdapter,
     EmployeeSalaryAdapter,
+    EmployeeSalaryDepositAdapter,
 };

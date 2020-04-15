@@ -9,6 +9,7 @@ use Classes\CustomFieldManager;
 use DateTime;
 use Exception;
 use Salary\Common\Model\EmployeeSalary;
+use Salary\Common\Model\EmployeeSalaryDeposit;
 
 /**
  * Class SalaryUtil
@@ -149,6 +150,24 @@ class SalaryUtil
         }
 
         return $totalRealSalary;
+    }
+
+    public function getSalaryDeposit($employeeId, $startDate, $endDate)
+    {
+        $totalSalaryDeposit = 0;
+
+        $model = new EmployeeSalaryDeposit();
+        $deposits = $model->Find('employee = ? AND date >= ? AND date <= ?', [
+            $employeeId,
+            $startDate,
+            $endDate,
+        ]);
+
+        foreach ($deposits as $deposit) {
+            $totalSalaryDeposit += (int)$deposit->amount;
+        }
+
+        return $totalSalaryDeposit;
     }
 
     /**
