@@ -80,6 +80,10 @@ class SalaryComponentAdapter extends AdapterBase {
 
 class EmployeeSalaryAdapter extends AdapterBase {
     getDataMapping() {
+        return this.getTableFields();
+    }
+
+    getTableFields() {
         return [
             'id',
             'employee',
@@ -94,6 +98,12 @@ class EmployeeSalaryAdapter extends AdapterBase {
         const that = this;
         return {
             aoColumnDefs: [
+                {
+                    fnRender(data, cell) {
+                        return that.preProcessRemoteTableData(data, cell, 1);
+                    },
+                    aTargets: [1],
+                },
                 {
                     fnRender(data, cell) {
                         return that.preProcessRemoteTableData(data, cell, 3);
@@ -115,7 +125,16 @@ class EmployeeSalaryAdapter extends AdapterBase {
     }
 
     preProcessRemoteTableData(data, cell, id) {
-        if (id === 3) {
+        if (id === 1) {
+            cell = cell.split(' ');
+            let birthday = cell.splice(cell.length - 1, 1);
+            birthday = Date.parse(birthday[0]);
+            let value = '';
+            cell.map(function(item) {
+                value += item + ' ';
+            })
+            cell = `${value} ${birthday.toString('yyyy')}` ;
+        } else if (id === 3) {
             cell = parseInt(cell)
             cell = new Intl.NumberFormat('en-VN').format(cell)
         } else if (id === 4) {
@@ -148,7 +167,7 @@ class EmployeeSalaryAdapter extends AdapterBase {
             ['employee', {
                 label: 'Employee',
                 type: 'select2',
-                'remote-source': ['Employee', 'id', 'first_name+last_name']
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday']
             }],
             ['component', {
                 label: 'Salary Component',
@@ -161,15 +180,13 @@ class EmployeeSalaryAdapter extends AdapterBase {
         ];
     }
 
-
     getFilters() {
         return [
             ['employee', {
                 label: 'Employee',
                 type: 'select2',
-                'remote-source': ['Employee', 'id', 'first_name+last_name']
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday']
             }],
-
         ];
     }
 }
