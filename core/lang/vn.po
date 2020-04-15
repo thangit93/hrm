@@ -2047,3 +2047,46 @@ msgstr "Ngày bắt đầu tính lương"
 
 msgid "Salary End Date"
 msgstr "Ngày kết thúc tính lương"
+
+msgid "Monthly"
+msgstr "Hàng tháng"
+
+msgid "Weekly"
+msgstr "Hàng tuần"
+
+msgid "Semi Monthly"
+msgstr "Nửa tháng"
+
+msgid "Yearly"
+msgstr "Hàng năm"
+
+msgid "SalaryUtil_getRealSalary"
+msgstr "Tính lương dựa trên số ngày công"
+
+msgid "Real Salary"
+msgstr "Tính lương dựa trên số ngày công"
+
+msgid "Base Salary"
+msgstr "Tính lương cơ bản"
+
+msgid "AttendanceUtil_getTotalWorkingDaysInMonth"
+msgstr "Tổng số ngày làm việc trong tháng"
+
+msgid "AttendanceUtil_getDaysWorked"
+msgstr "Tồng số ngày làm việc thực tế"
+
+msgid "SalaryUtil_getSalaryDeposit"
+msgstr "Tính tổng lương đã ứng"
+
+msgid "Salary Deposit"
+msgstr "Tính tổng lương đã ứng"
+
+msgid "SalaryUtil_getBaseSalary"
+msgstr "Cơ bản"
+
+msgid "Yes"
+msgstr "Có"
+
+msgid "No"
+msgstr "Không"
+
