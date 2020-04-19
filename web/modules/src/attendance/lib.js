@@ -122,10 +122,14 @@ class AttendanceAdapter extends AdapterBase {
   }
 
   getTableTopButtonHtml() {
+    setTimeout(function () {
+      $('#grid_filter').removeClass('dataTables_filter').addClass('text-right');
+    }, 1000)
+    return '';
     if (this.punch === null || this.punch === undefined) {
-      return '<button id="punchButton" style="float:right;" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-in <span class="icon-time"></span></button>';
+      return '<button id="punchButton" style="float:right; display: none" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-in <span class="icon-time"></span></button>';
     }
-    return '<button id="punchButton" style="float:right;" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-out <span class="icon-time"></span></button>';
+    return '<button id="punchButton" style="float:right; display: none" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-out <span class="icon-time"></span></button>';
   }
 
 

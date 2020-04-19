@@ -15,7 +15,7 @@ $mapAttendance = \Classes\SettingsManager::getInstance()->getSetting('Attendance
 
     <ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
         <li class="active"><a id="tabAttendance" href="#tabPageAttendance"><?=t('Monitor Attendance')?></a></li>
-        <li class=""><a id="tabAttendanceStatus" href="#tabPageAttendanceStatus"><?=t('Current Clocked In Status')?></a></li>
+<!--        <li class=""><a id="tabAttendanceStatus" href="#tabPageAttendanceStatus">--><?//=t('Current Clocked In Status')?><!--</a></li>-->
     </ul>
 
     <div class="tab-content">
@@ -27,14 +27,14 @@ $mapAttendance = \Classes\SettingsManager::getInstance()->getSetting('Attendance
 
             </div>
         </div>
-        <div class="tab-pane" id="tabPageAttendanceStatus">
-            <div id="AttendanceStatus" class="reviewBlock" data-content="List" style="padding-left:5px;">
-
-            </div>
-            <div id="AttendanceStatusForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
-
-            </div>
-        </div>
+<!--        <div class="tab-pane" id="tabPageAttendanceStatus">-->
+<!--            <div id="AttendanceStatus" class="reviewBlock" data-content="List" style="padding-left:5px;">-->
+<!---->
+<!--            </div>-->
+<!--            <div id="AttendanceStatusForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">-->
+<!---->
+<!--            </div>-->
+<!--        </div>-->
 
     </div>
 
@@ -96,8 +96,8 @@ $mapAttendance = \Classes\SettingsManager::getInstance()->getSetting('Attendance
   modJsList['tabAttendance'] = new AttendanceAdapter('Attendance','Attendance','','in_time desc');
   modJsList['tabAttendance'].setRemoteTable(true);
   modJsList['tabAttendance'].setPhotoAttendance(<?=$photoAttendance == '1' || $mapAttendance == '1'?>);
-  modJsList['tabAttendanceStatus'] = new AttendanceStatusAdapter('AttendanceStatus','AttendanceStatus','','');
-  modJsList['tabAttendanceStatus'].setShowAddNew(false);
+  // modJsList['tabAttendanceStatus'] = new AttendanceStatusAdapter('AttendanceStatus','AttendanceStatus','','');
+  // modJsList['tabAttendanceStatus'].setShowAddNew(false);
   var modJs = modJsList['tabAttendance'];
 
 </script>
