@@ -4,6 +4,7 @@ namespace Attendance\Admin\Api;
 use Attendance\Common\Model\Attendance;
 use Attendance\Rest\AttendanceRestEndPoint;
 use Classes\AbstractModuleManager;
+use Classes\LanguageManager;
 use Classes\UIManager;
 
 class AttendanceAdminManager extends AbstractModuleManager
@@ -95,6 +96,19 @@ class AttendanceAdminManager extends AbstractModuleManager
     public function initCalculationHooks()
     {
         $this->addCalculationHook(
+            'AttendanceUtil_getDaysWorked',
+            LanguageManager::tran('Total Days from Attendance'),
+            '\\Attendance\\Admin\\Api\\AttendanceUtil',
+            'getDaysWorked'
+        );
+        $this->addCalculationHook(
+            'AttendanceUtil_getTotalWorkingDaysInMonth',
+            LanguageManager::tran('Total Working Days In Month'),
+            '\\Attendance\\Admin\\Api\\AttendanceUtil',
+            'getTotalWorkingDaysInMonth'
+        );
+
+        /*$this->addCalculationHook(
             'AttendanceUtil_getTimeWorkedHours',
             'Total Hours from Attendance',
             '\\Attendance\\Admin\\Api\\AttendanceUtil',
@@ -124,6 +138,6 @@ class AttendanceAdminManager extends AbstractModuleManager
             'Total Weekly Overtime Hours from Attendance',
             '\\Attendance\\Admin\\Api\\AttendanceUtil',
             'getWeeklyBasedOvertimeHours'
-        );
+        );*/
     }
 }

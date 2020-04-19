@@ -21056,7 +21056,7 @@ define("tinymce/Formatter", [
 				}
 			}
 
-			// Move start/end point up the tree if the leaves are sharp and if we are in different containers
+			// Move start/end point up the tree if the leaveman are sharp and if we are in different containers
 			// Example * becomes !: !<p><b><i>*text</i><i>text*</i></b></p>!
 			// This will reduce the number of wrapper elements that needs to be created
 			// Move start point up the tree

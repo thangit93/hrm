@@ -593,7 +593,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     const newTableFields = [];
     for (let i = 0; i < tableFields.length; i++) {
       if ((this.hiddenFields[tableFields[i]] === undefined || this.hiddenFields[tableFields[i]] === null)
-                && (this.formOnlyFields[tableFields[i]] === undefined || this.formOnlyFields[tableFields[i]] === null)) {
+          && (this.formOnlyFields[tableFields[i]] === undefined || this.formOnlyFields[tableFields[i]] === null)) {
         newTableFields.push(tableFields[i]);
       }
     }
@@ -633,7 +633,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
       title;
     const fields = [
       ['id', { label: 'ID', type: 'hidden', validation: '' }],
-      ['employee_id', { label: 'Employee Number', type: 'text', validation: '' }],
+      ['employee_id', { label: 'Employee Number', type: 'hidden', validation: 'none' }],
       ['first_name', { label: 'First Name', type: 'text', validation: '' }],
       ['middle_name', { label: 'Middle Name', type: 'text', validation: 'none' }],
       ['last_name', { label: 'Last Name', type: 'text', validation: '' }],
@@ -836,7 +836,7 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
 
 
   terminateEmployeeSuccessCallback(callBackData) {
-    this.showMessage('Success', 'Employee contract terminated. You can find terminated employee information under Terminated Employees menu.');
+    this.showMessage('Success', this.gt('Employee contract terminated. You can find terminated employee information under Terminated Employees menu.'));
     this.get([]);
   }
 
@@ -1111,7 +1111,7 @@ class TerminatedEmployeeAdapter extends EmployeeAdapter {
   getDataMapping() {
     return [
       'id',
-      'image',
+      //'image',
       'employee_id',
       'first_name',
       'last_name',
@@ -1125,7 +1125,7 @@ class TerminatedEmployeeAdapter extends EmployeeAdapter {
   getHeaders() {
     return [
       { sTitle: 'ID' },
-      { sTitle: '', bSortable: false },
+      //{ sTitle: '', bSortable: false },
       { sTitle: 'Employee Number' },
       { sTitle: 'First Name' },
       { sTitle: 'Last Name' },

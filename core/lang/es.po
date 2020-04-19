@@ -542,7 +542,7 @@ msgstr "Monto máximo aceptado"
 msgid "Carried Forward Leave Availability Period"
 msgstr "Periodo de disponibilidad previsto"
 
-msgid "Proportionate leaves on Joined Date"
+msgid "Proportionate leaveman on Joined Date"
 msgstr "Proporcional deja en fecha de incorporación"
 
 msgid "Send Notification Emails"
@@ -572,7 +572,7 @@ msgstr "Fecha"
 msgid "Leave Type"
 msgstr "Tipo de licencia"
 
-msgid "Propotionate leaves on Joined Date"
+msgid "Propotionate leaveman on Joined Date"
 msgstr "Propotionate sale en la fecha de ingreso"
 
 msgid "Leaves Period"

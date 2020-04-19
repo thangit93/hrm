@@ -908,19 +908,42 @@ class BaseService
         foreach ($list as $obj) {
             $obj = $this->cleanUpAdoDB($obj);
             if (count($values) == 1) {
-                $ret[$obj->$key] = $obj->$value;
+                if($value == 'birthday'){
+                    $ret[$obj->$key] = $this->getYOB($obj);
+                }else{
+                    $ret[$obj->$key] = $obj->$value;
+                }
             } else {
                 $objVal = "";
                 foreach ($values as $v) {
                     if ($objVal != "") {
                         $objVal .= " ";
                     }
-                    $objVal .= $obj->$v;
+                    if($v == 'birthday'){
+                        $objVal .= $this->getYOB($obj);
+                    }else{
+                        $objVal .= $obj->$v;
+                    }
                 }
                 $ret[$obj->$key] = $objVal;
             }
         }
         return $ret;
+    }
+
+    /**
+     * Get Year of Birthday
+     *
+     * @param $obj
+     * @return string
+     */
+    private function getYOB($obj){
+        try {
+            $birthday = new \DateTime($obj->birthday);
+            return $birthday->format('Y');
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function setNonDeletables($table, $field, $value)

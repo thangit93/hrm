@@ -27,7 +27,7 @@ class MetadataRestEndPoint extends RestEndPoint
     public function getMobileModules(User $user)
     {
         $mobileModules = [
-            'leaves' => false,
+            'leaveman' => false,
             'attendance' => false,
             'staffdirectory' => false,
             'expenses' => false,
