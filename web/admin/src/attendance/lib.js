@@ -94,12 +94,12 @@ class AttendanceAdapter extends AdapterBase {
       if (cell === '0000-00-00 00:00:00' || cell === '' || cell === undefined || cell == null) {
         return '';
       }
-      return Date.parse(cell).toString('yyyy MMM d  <b>HH:mm</b>');
+      return Date.parse(cell).toString('d/M/yyyy  <b>HH:mm</b>');
     } if (id === 3) {
       if (cell === '0000-00-00 00:00:00' || cell === '' || cell === undefined || cell == null) {
         return '';
       }
-      return Date.parse(cell).toString('MMM d  <b>HH:mm</b>');
+      return Date.parse(cell).toString('d/M/yyyy  <b>HH:mm</b>');
     } if (id === 4) {
       if (cell !== undefined && cell !== null) {
         if (cell.length > 10) {
