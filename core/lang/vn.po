@@ -2093,3 +2093,20 @@ msgstr "Không"
 msgid "Employee Salary Deposit"
 msgstr "Ứng Lương"
 
+msgid "From Date"
+msgstr "Từ ngày"
+
+msgid "To Date"
+msgstr "Đến ngày"
+
+msgid "Payslip Base Salary"
+msgstr "Lương căn bản"
+
+msgid "Lương Căn Bản ngày"
+msgstr "Lương căn bản / ngày"
+
+msgid "Phụ Cấp Trách Nhiệm & Chức Vụ ngày"
+msgstr "Phụ Cấp Trách Nhiệm & Chức Vụ / ngày"
+
+msgid "Phụ Cấp Tiền Điện Thoại & Tiền Ăn ngày"
+msgstr "Phụ Cấp Tiền Điện Thoại & Tiền Ăn / ngày"

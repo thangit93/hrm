@@ -554,13 +554,23 @@ class BaseService
                     $idField = $k."_id";
                     $item->$idField = $item->$k;
                     $item->$k = $tObj->{$v[2]};
+
+                    if($v[2] == 'birthday'){
+                        $item->$k = $this->getYOB($tObj);
+                    }else{
+                        $item->$k = $tObj->{$v[2]};
+                    }
                 } else {
                     $objVal = "";
                     foreach ($values as $v) {
                         if ($objVal != "") {
                             $objVal .= " ";
                         }
-                        $objVal .= $tObj->$v;
+                        if($v == 'birthday'){
+                            $objVal .= $this->getYOB($tObj);
+                        }else{
+                            $objVal .= $tObj->$v;
+                        }
                     }
                     $idField = $k."_id";
                     $item->$idField = $item->$k;

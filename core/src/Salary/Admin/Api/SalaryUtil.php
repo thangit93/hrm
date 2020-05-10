@@ -27,7 +27,7 @@ class SalaryUtil
      * @return mixed
      * @throws Exception
      */
-    private static function getEmployeeSalaries(
+    public static function getEmployeeSalaries(
         $employeeId,
         $from = null,
         $to = null,
@@ -157,9 +157,8 @@ class SalaryUtil
             $baseSalary = ((int)$empSalary->amount / (float)$totalWorkingDays) * (float)$atSum;
             $totalRealSalary += $baseSalary;
 
-            $startDateObj->add(\DateInterval::createFromDateString('1 day'));
-
             $data[] = [
+                'date' => $startDateObj->format('Y-m-d'),
                 'checkIn' => $checkIn->format('Y-m-d Y:i:s'),
                 'checkOut' => $checkOut->format('Y-m-d Y:i:s'),
                 'salaryComponents' => implode(',', $salaryComponents),
@@ -168,16 +167,18 @@ class SalaryUtil
                 'empSalary' => $empSalary->amount,
                 'baseSalary' => $baseSalary,
             ];
+
+            $startDateObj->add(\DateInterval::createFromDateString('1 day'));
         }
 
         if ($responseArray) {
             return $data;
         }
 
-        return (int) $totalRealSalary;
+        return (int)$totalRealSalary;
     }
 
-    public function getSalaryDeposit($employeeId, $startDate, $endDate)
+    public function getSalaryDeposit($employeeId, $startDate, $endDate, $toArray = false)
     {
         $totalSalaryDeposit = 0;
 
@@ -188,8 +189,14 @@ class SalaryUtil
             $endDate,
         ]);
 
+        $data = [];
         foreach ($deposits as $deposit) {
+            $data[] = $deposit;
             $totalSalaryDeposit += (int)$deposit->amount;
+        }
+
+        if (!empty($toArray)) {
+            return $data;
         }
 
         return $totalSalaryDeposit;
@@ -199,7 +206,7 @@ class SalaryUtil
      * @param $salaryComponents
      * @return array|mixed
      */
-    private function parseSalaryComponent($salaryComponents)
+    public function parseSalaryComponent($salaryComponents)
     {
         if (!empty($salaryComponents) && !empty(json_decode($salaryComponents, true))) {
             $salaryComponents = json_decode($salaryComponents, true);
