@@ -563,7 +563,7 @@ class PayrollEmployeeAdapter extends AdapterBase {
             ['employee', {
                 label: 'Employee',
                 type: 'select2',
-                'remote-source': ['Employee', 'id', 'first_name+last_name']
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday']
             }],
             ['pay_frequency', {
                 label: 'Pay Frequency',
