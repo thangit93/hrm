@@ -16,3 +16,4 @@ web/admin/dist/*.map
 web/modules/dist/*.map
 .gitkeep
 yarn.lock
+/docker-compose.yml
