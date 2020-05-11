@@ -8,11 +8,15 @@
 
 namespace Data\Admin\Api;
 
+require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/lib/composer/vendor/autoload.php';
+
 use Classes\FileService;
 use Classes\IceResponse;
 use Classes\SubActionManager;
 use Data\Common\Model\DataImport;
 use Data\Common\Model\DataImportFile;
+use SimpleXLS;
+use SimpleXLSX;
 use Utils\LogManager;
 
 class DataActionManager extends SubActionManager
@@ -32,9 +36,17 @@ class DataActionManager extends SubActionManager
             $url = str_replace(CLIENT_BASE_URL, CLIENT_BASE_PATH, $url);
         }
 
-        LogManager::getInstance()->info("File Path:".$url);
+        LogManager::getInstance()->info("File Path:" . $url);
+        preg_match('/^.*\.xlsx$/', $url, $xlsxMatches, PREG_OFFSET_CAPTURE);
+        preg_match('/^.*\.xls$/', $url, $xlsMatches, PREG_OFFSET_CAPTURE);
 
-        $data = file_get_contents($url);
+        if (count($xlsxMatches) > 0) {
+            $data = $this->processXLSXFile($url);
+        } elseif (count($xlsMatches) > 0) {
+            $data = $this->processXLSFile($url);
+        } else {
+            $data = file_get_contents($url);
+        }
 
         $dataImport = new DataImport();
         $dataImport->Load("id =?", array($dataFile->data_import_definition));
@@ -42,7 +54,7 @@ class DataActionManager extends SubActionManager
             return new IceResponse(IceResponse::ERROR, null);
         }
 
-        $processClass = '\\Data\Admin\Import\\'.$dataImport->dataType;
+        $processClass = '\\Data\Admin\Import\\' . $dataImport->dataType;
         $processObj = new $processClass();
 
         $res = $processObj->process($data, $dataImport->id);
@@ -56,5 +68,50 @@ class DataActionManager extends SubActionManager
 
     private function processHeader($dataImportId, $data)
     {
+    }
+
+    private function readExcelFile($filePath, $type)
+    {
+        switch ($type) {
+            case 'xlsx':
+                return SimpleXLSX::parse($filePath);
+                break;
+            case 'xls':
+                return SimpleXLS::parse($filePath);
+                break;
+            default:
+                return false;
+        }
+    }
+
+    private function parseExcelToCsv($content)
+    {
+        if (empty($content)) {
+            return "";
+        }
+
+        $data = [];
+
+        $rows = $content->rows();
+
+        foreach ($rows as $row) {
+            $data[] = implode(',', $row);
+        }
+
+        $data = implode("\r\n", $data);
+
+        return $data;
+    }
+
+    private function processXLSXFile($filePath)
+    {
+        $content = $this->readExcelFile($filePath, 'xlsx');
+        return $this->parseExcelToCsv($content);
+    }
+
+    private function processXLSFile($filePath)
+    {
+        $content = $this->readExcelFile($filePath, 'xls');
+        return $this->parseExcelToCsv($content);
     }
 }

@@ -112,7 +112,7 @@ class DataImportFileAdapter extends AdapterBase {
       ['name', { label: 'Name', type: 'text', validation: '' }],
       ['data_import_definition', { label: 'Data Import Definitions', type: 'select', 'remote-source': ['DataImport', 'id', 'name'] }],
       ['file', {
-        label: 'File to Import', type: 'fileupload', validation: '', filetypes: 'csv,txt',
+        label: 'File to Import', type: 'fileupload', validation: '', filetypes: 'xls,xlsx',
       }],
       ['details', { label: 'Last Export Result', type: 'textarea', validation: 'none' }],
     ];
