@@ -153,13 +153,13 @@ msgid "Field Names Setup"
 msgstr "Cài đặt tên trường"
 
 msgid "Payroll"
-msgstr "Lương bổng"
+msgstr "Lương"
 
 msgid "Salary"
 msgstr "Lương"
 
 msgid "Payroll Reports"
-msgstr "Báo cáo tiền lương"
+msgstr "Tính Lương"
 
 msgid "Recruitment"
 msgstr "Tuyển dụng"
@@ -1023,7 +1023,7 @@ msgid "Payslip Template"
 msgstr "Mẫu Payslip"
 
 msgid "Payroll Columns"
-msgstr "Cột tiền lương"
+msgstr "Công thức tính lương"
 
 msgid "Calculation Method"
 msgstr "Phương pháp tính toán"
@@ -1377,7 +1377,7 @@ msgid "Company Payroll"
 msgstr "Biên chế công ty"
 
 msgid "Calculation Groups"
-msgstr "Nhóm tính toán"
+msgstr "Loại hình nhân viên"
 
 msgid "Calculation Methods"
 msgstr "Phương pháp tính toán"
@@ -2119,3 +2119,15 @@ msgstr "Bảng Lương"
 
 msgid "Salary"
 msgstr "Lương"
+
+msgid "Cancel"
+msgstr "Hủy"
+
+msgid "Save"
+msgstr "Lưu lại"
+
+msgid "Download"
+msgstr "Tải xuống"
+
+msgid "Finalize"
+msgstr "Hoàn tất"

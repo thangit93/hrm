@@ -15,8 +15,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
         <li class=""><a id="tabPayroll" href="#tabPagePayroll"><?=t('Payroll Reports')?></a></li>
         <li class=""><a id="tabPayrollColumn" href="#tabPagePayrollColumn"><?=t('Payroll Columns')?></a></li>
         <li class=""><a id="tabDeductionGroup" href="#tabPageDeductionGroup"><?=t('Calculation Groups')?></a></li>
-        <li class=""><a id="tabDeduction" href="#tabPageDeduction"><?=t('Calculation Methods')?></a></li>
-        <li class=""><a id="tabPayslipTemplate" href="#tabPagePayslipTemplate"><?=t('Payslip Templates')?></a></li>
+<!--        <li class=""><a id="tabDeduction" href="#tabPageDeduction">--><?//=t('Calculation Methods')?><!--</a></li>-->
+<!--        <li class=""><a id="tabPayslipTemplate" href="#tabPagePayslipTemplate">--><?//=t('Payslip Templates')?><!--</a></li>-->
     </ul>
 
     <div class="tab-content">
@@ -40,10 +40,10 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
             </div>
             <div id="PayrollDataButtons" style="text-align: right;margin-top: 10px;">
-                <button class="cancelBtnTable btn" style="margin-right:5px;"><i class="fa fa-times-circle-o"></i> Cancel</button>
-                <button class="saveBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-save"></i> Save</button>
-                <button class="downloadBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> Download</button>
-                <button class="completeBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> Finalize</button>
+                <button class="cancelBtnTable btn" style="margin-right:5px;"><i class="fa fa-times-circle-o"></i> <?php echo t('Cancel') ?></button>
+                <button class="saveBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-save"></i> <?php echo t('Save') ?></button>
+                <button class="downloadBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') ?></button>
+                <button class="completeBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> <?php echo t('Finalize') ?></button>
             </div>
         </div>
 
