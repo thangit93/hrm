@@ -113,9 +113,6 @@ msgstr "Quản trị du lịch"
 msgid "Expense Administration"
 msgstr "Chi phí quản lý"
 
-msgid "Monitor Attendance"
-msgstr "Giám sát tham dự"
-
 msgid "Performance Charts"
 msgstr "Biểu đồ hiệu suất"
 
@@ -2110,3 +2107,15 @@ msgstr "Phụ Cấp Trách Nhiệm & Chức Vụ / ngày"
 
 msgid "Phụ Cấp Tiền Điện Thoại & Tiền Ăn ngày"
 msgstr "Phụ Cấp Tiền Điện Thoại & Tiền Ăn / ngày"
+
+msgid "Monitor Attendance"
+msgstr "Bảng Chấm Công"
+
+msgid "Attendance"
+msgstr "Bảng Chấm Công"
+
+msgid "Payroll Reports"
+msgstr "Bảng Lương"
+
+msgid "Salary"
+msgstr "Lương"
