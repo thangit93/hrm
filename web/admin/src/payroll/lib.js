@@ -170,6 +170,8 @@ class PayrollAdapter extends AdapterBase {
         if (object != null && object !== undefined && object.id !== undefined && object.id != null) {
             $tempDomObj.find('#pay_period').attr('disabled', 'disabled');
             $tempDomObj.find('#department').attr('disabled', 'disabled');
+            // $tempDomObj.find('#field_deduction_group').addClass('hidden');
+            $tempDomObj.find('#field_payslipTemplate').addClass('hidden');
             // $tempDomObj.find("#date_start").attr('disabled','disabled');
             // $tempDomObj.find("#date_end").attr('disabled','disabled');
             // $tempDomObj.find("#column_template").attr('disabled','disabled');
