@@ -149,7 +149,7 @@ class AttendanceAdapter extends AdapterBase {
   }
 
   isSubProfileTable() {
-    return this.user.user_level !== 'Admin';
+    return this.user.user_level !== 'Admin' && this.user.user_level !== 'Manager';
   }
 
   showPunchImages(id) {
