@@ -541,6 +541,8 @@ return array(
     'SebastianBergmann\\RecursionContext\\InvalidArgumentException' => $vendorDir . '/sebastian/recursion-context/src/InvalidArgumentException.php',
     'SebastianBergmann\\ResourceOperations\\ResourceOperations' => $vendorDir . '/sebastian/resource-operations/src/ResourceOperations.php',
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
+    'SimpleXLS' => $vendorDir . '/shuchkin/simplexls/src/SimpleXLS.php',
+    'SimpleXLSX' => $vendorDir . '/shuchkin/simplexlsx/src/SimpleXLSX.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
     'TheSeer\\Tokenizer\\Exception' => $vendorDir . '/theseer/tokenizer/src/Exception.php',
     'TheSeer\\Tokenizer\\NamespaceUri' => $vendorDir . '/theseer/tokenizer/src/NamespaceUri.php',

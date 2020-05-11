@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bea0e0b37a382bfad7a07c0466ef70bb",
+    "content-hash": "b1956f41a0d4bed8a8b9be16c9bf7230",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -374,6 +374,7 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
+            "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
@@ -658,12 +659,12 @@
             "version": "v4.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/oscarotero/Gettext.git",
+                "url": "https://github.com/php-gettext/Gettext.git",
                 "reference": "7efdd4a01afd7fab85a90fb64fb88eeaef06f3b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oscarotero/Gettext/zipball/7efdd4a01afd7fab85a90fb64fb88eeaef06f3b1",
+                "url": "https://api.github.com/repos/php-gettext/Gettext/zipball/7efdd4a01afd7fab85a90fb64fb88eeaef06f3b1",
                 "reference": "7efdd4a01afd7fab85a90fb64fb88eeaef06f3b1",
                 "shasum": ""
             },
@@ -718,12 +719,12 @@
             "version": "2.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mlocati/cldr-to-gettext-plural-rules.git",
+                "url": "https://github.com/php-gettext/Languages.git",
                 "reference": "49c39e51569963cc917a924b489e7025bfb9d8c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mlocati/cldr-to-gettext-plural-rules/zipball/49c39e51569963cc917a924b489e7025bfb9d8c7",
+                "url": "https://api.github.com/repos/php-gettext/Languages/zipball/49c39e51569963cc917a924b489e7025bfb9d8c7",
                 "reference": "49c39e51569963cc917a924b489e7025bfb9d8c7",
                 "shasum": ""
             },
@@ -779,12 +780,12 @@
             "version": "v2.2.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client.git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
                 "reference": "b69b8ac4bf6501793c389d4e013a79d09c85c5f2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
                 "reference": "b69b8ac4bf6501793c389d4e013a79d09c85c5f2",
                 "shasum": ""
             },
@@ -838,12 +839,12 @@
             "version": "v0.61",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client-services.git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
                 "reference": "f7221039fda179b3f5096a6272b38706f2a6fcd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client-services/zipball/f7221039fda179b3f5096a6272b38706f2a6fcd0",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/f7221039fda179b3f5096a6272b38706f2a6fcd0",
                 "reference": "f7221039fda179b3f5096a6272b38706f2a6fcd0",
                 "shasum": ""
             },
@@ -875,12 +876,12 @@
             "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
                 "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
                 "shasum": ""
             },
@@ -1971,6 +1972,98 @@
                 "psr-3"
             ],
             "time": "2016-10-10T12:19:37+00:00"
+        },
+        {
+            "name": "shuchkin/simplexls",
+            "version": "0.9.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shuchkin/simplexls.git",
+                "reference": "cb4db00fede69f542a6da7b09d11dbe9782bbeee"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shuchkin/simplexls/zipball/cb4db00fede69f542a6da7b09d11dbe9782bbeee",
+                "reference": "cb4db00fede69f542a6da7b09d11dbe9782bbeee",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/SimpleXLS.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Shuchkin (SMSPILOT)",
+                    "email": "sergey.shuchkin@gmail.com",
+                    "homepage": "http://www.shuchkin.ru/"
+                }
+            ],
+            "description": "Parse and retrieve data from old format Excel XLS files. MS Excel 97 workbooks PHP reader.",
+            "homepage": "https://github.com/shuchkin/simplexls",
+            "keywords": [
+                "backend",
+                "excel",
+                "parser",
+                "php",
+                "xls"
+            ],
+            "time": "2020-01-16T14:54:33+00:00"
+        },
+        {
+            "name": "shuchkin/simplexlsx",
+            "version": "0.8.15",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shuchkin/simplexlsx.git",
+                "reference": "2b39991fb0827d7715bdbf8e72858dac667f61d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shuchkin/simplexlsx/zipball/2b39991fb0827d7715bdbf8e72858dac667f61d1",
+                "reference": "2b39991fb0827d7715bdbf8e72858dac667f61d1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-libxml": "*",
+                "ext-simplexml": "*",
+                "ext-zlib": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/SimpleXLSX.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergey Shuchkin (SMSPILOT)",
+                    "email": "sergey.shuchkin@gmail.com",
+                    "homepage": "http://www.shuchkin.ru/"
+                }
+            ],
+            "description": "Parse and retrieve data from Excel XLSx files. MS Excel 2007 workbooks PHP reader.",
+            "homepage": "https://github.com/shuchkin/simplexlsx",
+            "keywords": [
+                "backend",
+                "excel",
+                "parser",
+                "php",
+                "xlsx"
+            ],
+            "time": "2020-04-28T13:18:56+00:00"
         },
         {
             "name": "spomky-labs/base64url",
@@ -3400,6 +3493,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2018-01-06T05:45:45+00:00"
         },
         {
