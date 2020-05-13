@@ -31,6 +31,7 @@ class SalaryAdminManager extends AbstractModuleManager
         $this->addModelClass('SalaryComponentType');
         $this->addModelClass('SalaryComponent');
         $this->addModelClass('EmployeeSalaryDeposit');
+        $this->addModelClass('EmployeeSalaryBonus');
         $this->addModelClass('PayrollEmployee');
     }
 
@@ -53,6 +54,12 @@ class SalaryAdminManager extends AbstractModuleManager
             LanguageManager::tran('Salary Deposit'),
             SalaryUtil::class,
             'getSalaryDeposit'
+        );
+        $this->addCalculationHook(
+            'SalaryUtil_getSalaryBonus',
+            LanguageManager::tran('Salary Bonus'),
+            SalaryUtil::class,
+            'getSalaryBonus'
         );
     }
 }
