@@ -2134,3 +2134,6 @@ msgstr "Hoàn tất"
 
 msgid "Employee Salary Bonus"
 msgstr "Thưởng"
+
+msgid "Salary Bonus"
+msgstr "Thưởng"

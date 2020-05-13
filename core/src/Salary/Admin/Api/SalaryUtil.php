@@ -179,7 +179,7 @@ class SalaryUtil
         return (int)$totalRealSalary;
     }
 
-    public function getSalaryDeposit($employeeId, $startDate, $endDate, $toArray = false)
+    public function getSalaryDeposit($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
     {
         $totalSalaryDeposit = 0;
 
@@ -203,7 +203,7 @@ class SalaryUtil
         return $totalSalaryDeposit;
     }
 
-    public function getSalaryBonus($employeeId, $startDate, $endDate, $toArray = false)
+    public function getSalaryBonus($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
     {
         $totalSalaryBonus = 0;
 
