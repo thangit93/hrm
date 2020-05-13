@@ -107,12 +107,12 @@ class AttendanceUtil
         return 0;
     }
 
-    private static function isFullWorkingDay($employeeId, $date)
+    public static function isFullWorkingDay($employeeId, $date)
     {
         $model = new Employee();
         $employee = $model->Find('id = ?', ['id' => $employeeId]);
-        $employee = $model->postProcessGetData($employee);
         $employee = array_shift($employee);
+        $employee = $model->postProcessGetData($employee);
 
         if (!empty($employee->full_working_days)) {
             $fullWorkingDayFrom = DateTime::createFromFormat('Y-m-d', $employee->full_working_days);
@@ -128,19 +128,15 @@ class AttendanceUtil
 
     public function getDaysWorked($employeeId, $startDate, $endDate)
     {
+        $totalWorkingDays = $this->getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
         $startDate = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
         $endDate = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
 
         $atSum = 0;
 
-        if($employeeId == 919){
-            $debug = true;
-        }
-
         while ($startDate <= $endDate) {
             if (self::isFullWorkingDay($employeeId, $startDate)) {
-                $atSum += AttendanceUtil::calculateWorkingDay($startDate->format('Y-m-d H:i:s'),
-                    $startDate->format('Y-m-d H:i:s'), $employeeId);
+                $atSum += 1;
             } else {
                 /** @var array $atts */
                 $atts = self::getAttendancesData($employeeId, $startDate->format('Y-m-d'), $startDate->format('Y-m-d'));
@@ -153,7 +149,7 @@ class AttendanceUtil
             $startDate->add(\DateInterval::createFromDateString('1 days'));
         }
 
-        return $atSum;
+        return ($atSum > $totalWorkingDays) ? $totalWorkingDays : $atSum;
     }
 
     public function getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate)

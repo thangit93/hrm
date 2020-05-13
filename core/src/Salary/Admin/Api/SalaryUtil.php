@@ -7,6 +7,7 @@ namespace Salary\Admin\Api;
 use Attendance\Admin\Api\AttendanceUtil;
 use Classes\CustomFieldManager;
 use DateTime;
+use Employees\Common\Model\Employee;
 use Exception;
 use Salary\Common\Model\EmployeeSalary;
 use Salary\Common\Model\EmployeeSalaryDeposit;
@@ -26,13 +27,14 @@ class SalaryUtil
      * @return mixed
      * @throws Exception
      */
-    private static function getEmployeeSalaries(
+    public static function getEmployeeSalaries(
         $employeeId,
         $from = null,
         $to = null,
         $components = [],
         $getOne = false
-    ) {
+    )
+    {
         $model = new EmployeeSalary();
         $query = 'employee = ?';
         $queryParams = ['employee' => $employeeId];
@@ -42,6 +44,7 @@ class SalaryUtil
             $queryParams['component'] = implode(',', $components);
         }
 
+        /** @var array $empSalaries */
         $empSalaries = $model->Find($query, $queryParams);
 
         /** @var EmployeeSalary $empSalary */
@@ -118,41 +121,64 @@ class SalaryUtil
         return 0;
     }
 
-    public function getRealSalary($employeeId, $startDate, $endDate, $salaryComponents = "")
+    public function getRealSalary($employeeId, $startDate, $endDate, $salaryComponents = "", $responseArray = false)
     {
+        $startDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
+        $endDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
         $salaryComponents = $this->parseSalaryComponent($salaryComponents);
-        /** @var array $atts */
-        $atts = AttendanceUtil::getAttendancesData($employeeId, $startDate, $endDate);
         $totalWorkingDays = AttendanceUtil::getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
         $totalRealSalary = 0;
-//        $data = [];
+        $data = [];
 
-        foreach ($atts as $att) {
-            $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
-            $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
-            $atSum = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
-            $empSalary = self::getEmployeeSalaries($employeeId, $startDate, $checkOut->format('Y-m-d'),
+        while ($startDateObj <= $endDateObj) {
+            $isFullWorkingDay = AttendanceUtil::isFullWorkingDay($employeeId, $startDateObj);
+
+            if (!$isFullWorkingDay) {
+                /** @var array $atts */
+                $atts = AttendanceUtil::getAttendancesData($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+
+                if (empty($atts)) {
+                    $startDateObj->add(\DateInterval::createFromDateString('1 day'));
+                    continue;
+                }
+
+                $att = array_shift($atts);
+                $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
+                $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
+                $atSum = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
+            } else {
+                $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 09:00:00");
+                $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 17:00:00");
+                $atSum = 1;
+            }
+
+            $empSalary = self::getEmployeeSalaries($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'),
                 $salaryComponents, true);
-            /*$itemData = [
-                'checkIn' => $att->in_time,
-                'checkOut' => $att->out_time,
+            $baseSalary = ((int)$empSalary->amount / (float)$totalWorkingDays) * (float)$atSum;
+            $totalRealSalary += $baseSalary;
+
+            $data[] = [
+                'date' => $startDateObj->format('Y-m-d'),
+                'checkIn' => $checkIn->format('Y-m-d Y:i:s'),
+                'checkOut' => $checkOut->format('Y-m-d Y:i:s'),
                 'salaryComponents' => implode(',', $salaryComponents),
                 'totalWorkingDays' => $totalWorkingDays,
                 'atSum' => $atSum,
                 'empSalary' => $empSalary->amount,
-            ];*/
+                'baseSalary' => $baseSalary,
+            ];
 
-            $baseSalary = ((int)$empSalary->amount / (float)$totalWorkingDays) * (float)$atSum;
-            $totalRealSalary += $baseSalary;
-//            $itemData['baseSalary'] = $baseSalary;
-
-//            $data[] = $itemData;
+            $startDateObj->add(\DateInterval::createFromDateString('1 day'));
         }
 
-        return $totalRealSalary;
+        if ($responseArray) {
+            return $data;
+        }
+
+        return (int)$totalRealSalary;
     }
 
-    public function getSalaryDeposit($employeeId, $startDate, $endDate)
+    public function getSalaryDeposit($employeeId, $startDate, $endDate, $toArray = false)
     {
         $totalSalaryDeposit = 0;
 
@@ -163,8 +189,14 @@ class SalaryUtil
             $endDate,
         ]);
 
+        $data = [];
         foreach ($deposits as $deposit) {
+            $data[] = $deposit;
             $totalSalaryDeposit += (int)$deposit->amount;
+        }
+
+        if (!empty($toArray)) {
+            return $data;
         }
 
         return $totalSalaryDeposit;
@@ -174,7 +206,7 @@ class SalaryUtil
      * @param $salaryComponents
      * @return array|mixed
      */
-    private function parseSalaryComponent($salaryComponents)
+    public function parseSalaryComponent($salaryComponents)
     {
         if (!empty($salaryComponents) && !empty(json_decode($salaryComponents, true))) {
             $salaryComponents = json_decode($salaryComponents, true);

@@ -135,14 +135,14 @@ class AttendanceDataImporter extends AbstractDataImporter
 
                     //create check in time if not empty
                     if (!empty($checkInTime)) {
-                        list($hour, $minute) = explode(':', $checkInTime);
-                        $attendance['in_time'] = $startDate->setTime($hour, $minute, 0)->format('Y-m-d H:i:s');
+                        $checkInTime = DateTime::createFromFormat('Y-m-d H:i:s', $checkInTime);
+                        $attendance['in_time'] = $startDate->setTime($checkInTime->format('H'), $checkInTime->format('i'), 0)->format('Y-m-d H:i:s');
                     }
 
                     //create check out time if not empty
                     if (!empty($checkOutTime)) {
-                        list($hour, $minute) = explode(':', $checkOutTime);
-                        $attendance['out_time'] = $startDate->setTime($hour, $minute, 0)->format('Y-m-d H:i:s');
+                        $checkOutTime = DateTime::createFromFormat('Y-m-d H:i:s', $checkOutTime);
+                        $attendance['out_time'] = $startDate->setTime($checkOutTime->format('H'), $checkOutTime->format('i'), 0)->format('Y-m-d H:i:s');
                     }
 
                     $workingDay = AttendanceUtil::calculateWorkingDay($attendance['in_time'], $attendance['out_time']);
