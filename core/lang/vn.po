@@ -2131,3 +2131,6 @@ msgstr "Tải xuống"
 
 msgid "Finalize"
 msgstr "Hoàn tất"
+
+msgid "Employee Salary Bonus"
+msgstr "Thưởng"

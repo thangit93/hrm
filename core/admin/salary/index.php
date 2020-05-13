@@ -20,6 +20,9 @@ $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
 $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
 	'EmployeeSalaryDeposit','EmployeeSalaryDeposit','Employee Salary Deposit','EmployeeSalaryDepositAdapter','','',false,array("setRemoteTable"=>"true"))
 );
+$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
+	'EmployeeSalaryBonus','EmployeeSalaryBonus','Employee Salary Bonus','EmployeeSalaryBonusAdapter','','',false,array("setRemoteTable"=>"true"))
+);
 
 
 echo \Classes\UIManager::getInstance()->renderModule($moduleBuilder);

@@ -197,6 +197,27 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
                                 ];
                             }
                             $data['fields'][] = $separatorField;
+                        }  elseif ($payrollColumn->calculation_hook == 'SalaryUtil_getSalaryBonus') {
+                            $bonusSalaries = $salaryUtil->getSalaryBonus($employeeId, $payroll->date_start, $payroll->date_end, true);
+
+                            $data['fields'][] = [
+                                'id' => uniqid('data_'),
+                                'type' => 'Payroll Column',
+                                'status' => 'Show',
+                                'value' => ' ',
+                                'label' => LanguageManager::tran('Tiền thưởng')
+                            ];
+
+                            foreach ($bonusSalaries as $bonusSalary) {
+                                $data['fields'][] = [
+                                    'id' => uniqid('data_'),
+                                    'type' => 'Payroll Column',
+                                    'status' => 'Show',
+                                    'value' => number_format($bonusSalary->amount) . ' đ',
+                                    'label' => DateTime::createFromFormat('Y-m-d H:i:s', $bonusSalary->date)->format('d/m/Y')
+                                ];
+                            }
+                            $data['fields'][] = $separatorField;
                         } else {
                             $data['fields'][] = $separatorField;
                         }
