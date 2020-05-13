@@ -1,4 +1,4 @@
-# IceHrm
+# Ant Nest Hrm
 
 This is a docker based development environment for the IceHrm. It's based on 2 containers:
 
