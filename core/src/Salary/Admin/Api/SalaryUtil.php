@@ -129,9 +129,14 @@ class SalaryUtil
         $salaryComponents = $this->parseSalaryComponent($salaryComponents);
         $totalWorkingDays = AttendanceUtil::getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
         $totalRealSalary = 0;
+        $totalAtSum = 0;
         $data = [];
 
         while ($startDateObj <= $endDateObj) {
+            if ($totalAtSum >= $totalWorkingDays) {
+                break;
+            }
+
             $isFullWorkingDay = AttendanceUtil::isFullWorkingDay($employeeId, $startDateObj);
 
             if (!$isFullWorkingDay) {
@@ -150,10 +155,20 @@ class SalaryUtil
             } else {
                 $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 09:00:00");
                 $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 17:00:00");
-                $atSum = 1;
+                $dayOfWeek = $startDateObj->format('w');
+
+                if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
+                    $atSum = 1;
+                } elseif ($dayOfWeek == 6) {
+                    $atSum = 0.5;
+                } else {
+                    $atSum = 0;
+                }
             }
 
-            $empSalary = self::getEmployeeSalaries($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'),
+            $totalAtSum += $atSum;
+
+            $empSalary = self::getEmployeeSalaries($employeeId, $startDate, $startDateObj->format('Y-m-d'),
                 $salaryComponents, true);
             $baseSalary = ((int)$empSalary->amount / (float)$totalWorkingDays) * (float)$atSum;
             $totalRealSalary += $baseSalary;
