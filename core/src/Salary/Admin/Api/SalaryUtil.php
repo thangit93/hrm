@@ -10,6 +10,7 @@ use DateTime;
 use Employees\Common\Model\Employee;
 use Exception;
 use Salary\Common\Model\EmployeeSalary;
+use Salary\Common\Model\EmployeeSalaryBonus;
 use Salary\Common\Model\EmployeeSalaryDeposit;
 
 /**
@@ -178,7 +179,7 @@ class SalaryUtil
         return (int)$totalRealSalary;
     }
 
-    public function getSalaryDeposit($employeeId, $startDate, $endDate, $toArray = false)
+    public function getSalaryDeposit($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
     {
         $totalSalaryDeposit = 0;
 
@@ -200,6 +201,30 @@ class SalaryUtil
         }
 
         return $totalSalaryDeposit;
+    }
+
+    public function getSalaryBonus($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
+    {
+        $totalSalaryBonus = 0;
+
+        $model = new EmployeeSalaryBonus();
+        $bonuses = $model->Find('employee = ? AND date >= ? AND date <= ?', [
+            $employeeId,
+            $startDate,
+            $endDate,
+        ]);
+
+        $data = [];
+        foreach ($bonuses as $bonus) {
+            $data[] = $bonus;
+            $totalSalaryBonus += (int)$bonus->amount;
+        }
+
+        if (!empty($toArray)) {
+            return $data;
+        }
+
+        return $totalSalaryBonus;
     }
 
     /**
