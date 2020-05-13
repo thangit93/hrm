@@ -136,7 +136,15 @@ class AttendanceUtil
 
         while ($startDate <= $endDate) {
             if (self::isFullWorkingDay($employeeId, $startDate)) {
-                $atSum += 1;
+                $dayOfWeek = $startDate->format('w');
+
+                if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
+                    $atSum += 1;
+                } elseif ($dayOfWeek == 6) {
+                    $atSum += 0.5;
+                } else {
+                    $atSum += 0;
+                }
             } else {
                 /** @var array $atts */
                 $atts = self::getAttendancesData($employeeId, $startDate->format('Y-m-d'), $startDate->format('Y-m-d'));
