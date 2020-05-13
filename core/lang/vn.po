@@ -2137,3 +2137,6 @@ msgstr "Thưởng"
 
 msgid "Salary Bonus"
 msgstr "Thưởng"
+
+msgid "SalaryUtil_getSalaryBonus"
+msgstr "Tính tiền thưởng"
