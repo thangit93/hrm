@@ -68,7 +68,24 @@ class TableEditAdapter extends AdapterBase {
     callBackData.callBackData = [];
     callBackData.callBackSuccess = 'getAllDataSuccessCallBack';
     callBackData.callBackFail = 'getAllDataFailCallBack';
+    this.showLoader();
+    this.customAction('getAllData', this.modulePath, reqJson, callBackData);
+  }
 
+  exportAllData(save) {
+    let req = {};
+    req.rowTable = this.rowTable;
+    req.columnTable = this.columnTable;
+    req.valueTable = this.valueTable;
+    req = this.addAdditionalRequestData('exportAllData', req);
+    req.save = (save === undefined || save == null || save === false) ? 0 : 1;
+    const reqJson = JSON.stringify(req);
+
+    const callBackData = [];
+    callBackData.callBackData = [];
+    callBackData.callBackSuccess = 'exportAllDataSuccessCallBack';
+    callBackData.callBackFail = 'getAllDataFailCallBack';
+    this.showLoader();
     this.customAction('getAllData', this.modulePath, reqJson, callBackData);
   }
 
@@ -93,6 +110,7 @@ class TableEditAdapter extends AdapterBase {
   }
 
   getAllDataSuccessCallBack(allData) {
+    this.hideLoader();
     const serverData = allData[2];
     const columnData = allData[1];
     const rowData = allData[0];
@@ -127,12 +145,31 @@ class TableEditAdapter extends AdapterBase {
     }
   }
 
+  exportAllDataSuccessCallBack(allData) {
+    this.hideLoader();
+
+    if(!allData['file']){
+      return;
+    }
+
+    const element = document.createElement('a');
+    element.setAttribute('href', allData['file']['url']);
+    element.setAttribute('download', allData['file']['name']);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
   modifyCSVHeader(header) {
     return header;
   }
 
   getAllDataFailCallBack(callBackData, serverData) {
-
+    this.hideLoader();
   }
 
   setHeaders(columns, rows) {

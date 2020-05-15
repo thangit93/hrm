@@ -30,7 +30,7 @@ if (!isset($_REQUEST['objects'])) {
     }
 } else {
     if (isset($_REQUEST['iDisplayStart']) && $_REQUEST['iDisplayLength'] != '-1') {
-        $sLimit = " LIMIT " . intval($_REQUEST['iDisplayStart']) . ", " . (intval($_REQUEST['iDisplayLength'])+1);
+        $sLimit = " LIMIT " . intval($_REQUEST['iDisplayStart']) . ", " . (intval($_REQUEST['iDisplayLength']) + 1);
     }
 }
 
@@ -103,8 +103,8 @@ if (!isset($_REQUEST['objects'])) {
 
             if ($obj->getUserOnlyMeAccessField() == 'id'
                 && \Classes\SettingsManager::getInstance()->getSetting(
-		            'System: Company Structure Managers Enabled'
-	            ) == 1
+                    'System: Company Structure Managers Enabled'
+                ) == 1
                 && \Company\Common\Model\CompanyStructure::isHeadOfCompanyStructure($cempObj->department, $cemp)
             ) {
                 if (empty($subordinates)) {
@@ -113,11 +113,11 @@ if (!isset($_REQUEST['objects'])) {
 
                 $childCompaniesIds = array();
                 if (\Classes\SettingsManager::getInstance()->getSetting(
-		                'System: Child Company Structure Managers Enabled'
-	                ) == '1'
+                        'System: Child Company Structure Managers Enabled'
+                    ) == '1'
                 ) {
                     $childCompaniesResp = \Company\Common\Model\CompanyStructure::getAllChildCompanyStructures(
-	                    $cempObj->department
+                        $cempObj->department
                     );
                     $childCompanies = $childCompaniesResp->getObject();
 
@@ -160,8 +160,8 @@ if (!isset($_REQUEST['objects'])) {
                 }
             }
             $sql = "Select count(id) as count from " . $obj->_table .
-	            " where " . $obj->getUserOnlyMeAccessField() . " in (" . $subordinatesIds . ") "
-	            . $countFilterQuery;
+                " where " . $obj->getUserOnlyMeAccessField() . " in (" . $subordinatesIds . ") "
+                . $countFilterQuery;
             $rowCount = $obj->DB()->Execute($sql, $countFilterQueryData);
         } else {
             $sql = "Select count(id) as count from " . $obj->_table;
