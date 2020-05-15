@@ -133,7 +133,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     });
 
     $(".downloadBtnTable").off().on('click',function(){
-        modJsList['tabPayrollData'].downloadPayroll();
+        modJsList['tabPayrollData'].exportAllData();
     });
 
     $(".cancelBtnTable").off().on('click',function(){

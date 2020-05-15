@@ -2140,3 +2140,6 @@ msgstr "Thưởng"
 
 msgid "SalaryUtil_getSalaryBonus"
 msgstr "Tính tiền thưởng"
+
+msgid "Payroll Table"
+msgstr "Bảng Lương"
