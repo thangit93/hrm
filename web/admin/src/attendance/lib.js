@@ -35,7 +35,7 @@ class AttendanceAdapter extends AdapterBase {
   getFormFields() {
     return [
       ['employee', {
-        label: 'Employee', type: 'select2', 'allow-null': false, 'remote-source': ['Employee', 'id', 'first_name+last_name'],
+        label: 'Employee', type: 'select2', 'allow-null': false, 'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
       }],
       ['id', { label: 'ID', type: 'hidden' }],
       ['in_time', { label: 'Time-In', type: 'datetime' }],
@@ -47,9 +47,14 @@ class AttendanceAdapter extends AdapterBase {
   getFilters() {
     return [
       ['employee', {
-        label: 'Employee', type: 'select2', 'allow-null': false, 'remote-source': ['Employee', 'id', 'first_name+last_name'],
+        label: 'Employee', type: 'select2', 'allow-null': true, 'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
       }],
-
+      ['in_time', {
+        label: 'Start Date', type: 'date', 'allow-null': true, validation: 'none'
+      }],
+      ['out_time', {
+        label: 'End Date', type: 'date', 'allow-null': true, validation: 'none'
+      }],
     ];
   }
 
