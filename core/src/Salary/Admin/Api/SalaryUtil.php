@@ -116,7 +116,7 @@ class SalaryUtil
         if (!empty($empSalaries)) {
             $baseSalary = array_pop($empSalaries);
 
-            return $baseSalary->amount;
+            return round($baseSalary->amount);
         }
 
         return 0;
@@ -191,7 +191,7 @@ class SalaryUtil
             return $data;
         }
 
-        return (int)$totalRealSalary;
+        return round($totalRealSalary);
     }
 
     public function getSalaryDeposit($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
@@ -208,14 +208,14 @@ class SalaryUtil
         $data = [];
         foreach ($deposits as $deposit) {
             $data[] = $deposit;
-            $totalSalaryDeposit += (int)$deposit->amount;
+            $totalSalaryDeposit += round($deposit->amount);
         }
 
         if (!empty($toArray)) {
             return $data;
         }
 
-        return $totalSalaryDeposit;
+        return round($totalSalaryDeposit);
     }
 
     public function getSalaryBonus($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
@@ -232,14 +232,14 @@ class SalaryUtil
         $data = [];
         foreach ($bonuses as $bonus) {
             $data[] = $bonus;
-            $totalSalaryBonus += (int)$bonus->amount;
+            $totalSalaryBonus += round($bonus->amount);
         }
 
         if (!empty($toArray)) {
             return $data;
         }
 
-        return $totalSalaryBonus;
+        return round($totalSalaryBonus);
     }
 
     /**
