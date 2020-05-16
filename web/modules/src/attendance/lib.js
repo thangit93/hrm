@@ -33,8 +33,10 @@ class AttendanceAdapter extends AdapterBase {
   getDataMapping() {
     return [
       'id',
+      'working_date',
       'in_time',
       'out_time',
+      'real_hours',
       'note',
     ];
   }
@@ -42,9 +44,11 @@ class AttendanceAdapter extends AdapterBase {
   getHeaders() {
     return [
       { sTitle: 'ID', bVisible: false },
-      { sTitle: 'Time-In' },
-      { sTitle: 'Time-Out' },
-      { sTitle: 'Note' },
+      { sTitle: 'Working Date' },
+      { sTitle: 'Time-In', bSort: false },
+      { sTitle: 'Time-Out', bSort: false },
+      { sTitle: 'Real Hours', bSort: false },
+      { sTitle: 'Note', bSort: false },
     ];
   }
 
@@ -73,7 +77,7 @@ class AttendanceAdapter extends AdapterBase {
     ];
   }
 
-  getCustomTableParams() {
+  /*getCustomTableParams() {
     const that = this;
     const dataTableParams = {
       aoColumnDefs: [
@@ -96,13 +100,19 @@ class AttendanceAdapter extends AdapterBase {
           aTargets: [3],
         },
         {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 4);
+          },
+          aTargets: [4],
+        },
+        {
           fnRender: that.getActionButtons,
           aTargets: [that.getDataMapping().length],
         },
       ],
     };
     return dataTableParams;
-  }
+  }*/
 
   preProcessRemoteTableData(data, cell, id) {
     if (id === 1) {
@@ -126,16 +136,76 @@ class AttendanceAdapter extends AdapterBase {
     return cell;
   }
 
+  createTableServer(elementId) {
+    const that = this;
+    const headers = this.getHeaders();
+
+    headers.push({ sTitle: '', sClass: 'center' });
+
+    // add translations
+    for (const index in headers) {
+      headers[index].sTitle = this.gt(headers[index].sTitle);
+    }
+
+    let html = '';
+    html = this.getTableTopButtonHtml() + this.getTableHTMLTemplate();
+
+    // Find current page
+    const activePage = $(`#${elementId} .dataTables_paginate .active a`).html();
+    let start = 0;
+    if (activePage !== undefined && activePage != null) {
+      start = parseInt(activePage, 10) * 15 - 15;
+    }
+
+
+    $(`#${elementId}`).html(html);
+
+    const dataTableParams = {
+      oLanguage: {
+        sLengthMenu: '_MENU_ records per page',
+      },
+      bProcessing: true,
+      bServerSide: true,
+      sAjaxSource: that.getDataUrl(that.getDataMapping()),
+      aoColumns: headers,
+      bSort: that.isSortable(),
+      parent: that,
+      iDisplayLength: 15,
+      iDisplayStart: start,
+    };
+
+    if (this.showActionButtons()) {
+      dataTableParams.aoColumnDefs = [
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ];
+    }
+
+    const customTableParams = this.getCustomTableParams();
+
+    $.extend(dataTableParams, customTableParams);
+
+    $(`#${elementId} #grid`).dataTable(dataTableParams);
+
+    $('.dataTables_paginate ul').addClass('pagination');
+    $('.dataTables_length').hide();
+    $('.dataTables_filter input').addClass('form-control');
+    $('.dataTables_filter input').attr('placeholder', 'Search');
+    $('.dataTables_filter label').contents().filter(function () {
+      return (this.nodeType === 3);
+    }).remove();
+    $('.dataTables_filter').remove();
+
+    $('.tableActionButton').tooltip();
+  }
 
   getActionButtonsHtml(id, data) {
     return '';
   }
 
   getTableTopButtonHtml() {
-    setTimeout(function () {
-      $('#grid_filter').removeClass('dataTables_filter').addClass('text-right');
-    }, 1000)
-
     let html = '';
     if (this.getShowAddNew()) {
       html = `<button onclick="modJs.renderForm();return false;" class="btn btn-small btn-primary">${this.gt(this.getAddNewLabel())} <i class="fa fa-plus"></i></button>`;

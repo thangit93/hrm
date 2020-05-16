@@ -2173,3 +2173,9 @@ msgstr "Nội dung giao dịch"
 
 msgid "Payment on Behalf Content"
 msgstr "Cong ty vmed chuyen luong thang "
+
+msgid "Working Date"
+msgstr "Ngày làm việc"
+
+msgid "Real Hours"
+msgstr "Giờ công thực tế"
