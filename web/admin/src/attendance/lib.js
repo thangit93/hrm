@@ -16,8 +16,10 @@ class AttendanceAdapter extends AdapterBase {
     return [
       'id',
       'employee',
+      'working_date',
       'in_time',
       'out_time',
+      'real_hours',
       'note',
     ];
   }
@@ -26,9 +28,11 @@ class AttendanceAdapter extends AdapterBase {
     return [
       { sTitle: 'ID', bVisible: false },
       { sTitle: 'Employee' },
-      { sTitle: 'Time-In' },
-      { sTitle: 'Time-Out' },
-      { sTitle: 'Note' },
+      { sTitle: 'Working Date' },
+      { sTitle: 'Time-In', bSort: false },
+      { sTitle: 'Time-Out', bSort: false },
+      { sTitle: 'Real Hours', bSort: false },
+      { sTitle: 'Note', bSort: false },
     ];
   }
 
@@ -63,7 +67,7 @@ class AttendanceAdapter extends AdapterBase {
   }
 
 
-  getCustomTableParams() {
+  /*getCustomTableParams() {
     const that = this;
     const dataTableParams = {
       aoColumnDefs: [
@@ -92,7 +96,7 @@ class AttendanceAdapter extends AdapterBase {
       ],
     };
     return dataTableParams;
-  }
+  }*/
 
   preProcessRemoteTableData(data, cell, id) {
     if (id === 2) {
@@ -263,19 +267,86 @@ class AttendanceAdapter extends AdapterBase {
     this.showMessage('Error', callBackData);
   }
 
+  createTableServer(elementId) {
+    const that = this;
+    const headers = this.getHeaders();
+
+    headers.push({ sTitle: '', sClass: 'center' });
+
+    // add translations
+    for (const index in headers) {
+      headers[index].sTitle = this.gt(headers[index].sTitle);
+    }
+
+    let html = '';
+    html = this.getTableTopButtonHtml() + this.getTableHTMLTemplate();
+
+    // Find current page
+    const activePage = $(`#${elementId} .dataTables_paginate .active a`).html();
+    let start = 0;
+    if (activePage !== undefined && activePage != null) {
+      start = parseInt(activePage, 10) * 15 - 15;
+    }
+
+
+    $(`#${elementId}`).html(html);
+
+    const dataTableParams = {
+      oLanguage: {
+        sLengthMenu: '_MENU_ records per page',
+      },
+      bProcessing: true,
+      bServerSide: true,
+      sAjaxSource: that.getDataUrl(that.getDataMapping()),
+      aoColumns: headers,
+      bSort: that.isSortable(),
+      parent: that,
+      iDisplayLength: 15,
+      iDisplayStart: start,
+    };
+
+    if (this.showActionButtons()) {
+      dataTableParams.aoColumnDefs = [
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ];
+    }
+
+    const customTableParams = this.getCustomTableParams();
+
+    $.extend(dataTableParams, customTableParams);
+
+    $(`#${elementId} #grid`).dataTable(dataTableParams);
+
+    $('.dataTables_paginate ul').addClass('pagination');
+    $('.dataTables_length').hide();
+    $('.dataTables_filter input').addClass('form-control');
+    $('.dataTables_filter input').attr('placeholder', 'Search');
+    $('.dataTables_filter label').contents().filter(function () {
+      return (this.nodeType === 3);
+    }).remove();
+    $('.dataTables_filter').remove();
+
+    $('.tableActionButton').tooltip();
+  }
+
   getActionButtonsHtml(id, data) {
+    $('.dataTables_filter').remove();
+
     const editButton = '<img class="tableActionButton" src="_BASE_images/edit.png" style="cursor:pointer;" rel="tooltip" title="Edit" onclick="modJs.edit(_id_);return false;"></img>';
     const deleteButton = '<img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Delete" onclick="modJs.deleteRow(_id_);return false;"></img>';
-    const photoButton = '<img class="tableActionButton" src="_BASE_images/map.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Show Photo" onclick="modJs.showPunchImages(_id_);return false;"></img>';
+    /*const photoButton = '<img class="tableActionButton" src="_BASE_images/map.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Show Photo" onclick="modJs.showPunchImages(_id_);return false;"></img>';*/
 
-    let html;
-    if (this.photoAttendance === 1) {
+    let html = '';
+    /*if (this.photoAttendance === 1) {
       html = '<div style="width:80px;">_edit__delete__photo_</div>';
     } else {
       html = '<div style="width:80px;">_edit__delete_</div>';
-    }
+    }*/
 
-    html = html.replace('_photo_', photoButton);
+    // html = html.replace('_photo_', photoButton);
 
     if (this.showDelete) {
       html = html.replace('_delete_', deleteButton);
