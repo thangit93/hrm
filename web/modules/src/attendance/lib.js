@@ -62,6 +62,16 @@ class AttendanceAdapter extends AdapterBase {
     ];
   }
 
+  getFilters() {
+    return [
+      ['in_time', {
+        label: 'Start Date', type: 'date', 'allow-null': true, validation: 'none'
+      }],
+      ['out_time', {
+        label: 'End Date', type: 'date', 'allow-null': true, validation: 'none'
+      }],
+    ];
+  }
 
   getCustomTableParams() {
     const that = this;
@@ -125,13 +135,39 @@ class AttendanceAdapter extends AdapterBase {
     setTimeout(function () {
       $('#grid_filter').removeClass('dataTables_filter').addClass('text-right');
     }, 1000)
-    return '';
-    if (this.punch === null || this.punch === undefined) {
-      return '<button id="punchButton" style="float:right; display: none" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-in <span class="icon-time"></span></button>';
-    }
-    return '<button id="punchButton" style="float:right; display: none" onclick="modJs.showPunchDialog();return false;" class="btn btn-small">Punch-out <span class="icon-time"></span></button>';
-  }
 
+    let html = '';
+    if (this.getShowAddNew()) {
+      html = `<button onclick="modJs.renderForm();return false;" class="btn btn-small btn-primary">${this.gt(this.getAddNewLabel())} <i class="fa fa-plus"></i></button>`;
+    }
+
+    if (this.getFilters() != null) {
+      if (html !== '') {
+        html += '&nbsp;&nbsp;';
+      }
+      html += `<button onclick="modJs.showFilters();return false;" class="btn btn-small btn-primary">${this.gt('Filter')} <i class="fa fa-filter"></i></button>`;
+      html += '&nbsp;&nbsp;';
+      if (this.filtersAlreadySet) {
+        html += '<button id="__id___resetFilters" onclick="modJs.resetFilters();return false;" class="btn btn-small btn-default">__filterString__ <i class="fa fa-times"></i></button>';
+      } else {
+        html += '<button id="__id___resetFilters" onclick="modJs.resetFilters();return false;" class="btn btn-small btn-default" style="display:none;">__filterString__ <i class="fa fa-times"></i></button>';
+      }
+    }
+
+    html = html.replace(/__id__/g, this.getTableName());
+
+    if (this.currentFilterString !== '' && this.currentFilterString != null) {
+      html = html.replace(/__filterString__/g, this.currentFilterString);
+    } else {
+      html = html.replace(/__filterString__/g, 'Reset Filters');
+    }
+
+    if (html !== '') {
+      html = `<div class="row"><div class="col-xs-12">${html}</div></div>`;
+    }
+
+    return html;
+  }
 
   save() {
     const that = this;
