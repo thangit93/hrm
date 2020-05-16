@@ -42,6 +42,7 @@ modJsList['tabAttendance'].setUseServerTime(<?=$useServerTime?>);
 modJsList['tabAttendance'].setPhotoAttendance(<?=$photoAttendance == '1'?>);
 modJsList['tabAttendance'].setRemoteTable(true);
 modJsList['tabAttendance'].updatePunchButton(true);
+modJsList['tabAttendance'].setShowAddNew(false);
 
 
 var modJs = modJsList['tabAttendance'];

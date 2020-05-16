@@ -315,6 +315,9 @@ class BaseService
         }
 
         if (!empty($sortData) && $sortData['sorting']."" == "1" && isset($sortData['column'])) {
+            if(in_array($sortData['column'], ['working_date'])){
+                $sortData['column'] = 'in_time';
+            }
             $orderBy = " ORDER BY ".$sortData['column']." ".$sortData['order'];
         } else {
             if (empty($orderBy)) {

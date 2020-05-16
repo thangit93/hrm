@@ -8,21 +8,31 @@
 
 namespace Payroll\Admin\Api;
 
+require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/lib/composer/vendor/autoload.php';
+
 use Classes\BaseService;
 use Classes\IceResponse;
+use Classes\LanguageManager;
 use Classes\SubActionManager;
 use Company\Common\Model\CompanyStructure;
+use DateTime;
 use Employees\Common\Model\Employee;
+use Exception;
 use Payroll\Common\Model\Deduction;
 use Payroll\Common\Model\Payroll;
 use Payroll\Common\Model\PayrollCalculations;
 use Payroll\Common\Model\PayrollColumn;
 use Payroll\Common\Model\PayrollData;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Salary\Common\Model\EmployeeSalary;
 use Salary\Common\Model\PayrollEmployee;
 use Salary\Common\Model\SalaryComponent;
+use stdClass;
 use Utils\LogManager;
 use Utils\Math\EvalMath;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PayrollActionManager extends SubActionManager
 {
@@ -51,9 +61,10 @@ class PayrollActionManager extends SubActionManager
         $employeeId,
         $payrollEmployeeId,
         $noColumnCalculations = false
-    ) {
-    
-        $val = $this->getFromCalculationCache($col->id."-".$payroll->id."-".$employeeId);
+    )
+    {
+
+        $val = $this->getFromCalculationCache($col->id . "-" . $payroll->id . "-" . $employeeId);
         if (!empty($val)) {
             return $val;
         }
@@ -65,7 +76,7 @@ class PayrollActionManager extends SubActionManager
                 $col->calculation_function
             );
             $val = number_format(round($sum, 2), 2, '.', '');
-            $this->addToCalculationCache($col->id."-".$payroll->id."-".$employeeId, $val);
+            $this->addToCalculationCache($col->id . "-" . $payroll->id . "-" . $employeeId, $val);
             return $val;
         }
 
@@ -75,15 +86,15 @@ class PayrollActionManager extends SubActionManager
         $payRollEmp->Load("id = ?", array($payrollEmployeeId));
 
         //Salary
-        LogManager::getInstance()->info("salary components row:".$col->salary_components);
+        LogManager::getInstance()->info("salary components row:" . $col->salary_components);
         if (!empty($col->salary_components) &&
             !empty(json_decode($col->salary_components, true))) {
             $salaryComponent = new SalaryComponent();
             $salaryComponents = $salaryComponent->Find(
-                "id in (".implode(",", json_decode($col->salary_components, true)).")",
+                "id in (" . implode(",", json_decode($col->salary_components, true)) . ")",
                 array()
             );
-            LogManager::getInstance()->info("salary components:".$salaryComponents);
+            LogManager::getInstance()->info("salary components:" . $salaryComponents);
             foreach ($salaryComponents as $salaryComponent) {
                 $sum += $this->getTotalForEmployeeSalaryByComponent($employeeId, $salaryComponent->id);
             }
@@ -95,12 +106,12 @@ class PayrollActionManager extends SubActionManager
             $deduction = new Deduction();
             if (empty($payRollEmp->deduction_group)) {
                 $deductions = $deduction->Find(
-                    "id in (".implode(",", json_decode($col->deductions, true)).")",
+                    "id in (" . implode(",", json_decode($col->deductions, true)) . ")",
                     array()
                 );
             } else {
                 $deductions = $deduction->Find(
-                    "deduction_group = ? and id in (".implode(",", json_decode($col->deductions, true)).")",
+                    "deduction_group = ? and id in (" . implode(",", json_decode($col->deductions, true)) . ")",
                     array($payRollEmp->deduction_group)
                 );
             }
@@ -125,7 +136,7 @@ class PayrollActionManager extends SubActionManager
                 !empty(json_decode($col->add_columns, true))) {
                 $colIds = json_decode($col->add_columns, true);
                 $payrollColumn = new PayrollColumn();
-                $payrollColumns = $payrollColumn->Find("id in (".implode(",", $colIds).")", array());
+                $payrollColumns = $payrollColumn->Find("id in (" . implode(",", $colIds) . ")", array());
                 foreach ($payrollColumns as $payrollColumn) {
                     $sum += $this->calculatePayrollColumn(
                         $payrollColumn,
@@ -141,7 +152,7 @@ class PayrollActionManager extends SubActionManager
                 !empty(json_decode($col->sub_columns, true))) {
                 $colIds = json_decode($col->sub_columns, true);
                 $payrollColumn = new PayrollColumn();
-                $payrollColumns = $payrollColumn->Find("id in (".implode(",", $colIds).")", array());
+                $payrollColumns = $payrollColumn->Find("id in (" . implode(",", $colIds) . ")", array());
                 foreach ($payrollColumns as $payrollColumn) {
                     $sum -= $this->calculatePayrollColumn(
                         $payrollColumn,
@@ -158,7 +169,7 @@ class PayrollActionManager extends SubActionManager
                 $cc = json_decode($col->calculation_columns);
                 $func = $col->calculation_function;
                 foreach ($cc as $c) {
-                    $value = $this->getFromCalculationCache($c->column."-".$payroll->id."-".$employeeId);
+                    $value = $this->getFromCalculationCache($c->column . "-" . $payroll->id . "-" . $employeeId);
                     if (empty($value)) {
                         $value = 0.00;
                     }
@@ -166,15 +177,15 @@ class PayrollActionManager extends SubActionManager
                 }
                 try {
                     $sum += $evalMath->evaluate($func);
-                } catch (\Exception $e) {
-                    LogManager::getInstance()->info("Error:".$e->getMessage());
+                } catch (Exception $e) {
+                    LogManager::getInstance()->info("Error:" . $e->getMessage());
                 }
             }
         }
 
         //return $sum;
         $val = number_format(round($sum, 2), 2, '.', '');
-        $this->addToCalculationCache($col->id."-".$payroll->id."-".$employeeId, $val);
+        $this->addToCalculationCache($col->id . "-" . $payroll->id . "-" . $employeeId, $val);
         return $val;
     }
 
@@ -185,7 +196,7 @@ class PayrollActionManager extends SubActionManager
         if (!empty($deduction->componentType) && !empty(json_decode($deduction->componentType, true))) {
             $salaryComponent = new SalaryComponent();
             $salaryComponents = $salaryComponent->Find(
-                "componentType in (".implode(",", json_decode($deduction->componentType, true)).")",
+                "componentType in (" . implode(",", json_decode($deduction->componentType, true)) . ")",
                 array()
             );
         }
@@ -194,7 +205,7 @@ class PayrollActionManager extends SubActionManager
         if (!empty($deduction->component) && !empty(json_decode($deduction->component, true))) {
             $salaryComponent = new SalaryComponent();
             $salaryComponents2 = $salaryComponent->Find(
-                "id in (".implode(",", json_decode($deduction->component, true)).")",
+                "id in (" . implode(",", json_decode($deduction->component, true)) . ")",
                 array()
             );
         }
@@ -215,7 +226,7 @@ class PayrollActionManager extends SubActionManager
         }
 
         if (!empty($deduction->payrollColumn)) {
-            $columnVal = $this->getFromCalculationCache($deduction->payrollColumn."-".$payroll->id."-".$employeeId);
+            $columnVal = $this->getFromCalculationCache($deduction->payrollColumn . "-" . $payroll->id . "-" . $employeeId);
             if (!empty($columnVal)) {
                 $sum += $columnVal;
             }
@@ -292,10 +303,10 @@ class PayrollActionManager extends SubActionManager
         $allowed = array();
         $deduction = new Deduction();
         if (empty($payrollEmp->deduction_allowed) || empty(json_decode($payrollEmp->deduction_allowed, true))) {
-            $allowed =  $deduction->Find("deduction_group = ?", array($deductionGroup));
+            $allowed = $deduction->Find("deduction_group = ?", array($deductionGroup));
         } else {
             $allowedIds = json_decode($payrollEmp->deduction_allowed, true);
-            $allowed =  $deduction->Find("id in (".implode(",", $allowedIds).")");
+            $allowed = $deduction->Find("id in (" . implode(",", $allowedIds) . ")");
         }
 
         $allowedFiltered = array();
@@ -328,6 +339,7 @@ class PayrollActionManager extends SubActionManager
         $columnTable = BaseService::getInstance()->getFullQualifiedModelClassName($req->columnTable);
         $valueTable = BaseService::getInstance()->getFullQualifiedModelClassName($req->valueTable);
         $save = $req->save;
+        $export = $req->export;
 
         //Only select employees matching pay frequency
 
@@ -344,32 +356,35 @@ class PayrollActionManager extends SubActionManager
             $cssIds[] = $c->id;
         }
 
+        $employeesById = array();
         $employeeNamesById = array();
-        $baseEmp = new Employee();
+        $empModel = $baseEmp = new Employee();
         $baseEmpList = $baseEmp->Find(
-            "department in (".implode(",", $cssIds).") and status = ?",
+            "department in (" . implode(",", $cssIds) . ") and status = ?",
             array('Active')
         );
         $empIds = array();
         foreach ($baseEmpList as $baseEmp) {
-            $employeeNamesById[$baseEmp->id] = $baseEmp->first_name." ".$baseEmp->last_name;
+            $baseEmp = $empModel->getBankAccount($baseEmp);
+            $employeeNamesById[$baseEmp->id] = $baseEmp->first_name . " " . $baseEmp->last_name;
+            $employeesById[$baseEmp->id] = $baseEmp;
             $empIds[] = $baseEmp->id;
         }
 
         $emp = new $rowTable();
         $emps = $emp->Find(
-            "pay_frequency = ? and deduction_group = ? and employee in (".implode(",", $empIds).")",
+            "pay_frequency = ? and deduction_group = ? and employee in (" . implode(",", $empIds) . ")",
             array($payroll->pay_period, $payroll->deduction_group)
         );
         if (!$emps) {
-            error_log("Error:".$emp->ErrorMsg());
+            error_log("Error:" . $emp->ErrorMsg());
         } else {
-            error_log("Employees:".json_encode($emps));
+            error_log("Employees:" . json_encode($emps));
         }
 
         $employees = array();
         foreach ($emps as $emp) {
-            $empNew = new \stdClass();
+            $empNew = new stdClass();
             $empNew->id = $emp->employee;
             $empNew->payrollEmployeeId = $emp->id;
             $empNew->name = $employeeNamesById[$emp->employee];
@@ -378,7 +393,7 @@ class PayrollActionManager extends SubActionManager
 
         $column = new $columnTable();
         $columns = $column->Find(
-            "enabled = ? and id in (".implode(",", $columnList).") order by colorder, id",
+            "enabled = ? and id in (" . implode(",", $columnList) . ") order by colorder, id",
             array('Yes')
         );
 
@@ -401,7 +416,7 @@ class PayrollActionManager extends SubActionManager
                 foreach ($columns as $column) {
                     if (isset($valueMap[$e->id][$column->id]) && $column->editable == "Yes") {
                         $this->addToCalculationCache(
-                            $column->id."-".$payroll->id."-".$e->id,
+                            $column->id . "-" . $payroll->id . "-" . $e->id,
                             $valueMap[$e->id][$column->id]->amount
                         );
                         continue;
@@ -412,7 +427,7 @@ class PayrollActionManager extends SubActionManager
                     $item->payroll_item = $column->id;
                     $item->amount = $this->calculatePayrollColumn($column, $payroll, $e->id, $e->payrollEmployeeId);
                     if ($item->amount == "") {
-                        $item->amount =  $column->default_value;
+                        $item->amount = $column->default_value;
                     }
                     $valueMap[$e->id][$column->id] = $item;
                 }
@@ -433,7 +448,7 @@ class PayrollActionManager extends SubActionManager
         }
 
         if ($payroll->status == 'Processing') {
-            $payroll->status =  'Completed';
+            $payroll->status = 'Completed';
             $payroll->Save();
         }
 
@@ -445,7 +460,197 @@ class PayrollActionManager extends SubActionManager
             }
             $columns = $newCols;
         }
-        return new IceResponse(IceResponse::SUCCESS, array($employees,$columns,$values));
+
+        $responseData = array($employees, $columns, $values);
+
+        if ($export == "1") {
+            try {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $numOfColumns = count($columns) + 2;
+                $alphas = range('A', 'Z');
+                $endColumnName = $alphas[$numOfColumns - 1];
+
+                //Set title
+                $rowIndex = 1;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Payroll Table"));
+                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
+                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                $rowIndex = 2;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("From") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_start)->format('d/m/Y') . " " . LanguageManager::tran("To") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('d/m/Y'));
+                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
+                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                //Set header
+                $rowIndex = 4;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Employee Number"));
+                $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
+                foreach ($columns as $colIndex => $column) {
+                    $sheet->setCellValueByColumnAndRow($colIndex + 3, $rowIndex, $column->name);
+                }
+
+                //Set data
+                $rowIndex++;
+                foreach ($valueMap as $empId => $rowData) {
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, $employeesById[$empId]->employee_id);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employeeNamesById[$empId]);
+
+                    foreach ($columns as $colIndex => $column) {
+                        $endColumnName = $alphas[$colIndex - 1];
+                        $sheet->getStyle("{$endColumnName}{$rowIndex}")->getNumberFormat()
+                            ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
+                        $sheet->setCellValueByColumnAndRow($colIndex + 3, $rowIndex, $rowData[$column->id]->amount);
+                    }
+
+                    $rowIndex++;
+                }
+
+                $filename = uniqid("{$payroll->name}_");
+                $filePath = CLIENT_BASE_PATH . "/data/payroll_{$filename}.xlsx";
+                $fileUrl = CLIENT_BASE_URL . "/data/payroll_{$filename}.xlsx";
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($filePath);
+                $responseData['file'] = [
+                    'url' => $fileUrl,
+                    'name' => "{$filename}.xlsx"
+                ];
+            } catch (Exception $e) {
+                LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
+            }
+        }
+
+        if ($export == "2") {
+            try {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $numOfColumns = 8;
+                $alphas = range('A', 'Z');
+                $endColumnName = $alphas[$numOfColumns - 1];
+
+                //Set title
+                $rowIndex = 1;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Payment on Behalf") . " " . LanguageManager::tran("Month") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m/Y'));
+                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
+                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                //Set header
+                $rowIndex = 3;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
+                $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
+                $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Bank Account"));
+                $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("Amount"));
+                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Transfer Content"));
+                $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("CMND"));
+                $sheet->setCellValueByColumnAndRow(7, $rowIndex, LanguageManager::tran("Employee Number"));
+                $sheet->setCellValueByColumnAndRow(8, $rowIndex, LanguageManager::tran("Job Title"));
+
+                //Set data
+                $rowIndex++;
+                $index = 1;
+                $column = array_pop($columns);
+                foreach ($valueMap as $empId => $rowData) {
+                    $employee = $employeesById[$empId];
+                    $employee = $empModel->getBankAccount($employee);
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->bank_account);
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $rowData[$column->id]->amount);
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, $employee->employee_id);
+                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, $empModel->getJobTitle($employee)->job_title->name);
+                    $sheet->getStyle("D{$rowIndex}")->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
+
+                    $rowIndex++;
+                    $index++;
+                }
+
+                $filename = uniqid("payment_on_behalf_ACB_{$payroll->name}_");
+                $filePath = CLIENT_BASE_PATH . "/data/payment_on_behalf_ACB_{$filename}.xlsx";
+                $fileUrl = CLIENT_BASE_URL . "/data/payment_on_behalf_ACB_{$filename}.xlsx";
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($filePath);
+                $responseData['file'] = [
+                    'url' => $fileUrl,
+                    'name' => "{$filename}.xlsx"
+                ];
+            } catch (Exception $e) {
+                LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
+            }
+        }
+
+        if ($export == "3") {
+            try {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $numOfColumns = 12;
+                $alphas = range('A', 'Z');
+                $endColumnName = $alphas[$numOfColumns - 1];
+
+                //Set title
+                $rowIndex = 1;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Payment on Behalf") . " " . LanguageManager::tran("Month") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m/Y'));
+                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
+                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                //Set header
+                $rowIndex = 3;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
+                $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
+                $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Employee Number"));
+                $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("Job Title"));
+                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Amount"));
+                $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("Bank Code"));
+                $sheet->setCellValueByColumnAndRow(7, $rowIndex, LanguageManager::tran("Bank Account"));
+                $sheet->setCellValueByColumnAndRow(8, $rowIndex, LanguageManager::tran("CMND"));
+                $sheet->setCellValueByColumnAndRow(9, $rowIndex, LanguageManager::tran("CMND Issued Date"));
+                $sheet->setCellValueByColumnAndRow(10, $rowIndex, LanguageManager::tran("CMND Issued By"));
+                $sheet->setCellValueByColumnAndRow(11, $rowIndex, LanguageManager::tran("Bank Card Number"));
+                $sheet->setCellValueByColumnAndRow(12, $rowIndex, LanguageManager::tran("Transfer Content"));
+
+                //Set data
+                $rowIndex++;
+                $index = 1;
+                $column = array_pop($columns);
+                foreach ($valueMap as $empId => $rowData) {
+                    $employee = $employeesById[$empId];
+                    $employee = $empModel->getBankAccount($employee);
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->employee_id);
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $empModel->getJobTitle($employee)->job_title->name);
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, $rowData[$column->id]->amount);
+                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, $employee->bank_account);
+                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(9, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(10, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(11, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, LanguageManager::tran("Payment on Behalf Content") . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m-Y'));
+                    $sheet->getStyle("E{$rowIndex}")->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
+
+                    $rowIndex++;
+                    $index++;
+                }
+
+                $filename = uniqid("payment_on_behalf_{$payroll->name}_");
+                $filePath = CLIENT_BASE_PATH . "/data/payment_on_behalf_{$filename}.xlsx";
+                $fileUrl = CLIENT_BASE_URL . "/data/payment_on_behalf_{$filename}.xlsx";
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($filePath);
+                $responseData['file'] = [
+                    'url' => $fileUrl,
+                    'name' => "{$filename}.xlsx"
+                ];
+            } catch (Exception $e) {
+                LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
+            }
+        }
+
+        return new IceResponse(IceResponse::SUCCESS, $responseData);
     }
 
     public function updateAllData($req)
@@ -479,17 +684,17 @@ class PayrollActionManager extends SubActionManager
                 continue;
             }
             $data = new $valueTable();
-            $data->Load("payroll = ? and employee = ? and payroll_item = ?", array($payrollId,$val[1],$val[0]));
+            $data->Load("payroll = ? and employee = ? and payroll_item = ?", array($payrollId, $val[1], $val[0]));
             if (empty($data->id)) {
                 $data->payroll = $payrollId;
                 $data->employee = $val[1];
                 $data->payroll_item = $val[0];
             }
             $data->amount = $val[2];
-            LogManager::getInstance()->info("Saving payroll data :".json_encode($data));
+            LogManager::getInstance()->info("Saving payroll data :" . json_encode($data));
             $ok = $data->Save();
             if (!$ok) {
-                LogManager::getInstance()->error("Error saving payroll data:".$data->ErrorMsg());
+                LogManager::getInstance()->error("Error saving payroll data:" . $data->ErrorMsg());
             }
         }
 
