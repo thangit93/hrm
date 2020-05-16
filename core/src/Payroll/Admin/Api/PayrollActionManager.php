@@ -643,7 +643,7 @@ class PayrollActionManager extends SubActionManager
                 $writer->save($filePath);
                 $responseData['file'] = [
                     'url' => $fileUrl,
-                    'name' => $filename
+                    'name' => "{$filename}.xlsx"
                 ];
             } catch (Exception $e) {
                 LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
