@@ -358,13 +358,14 @@ class PayrollActionManager extends SubActionManager
 
         $employeesById = array();
         $employeeNamesById = array();
-        $baseEmp = new Employee();
+        $empModel = $baseEmp = new Employee();
         $baseEmpList = $baseEmp->Find(
             "department in (" . implode(",", $cssIds) . ") and status = ?",
             array('Active')
         );
         $empIds = array();
         foreach ($baseEmpList as $baseEmp) {
+            $baseEmp = $empModel->getBankAccount($baseEmp);
             $employeeNamesById[$baseEmp->id] = $baseEmp->first_name . " " . $baseEmp->last_name;
             $employeesById[$baseEmp->id] = $baseEmp;
             $empIds[] = $baseEmp->id;
@@ -508,6 +509,136 @@ class PayrollActionManager extends SubActionManager
                 $filename = uniqid("{$payroll->name}_");
                 $filePath = CLIENT_BASE_PATH . "/data/payroll_{$filename}.xlsx";
                 $fileUrl = CLIENT_BASE_URL . "/data/payroll_{$filename}.xlsx";
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($filePath);
+                $responseData['file'] = [
+                    'url' => $fileUrl,
+                    'name' => $filename
+                ];
+            } catch (Exception $e) {
+                LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
+            }
+        }
+
+        if ($export == "2") {
+            try {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $numOfColumns = 8;
+                $alphas = range('A', 'Z');
+                $endColumnName = $alphas[$numOfColumns - 1];
+
+                //Set title
+                $rowIndex = 1;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Payment on Behalf") . " " . LanguageManager::tran("Month") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m/Y'));
+                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
+                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                //Set header
+                $rowIndex = 3;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
+                $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
+                $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Bank Account"));
+                $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("Amount"));
+                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Transfer Content"));
+                $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("CMND"));
+                $sheet->setCellValueByColumnAndRow(7, $rowIndex, LanguageManager::tran("Employee Number"));
+                $sheet->setCellValueByColumnAndRow(8, $rowIndex, LanguageManager::tran("Job Title"));
+
+                //Set data
+                $rowIndex++;
+                $index = 1;
+                $column = array_pop($columns);
+                foreach ($valueMap as $empId => $rowData) {
+                    $employee = $employeesById[$empId];
+                    $employee = $empModel->getBankAccount($employee);
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->bank_account);
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $rowData[$column->id]->amount);
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, $employee->employee_id);
+                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, $empModel->getJobTitle($employee)->job_title->name);
+                    $sheet->getStyle("D{$rowIndex}")->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
+
+                    $rowIndex++;
+                    $index++;
+                }
+
+                $filename = uniqid("payment_on_behalf_ACB_{$payroll->name}_");
+                $filePath = CLIENT_BASE_PATH . "/data/payment_on_behalf_ACB_{$filename}.xlsx";
+                $fileUrl = CLIENT_BASE_URL . "/data/payment_on_behalf_ACB_{$filename}.xlsx";
+                $writer = new Xlsx($spreadsheet);
+                $writer->save($filePath);
+                $responseData['file'] = [
+                    'url' => $fileUrl,
+                    'name' => $filename
+                ];
+            } catch (Exception $e) {
+                LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
+            }
+        }
+
+        if ($export == "3") {
+            try {
+                $spreadsheet = new Spreadsheet();
+                $sheet = $spreadsheet->getActiveSheet();
+                $numOfColumns = 12;
+                $alphas = range('A', 'Z');
+                $endColumnName = $alphas[$numOfColumns - 1];
+
+                //Set title
+                $rowIndex = 1;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Payment on Behalf") . " " . LanguageManager::tran("Month") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m/Y'));
+                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
+                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
+                //Set header
+                $rowIndex = 3;
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
+                $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
+                $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Employee Number"));
+                $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("Job Title"));
+                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Amount"));
+                $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("Bank Code"));
+                $sheet->setCellValueByColumnAndRow(7, $rowIndex, LanguageManager::tran("Bank Account"));
+                $sheet->setCellValueByColumnAndRow(8, $rowIndex, LanguageManager::tran("CMND"));
+                $sheet->setCellValueByColumnAndRow(9, $rowIndex, LanguageManager::tran("CMND Issued Date"));
+                $sheet->setCellValueByColumnAndRow(10, $rowIndex, LanguageManager::tran("CMND Issued By"));
+                $sheet->setCellValueByColumnAndRow(11, $rowIndex, LanguageManager::tran("Bank Card Number"));
+                $sheet->setCellValueByColumnAndRow(12, $rowIndex, LanguageManager::tran("Transfer Content"));
+
+                //Set data
+                $rowIndex++;
+                $index = 1;
+                $column = array_pop($columns);
+                foreach ($valueMap as $empId => $rowData) {
+                    $employee = $employeesById[$empId];
+                    $employee = $empModel->getBankAccount($employee);
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->employee_id);
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $empModel->getJobTitle($employee)->job_title->name);
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, $rowData[$column->id]->amount);
+                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, $employee->bank_account);
+                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(9, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(10, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(11, $rowIndex, "");
+                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, LanguageManager::tran("Payment on Behalf Content") . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m-Y'));
+                    $sheet->getStyle("E{$rowIndex}")->getNumberFormat()
+                        ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
+
+                    $rowIndex++;
+                    $index++;
+                }
+
+                $filename = uniqid("payment_on_behalf_{$payroll->name}_");
+                $filePath = CLIENT_BASE_PATH . "/data/payment_on_behalf_{$filename}.xlsx";
+                $fileUrl = CLIENT_BASE_URL . "/data/payment_on_behalf_{$filename}.xlsx";
                 $writer = new Xlsx($spreadsheet);
                 $writer->save($filePath);
                 $responseData['file'] = [

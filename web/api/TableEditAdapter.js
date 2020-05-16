@@ -72,12 +72,12 @@ class TableEditAdapter extends AdapterBase {
     this.customAction('getAllData', this.modulePath, reqJson, callBackData);
   }
 
-  exportAllData(save) {
+  exportAllData(type, save) {
     let req = {};
     req.rowTable = this.rowTable;
     req.columnTable = this.columnTable;
     req.valueTable = this.valueTable;
-    req = this.addAdditionalRequestData('exportAllData', req);
+    req = this.addAdditionalRequestData('exportAllData' + type, req);
     req.save = (save === undefined || save == null || save === false) ? 0 : 1;
     const reqJson = JSON.stringify(req);
 

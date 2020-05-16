@@ -2143,3 +2143,33 @@ msgstr "Tính tiền thưởng"
 
 msgid "Payroll Table"
 msgstr "Bảng Lương"
+
+msgid "Payment on Behalf"
+msgstr "Chi Hộ Lương"
+
+msgid "Month"
+msgstr "Tháng"
+
+msgid "Bank Code"
+msgstr "Mã Ngân Hàng"
+
+msgid "Bank Account"
+msgstr "Số tài khoản"
+
+msgid "CMND"
+msgstr "Số CMND"
+
+msgid "CMND Issued Date"
+msgstr "Ngày cấp CMND"
+
+msgid "CMND Issued By"
+msgstr "Nơi cấp CMND"
+
+msgid "Bank Card Number"
+msgstr "Số thẻ (thẻ ACB)"
+
+msgid "Transfer Content"
+msgstr "Nội dung giao dịch"
+
+msgid "Payment on Behalf Content"
+msgstr "Cong ty vmed chuyen luong thang "
