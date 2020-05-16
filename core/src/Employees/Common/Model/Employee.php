@@ -8,6 +8,7 @@ use Classes\FileService;
 use Classes\IceResponse;
 use Company\Common\Model\CompanyStructure;
 use Data\Admin\Import\EmployeeDataImporter;
+use Jobs\Common\Model\JobTitle;
 use Metadata\Common\Model\Country;
 use Model\BaseModel;
 use Users\Common\Model\User;
@@ -189,6 +190,52 @@ class Employee extends BaseModel
         if (!empty($customField->value) && $customField->value != "NULL") {
             $obj->{$customField->name} = $customField->value;
         }
+
+        return $obj;
+    }
+
+    public function getBankAccount($obj)
+    {
+        $customFieldManager = new CustomFieldManager();
+        /** @var array $customFields */
+        $customFields = $customFieldManager->getCustomField('\Employees\Common\Mo', $obj->id, 'bank_account');
+        $customField = array_shift($customFields);
+
+        if (!empty($customField->value) && $customField->value != "NULL") {
+            $obj->{$customField->name} = $customField->value;
+        }
+
+        /** @var array $customFields */
+        $customFields = $customFieldManager->getCustomField('\Employees\Common\Mo', $obj->id, 'bank_name');
+        $customField = array_shift($customFields);
+
+        if (!empty($customField->value) && $customField->value != "NULL") {
+            $obj->{$customField->name} = $customField->value;
+        }
+
+        return $obj;
+    }
+
+    public function getIndirectSupervisor($obj)
+    {
+        $customFieldManager = new CustomFieldManager();
+        /** @var array $customFields */
+        $customFields = $customFieldManager->getCustomField('Employee', $obj->id, 'indirect-supervisor');
+        $customField = array_shift($customFields);
+
+        if (!empty($customField->value) && $customField->value != "NULL") {
+            $obj->indirectSupervisor = $customField->value;
+        }
+
+        return $obj;
+    }
+
+    public function getJobTitle($obj)
+    {
+        $jobTitleModel = new JobTitle();
+        $jobTitles = $jobTitleModel->Find('id = ?', [$obj->job_title]);
+        $jobTitle = array_shift($jobTitles);
+        $obj->job_title = $jobTitle;
 
         return $obj;
     }

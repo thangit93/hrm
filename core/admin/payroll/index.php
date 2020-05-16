@@ -43,6 +43,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 <button class="cancelBtnTable btn" style="margin-right:5px;"><i class="fa fa-times-circle-o"></i> <?php echo t('Cancel') ?></button>
                 <button class="saveBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-save"></i> <?php echo t('Save') ?></button>
                 <button class="downloadBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') ?></button>
+                <button class="downloadBtnTable2 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') . " ACB" ?></button>
+                <button class="downloadBtnTable3 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') ?></button>
                 <button class="completeBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> <?php echo t('Finalize') ?></button>
             </div>
         </div>
@@ -133,7 +135,15 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     });
 
     $(".downloadBtnTable").off().on('click',function(){
-        modJsList['tabPayrollData'].exportAllData();
+        modJsList['tabPayrollData'].exportAllData(1);
+    });
+
+    $(".downloadBtnTable2").off().on('click',function(){
+        modJsList['tabPayrollData'].exportAllData(2);
+    });
+
+    $(".downloadBtnTable3").off().on('click',function(){
+        modJsList['tabPayrollData'].exportAllData(3);
     });
 
     $(".cancelBtnTable").off().on('click',function(){
