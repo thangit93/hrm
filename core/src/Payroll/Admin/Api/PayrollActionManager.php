@@ -15,16 +15,20 @@ use Classes\IceResponse;
 use Classes\LanguageManager;
 use Classes\SubActionManager;
 use Company\Common\Model\CompanyStructure;
+use DateTime;
 use Employees\Common\Model\Employee;
+use Exception;
 use Payroll\Common\Model\Deduction;
 use Payroll\Common\Model\Payroll;
 use Payroll\Common\Model\PayrollCalculations;
 use Payroll\Common\Model\PayrollColumn;
 use Payroll\Common\Model\PayrollData;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Salary\Common\Model\EmployeeSalary;
 use Salary\Common\Model\PayrollEmployee;
 use Salary\Common\Model\SalaryComponent;
+use stdClass;
 use Utils\LogManager;
 use Utils\Math\EvalMath;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -173,7 +177,7 @@ class PayrollActionManager extends SubActionManager
                 }
                 try {
                     $sum += $evalMath->evaluate($func);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     LogManager::getInstance()->info("Error:" . $e->getMessage());
                 }
             }
@@ -379,7 +383,7 @@ class PayrollActionManager extends SubActionManager
 
         $employees = array();
         foreach ($emps as $emp) {
-            $empNew = new \stdClass();
+            $empNew = new stdClass();
             $empNew->id = $emp->employee;
             $empNew->payrollEmployeeId = $emp->id;
             $empNew->name = $employeeNamesById[$emp->employee];
@@ -473,7 +477,7 @@ class PayrollActionManager extends SubActionManager
                 $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 $rowIndex = 2;
-                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("From") . " " . \DateTime::createFromFormat('Y-m-d', $payroll->date_start)->format('d/m/Y') . " " . LanguageManager::tran("To") . " " . \DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('d/m/Y'));
+                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("From") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_start)->format('d/m/Y') . " " . LanguageManager::tran("To") . " " . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('d/m/Y'));
                 $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
                 $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
@@ -492,6 +496,9 @@ class PayrollActionManager extends SubActionManager
                     $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employeeNamesById[$empId]);
 
                     foreach ($columns as $colIndex => $column) {
+                        $endColumnName = $alphas[$colIndex - 1];
+                        $sheet->getStyle("{$endColumnName}{$rowIndex}")->getNumberFormat()
+                            ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
                         $sheet->setCellValueByColumnAndRow($colIndex + 3, $rowIndex, $rowData[$column->id]->amount);
                     }
 
@@ -507,7 +514,7 @@ class PayrollActionManager extends SubActionManager
                     'url' => $fileUrl,
                     'name' => $filename
                 ];
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
             }
         }
