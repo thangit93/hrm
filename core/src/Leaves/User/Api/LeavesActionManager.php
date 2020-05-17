@@ -133,7 +133,7 @@ class LeavesActionManager extends SubActionManager
 
             $leaves = array();
             $leaves['id'] = $leaveType->id;
-            $leaves['name'] = $leaveType->name;
+            $leaves['name'] = t($leaveType->name);
             //$leaveman['totalLeaves'] = floatval($leaveMatrix[0]);
             $leaves['pendingLeaves'] = floatval($leaveMatrix[1]);
             $leaves['approvedLeaves'] = floatval($leaveMatrix[2]);
@@ -658,5 +658,44 @@ class LeavesActionManager extends SubActionManager
         $this->baseService->notificationManager->addNotification($employeeLeave->employee, $notificationMsg, '{"type":"url","url":"g=modules&n=leaveman&m=module_Leaves#tabEmployeeLeaveApproved"}', IceConstants::NOTIFICATION_LEAVE);
 
         return new IceResponse(IceResponse::SUCCESS, "");
+    }
+
+    public function getLeaveBalance($req)
+    {
+        $employee = $this->baseService->getElement('Employee', $this->getCurrentProfileId(), null, true);
+
+        $leaveEntitlementArray = array();
+
+        $leaveType = new LeaveType();
+        $leaveTypes = $leaveType->Find("1=1");
+
+        //Find Current leave period
+
+        $currentLeavePeriodResp = $this->getCurrentLeavePeriod(date('Y-m-d'), date('Y-m-d'));
+        if ($currentLeavePeriodResp->getStatus() != IceResponse::SUCCESS) {
+            return new IceResponse(IceResponse::ERROR, $currentLeavePeriodResp->getData());
+        } else {
+            $currentLeavePeriod = $currentLeavePeriodResp->getData();
+        }
+
+        foreach ($leaveTypes as $leaveType) {
+            //$rule = $this->getLeaveRule($employee, $leaveType->id);
+            $leaveMatrix = $this->getAvailableLeaveMatrixForEmployeeLeaveType($employee, $currentLeavePeriod, $leaveType->id);
+
+            $leaves = array();
+            $leaves['id'] = $leaveType->id;
+            $leaves['name'] = t($leaveType->name);
+            $leaves['totalLeaves'] = floatval($leaveMatrix[0]);
+            $leaves['pendingLeaves'] = floatval($leaveMatrix[1]);
+            $leaves['approvedLeaves'] = floatval($leaveMatrix[2]);
+            $leaves['rejectedLeaves'] = floatval($leaveMatrix[3]);
+            $leaves['availableLeaves'] = floatval($leaveMatrix[0]) - $leaves['pendingLeaves'] - $leaves['approvedLeaves'];
+            $leaves['tobeAccrued'] = floatval($leaveMatrix[4]['total']) - floatval($leaveMatrix[4]['accrued']);
+            $leaves['carriedForward'] = floatval($leaveMatrix[4]['carriedForward']);
+
+            $leaveEntitlementArray[] = $leaves;
+        }
+
+        return new IceResponse(IceResponse::SUCCESS, $leaveEntitlementArray);
     }
 }

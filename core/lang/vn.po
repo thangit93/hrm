@@ -113,6 +113,9 @@ msgstr "Quản trị du lịch"
 msgid "Expense Administration"
 msgstr "Chi phí quản lý"
 
+msgid "Monitor Attendance"
+msgstr "Giám sát chấm công"
+
 msgid "Performance Charts"
 msgstr "Biểu đồ hiệu suất"
 
@@ -2018,13 +2021,13 @@ msgstr "công"
 msgid "Total Leave Days"
 msgstr "Tổng ngày nghỉ"
 
-msgid "Total Leave Hourss"
+msgid "Total Leave Hours"
 msgstr "Tổng giờ nghỉ"
 
 msgid "Leaves to be Accured"
 msgstr "Nghỉ phép tích lũy"
 
-msgid "Leave application successful. You will be notified once your supervisor approve your leaveman"
+msgid "Leave application successful. You will be notified once your supervisor approve your leaveman."
 msgstr "Đã gửi xin nghỉ phép thành công. Bạn sẽ được thông báo khi người giám sát của bạn chấp thuận nghỉ phép của bạn."
 
 msgid "Employee Leaves"
@@ -2035,6 +2038,78 @@ msgstr "Số thứ tự"
 
 msgid "Employee contract terminated. You can find terminated employee information under Terminated Employees menu."
 msgstr "Hợp đồng của nhân viên đã chấm dứt. Bạn có thể tìm thấy nhân viên chấm dứt hợp đồng trong menu nhân viên chấm dứt hợp đồng."
+
+msgid "Full Day"
+msgstr "Cả ngày"
+
+msgid "Half Day - Morning"
+msgstr "Nửa ngày - Buổi sáng"
+
+msgid "Half Day - Afternoon"
+msgstr "Nửa ngày - Buổi chiều"
+
+msgid "Non working day"
+msgstr "Ngày nghỉ"
+
+msgid "Leave balance"
+msgstr "Thống kê nghỉ phép"
+
+msgid "Days Per Year"
+msgstr "Số Ngày Trong Năm"
+
+msgid "Annual leave"
+msgstr "Nghỉ thường niên"
+
+msgid "Pregnancy Losing Leave"
+msgstr "Nghỉ mang thai mất"
+
+msgid "Health Recovery Leave"
+msgstr "Nghỉ phục hồi sức khỏe"
+
+msgid "Business Trip"
+msgstr "Nghỉ công tác"
+
+msgid "Unpaid Leave"
+msgstr "Nghỉ phép không lương"
+
+msgid "Sick Leave (Social Insurance)"
+msgstr "Nghỉ ốm (Bảo hiểm xã hội)"
+
+msgid "Children Sick Leave (Social Insurance)"
+msgstr "Nghỉ ốm cho trẻ em (Bảo hiểm xã hội)"
+
+msgid "Pregnancy Test"
+msgstr "Thử thai"
+
+msgid "Maternity Leave"
+msgstr "Nghỉ thai sản"
+
+msgid "Funeral Leave"
+msgstr "Nghỉ tang"
+
+msgid "Marriage Leave"
+msgstr "Nghỉ kết hôn"
+
+msgid "Paternity Leave"
+msgstr "Nghỉ sinh con"
+
+msgid "Children Marriage Leave"
+msgstr "nghỉ có con kết hôn"
+
+msgid "Compensation Leave"
+msgstr "Nghỉ bù"
+
+msgid "Reason for Applying leave"
+msgstr "Lý do xin nghỉ phép"
+
+msgid "Leave Days"
+msgstr "Số ngày nghỉ"
+
+msgid "Number of Leaves available"
+msgstr "Số ngày nghỉ khả dụng"
+
+msgid "Number of Leaves requested"
+msgstr "Số ngày yêu cầu"
 
 msgid "Total Working Days In Month"
 msgstr "Tổng số ngày làm việc trong tháng"
