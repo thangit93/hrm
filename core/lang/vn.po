@@ -156,13 +156,13 @@ msgid "Field Names Setup"
 msgstr "Cài đặt tên trường"
 
 msgid "Payroll"
-msgstr "Lương bổng"
+msgstr "Lương"
 
 msgid "Salary"
 msgstr "Lương"
 
 msgid "Payroll Reports"
-msgstr "Báo cáo tiền lương"
+msgstr "Tính Lương"
 
 msgid "Recruitment"
 msgstr "Tuyển dụng"
@@ -1026,7 +1026,7 @@ msgid "Payslip Template"
 msgstr "Mẫu Payslip"
 
 msgid "Payroll Columns"
-msgstr "Cột tiền lương"
+msgstr "Công thức tính lương"
 
 msgid "Calculation Method"
 msgstr "Phương pháp tính toán"
@@ -1380,7 +1380,7 @@ msgid "Company Payroll"
 msgstr "Biên chế công ty"
 
 msgid "Calculation Groups"
-msgstr "Nhóm tính toán"
+msgstr "Loại hình nhân viên"
 
 msgid "Calculation Methods"
 msgstr "Phương pháp tính toán"
@@ -2012,6 +2012,9 @@ msgstr "Lỗi"
 msgid "For this user type, you have to assign an employee when adding or editing the user.<br/> You may create a new employee through 'Admin'->'Employees' menu"
 msgstr "Đối với quyền Staff/Admin, bạn phải liên kết tới một nhân viên khi thêm/sửa người dùng.<br/> Bạn có thể tạo một nhân viên mới trong 'Nhân viên' -> 'Nhân viên' menu"
 
+msgid "Total Days from Attendance"
+msgstr "Tổng Số Ngày Công Từ File Chấm Công"
+
 msgid "attendance working day"
 msgstr "công"
 
@@ -2107,3 +2110,147 @@ msgstr "Số ngày nghỉ khả dụng"
 
 msgid "Number of Leaves requested"
 msgstr "Số ngày yêu cầu"
+
+msgid "Total Working Days In Month"
+msgstr "Tổng số ngày làm việc trong tháng"
+
+msgid "Salary Start Date"
+msgstr "Ngày bắt đầu tính lương"
+
+msgid "Salary End Date"
+msgstr "Ngày kết thúc tính lương"
+
+msgid "Monthly"
+msgstr "Hàng tháng"
+
+msgid "Weekly"
+msgstr "Hàng tuần"
+
+msgid "Semi Monthly"
+msgstr "Nửa tháng"
+
+msgid "Yearly"
+msgstr "Hàng năm"
+
+msgid "SalaryUtil_getRealSalary"
+msgstr "Tính lương dựa trên số ngày công"
+
+msgid "Real Salary"
+msgstr "Tính lương dựa trên số ngày công"
+
+msgid "Base Salary"
+msgstr "Tính lương cơ bản"
+
+msgid "AttendanceUtil_getTotalWorkingDaysInMonth"
+msgstr "Tổng số ngày làm việc trong tháng"
+
+msgid "AttendanceUtil_getDaysWorked"
+msgstr "Tồng số ngày làm việc thực tế"
+
+msgid "SalaryUtil_getSalaryDeposit"
+msgstr "Tính tổng lương đã ứng"
+
+msgid "Salary Deposit"
+msgstr "Tính tổng lương đã ứng"
+
+msgid "SalaryUtil_getBaseSalary"
+msgstr "Cơ bản"
+
+msgid "Yes"
+msgstr "Có"
+
+msgid "No"
+msgstr "Không"
+
+msgid "Employee Salary Deposit"
+msgstr "Ứng Lương"
+
+msgid "From Date"
+msgstr "Từ ngày"
+
+msgid "To Date"
+msgstr "Đến ngày"
+
+msgid "Payslip Base Salary"
+msgstr "Lương căn bản"
+
+msgid "Lương Căn Bản ngày"
+msgstr "Lương căn bản / ngày"
+
+msgid "Phụ Cấp Trách Nhiệm & Chức Vụ ngày"
+msgstr "Phụ Cấp Trách Nhiệm & Chức Vụ / ngày"
+
+msgid "Phụ Cấp Tiền Điện Thoại & Tiền Ăn ngày"
+msgstr "Phụ Cấp Tiền Điện Thoại & Tiền Ăn / ngày"
+
+msgid "Monitor Attendance"
+msgstr "Bảng Chấm Công"
+
+msgid "Attendance"
+msgstr "Bảng Chấm Công"
+
+msgid "Payroll Reports"
+msgstr "Bảng Lương"
+
+msgid "Salary"
+msgstr "Lương"
+
+msgid "Cancel"
+msgstr "Hủy"
+
+msgid "Save"
+msgstr "Lưu lại"
+
+msgid "Download"
+msgstr "Tải xuống"
+
+msgid "Finalize"
+msgstr "Hoàn tất"
+
+msgid "Employee Salary Bonus"
+msgstr "Thưởng"
+
+msgid "Salary Bonus"
+msgstr "Thưởng"
+
+msgid "SalaryUtil_getSalaryBonus"
+msgstr "Tính tiền thưởng"
+
+msgid "Payroll Table"
+msgstr "Bảng Lương"
+
+msgid "Payment on Behalf"
+msgstr "Chi Hộ Lương"
+
+msgid "Month"
+msgstr "Tháng"
+
+msgid "Bank Code"
+msgstr "Mã Ngân Hàng"
+
+msgid "Bank Account"
+msgstr "Số tài khoản"
+
+msgid "CMND"
+msgstr "Số CMND"
+
+msgid "CMND Issued Date"
+msgstr "Ngày cấp CMND"
+
+msgid "CMND Issued By"
+msgstr "Nơi cấp CMND"
+
+msgid "Bank Card Number"
+msgstr "Số thẻ (thẻ ACB)"
+
+msgid "Transfer Content"
+msgstr "Nội dung giao dịch"
+
+msgid "Payment on Behalf Content"
+msgstr "Cong ty vmed chuyen luong thang "
+
+msgid "Working Date"
+msgstr "Ngày làm việc"
+
+msgid "Real Hours"
+msgstr "Giờ công thực tế"

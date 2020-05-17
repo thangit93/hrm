@@ -12,7 +12,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		<li class="active"><a id="tabJobTitles" href="#tabPageJobTitles"><?=t('Job Titles')?></a></li>
-		<li><a id="tabPayGrades" href="#tabPagePayGrades"><?=t('Pay Grades')?></a></li>
+<!--		<li><a id="tabPayGrades" href="#tabPagePayGrades">--><?//=t('Pay Grades')?><!--</a></li>-->
 		<li><a id="tabEmploymentStatus" href="#tabPageEmploymentStatus"><?=t('Employment Status')?></a></li>
 	</ul>
 
@@ -25,14 +25,14 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
 			</div>
 		</div>
-		<div class="tab-pane" id="tabPagePayGrades">
-			<div id="PayGrade" class="reviewBlock" data-content="List" style="padding-left:5px;">
-
-			</div>
-			<div id="PayGradeForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
-
-			</div>
-		</div>
+<!--		<div class="tab-pane" id="tabPagePayGrades">-->
+<!--			<div id="PayGrade" class="reviewBlock" data-content="List" style="padding-left:5px;">-->
+<!---->
+<!--			</div>-->
+<!--			<div id="PayGradeForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">-->
+<!---->
+<!--			</div>-->
+<!--		</div>-->
 		<div class="tab-pane" id="tabPageEmploymentStatus">
 			<div id="EmploymentStatus" class="reviewBlock" data-content="List" style="padding-left:5px;">
 
@@ -48,7 +48,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 var modJsList = new Array();
 
 modJsList['tabJobTitles'] = new JobTitleAdapter('JobTitle');
-modJsList['tabPayGrades'] = new PayGradeAdapter('PayGrade');
+// modJsList['tabPayGrades'] = new PayGradeAdapter('PayGrade');
 modJsList['tabEmploymentStatus'] = new EmploymentStatusAdapter('EmploymentStatus');
 
 var modJs = modJsList['tabJobTitles'];

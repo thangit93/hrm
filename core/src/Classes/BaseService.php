@@ -315,6 +315,9 @@ class BaseService
         }
 
         if (!empty($sortData) && $sortData['sorting']."" == "1" && isset($sortData['column'])) {
+            if(in_array($sortData['column'], ['working_date'])){
+                $sortData['column'] = 'in_time';
+            }
             $orderBy = " ORDER BY ".$sortData['column']." ".$sortData['order'];
         } else {
             if (empty($orderBy)) {
@@ -554,13 +557,23 @@ class BaseService
                     $idField = $k."_id";
                     $item->$idField = $item->$k;
                     $item->$k = $tObj->{$v[2]};
+
+                    if($v[2] == 'birthday'){
+                        $item->$k = $this->getYOB($tObj);
+                    }else{
+                        $item->$k = $tObj->{$v[2]};
+                    }
                 } else {
                     $objVal = "";
                     foreach ($values as $v) {
                         if ($objVal != "") {
                             $objVal .= " ";
                         }
-                        $objVal .= $tObj->$v;
+                        if($v == 'birthday'){
+                            $objVal .= $this->getYOB($tObj);
+                        }else{
+                            $objVal .= $tObj->$v;
+                        }
                     }
                     $idField = $k."_id";
                     $item->$idField = $item->$k;
@@ -908,19 +921,42 @@ class BaseService
         foreach ($list as $obj) {
             $obj = $this->cleanUpAdoDB($obj);
             if (count($values) == 1) {
-                $ret[$obj->$key] = $obj->$value;
+                if($value == 'birthday'){
+                    $ret[$obj->$key] = $this->getYOB($obj);
+                }else{
+                    $ret[$obj->$key] = $obj->$value;
+                }
             } else {
                 $objVal = "";
                 foreach ($values as $v) {
                     if ($objVal != "") {
                         $objVal .= " ";
                     }
-                    $objVal .= $obj->$v;
+                    if($v == 'birthday'){
+                        $objVal .= $this->getYOB($obj);
+                    }else{
+                        $objVal .= $obj->$v;
+                    }
                 }
                 $ret[$obj->$key] = $objVal;
             }
         }
         return $ret;
+    }
+
+    /**
+     * Get Year of Birthday
+     *
+     * @param $obj
+     * @return string
+     */
+    private function getYOB($obj){
+        try {
+            $birthday = new \DateTime($obj->birthday);
+            return $birthday->format('Y');
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function setNonDeletables($table, $field, $value)

@@ -21,6 +21,37 @@ class ModuleAdapter extends AdapterBase {
     ];
   }
 
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 1);
+          },
+          aTargets: [1],
+        },
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 4);
+          },
+          aTargets: [4],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 1 || id === 4) {
+      return this.gt(cell)
+    }
+    return cell;
+  }
+
   getHeaders() {
     return [
       { sTitle: 'ID', bVisible: false },
@@ -39,8 +70,8 @@ class ModuleAdapter extends AdapterBase {
       ['id', { label: 'ID', type: 'hidden' }],
       ['label', { label: 'Label', type: 'text', validation: '' }],
       ['status', { label: 'Status', type: 'select', source: [['Enabled', 'Enabled'], ['Disabled', 'Disabled']] }],
-      ['user_levels', { label: 'User Levels', type: 'select2multi', source: [['Admin', 'Admin'], ['Manager', 'Manager'], ['Employee', 'Employee'], ['Other', 'Other']] }],
-      ['user_roles', { label: 'User Roles', type: 'select2multi', 'remote-source': ['UserRole', 'id', 'name'] }],
+      ['user_levels', { label: 'User Levels', type: 'select2multi', source: [['Admin', 'Role_Admin'], ['Manager', 'Role_Manager'], ['Employee', 'Role_Employee']] }],
+      // ['user_roles', { label: 'User Roles', type: 'select2multi', 'remote-source': ['UserRole', 'id', 'name'] }],
     ];
   }
 

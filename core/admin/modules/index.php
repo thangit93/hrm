@@ -20,12 +20,12 @@ if(empty($groups)){
 ?><div class="span9">
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0;margin-left:5px;border-bottom: none;">
-		<li class="active"><a id="tabUsage" href="#tabPageUsage"><?=t('Usage')?></a></li>
-		<li class=""><a id="tabModule" href="#tabPageModule"><?=t('Modules')?></a></li>
+<!--		<li class="active"><a id="tabUsage" href="#tabPageUsage">--><?//=t('Usage')?><!--</a></li>-->
+		<li class="active"><a id="tabModule" href="#tabPageModule"><?=t('Modules')?></a></li>
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane active" id="tabPageUsage">
+		<div class="tab-pane " id="tabPageUsage">
 			<div id="Usage" class="reviewBlock" data-content="List" style="padding-left:5px;">
 				<div class="callout callout-info">
 					<h3>How Do You Want to Use IceHrm</h3>
@@ -139,7 +139,7 @@ if(empty($groups)){
 				</button>
 			</div>
 		</div>
-		<div class="tab-pane" id="tabPageModule">
+		<div class="tab-pane active" id="tabPageModule">
 			<div id="Module" class="reviewBlock" data-content="List" style="padding-left:5px;">
 
 			</div>
@@ -160,7 +160,9 @@ modJsList['tabUsage'] = new UsageAdapter('Usage','Usage');
 var modJs = modJsList['tabUsage'];
 
 	$(document).ready(function(){
-
+        setTimeout(function () {
+            $('a#tabModule').trigger('click');
+        }, 500);
 
 		$("#all").click(function() {
 			if($(this).is(":checked")) {
