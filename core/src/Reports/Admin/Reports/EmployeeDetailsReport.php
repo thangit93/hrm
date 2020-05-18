@@ -78,9 +78,13 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
                     if ($column['column'] == 'fullname') {
                         $row[] = "{$item->last_name} {$item->middle_name} {$item->first_name}";
                     } elseif (in_array($column['column'], ['birthday', 'joined_date', 'full_working_days'])) {
-                        try{
-                            $row[] = \DateTime::createFromFormat('Y-m-d', $item->{$column['column']})->format('d/m/Y');
-                        }catch (\Exception $e){
+                        try {
+                            $date = \DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
+
+                            if (!empty($date)) {
+                                $row[] = $date->format('d/m/Y');
+                            }
+                        } catch (\Exception $e) {
                             $row[] = $item->{$column['column']};
                         }
                     } else {
