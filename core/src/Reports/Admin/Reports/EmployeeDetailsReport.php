@@ -50,7 +50,7 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
 
         foreach ($customFieldsList as $customField) {
             $reportColumns[] = [
-                'label' => $customField->field_label,
+                'label' => LanguageManager::tran($customField->field_label),
                 'column' => $customField->name,
             ];
         }
