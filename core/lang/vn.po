@@ -2258,5 +2258,11 @@ msgstr "Họ Tên"
 msgid "bank_account"
 msgstr "Số tài khoản"
 
+msgid "Số tài khoản"
+msgstr "Số tài khoản"
+
 msgid "bank_name"
+msgstr "Tên ngân hàng"
+
+msgid "Tên ngân hàng"
 msgstr "Tên ngân hàng"
