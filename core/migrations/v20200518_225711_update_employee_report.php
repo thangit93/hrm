@@ -7,8 +7,8 @@ class v20200518_225711_update_employee_report extends AbstractMigration
     public function up()
     {
         $sql = "
-DELETE FROM CustomFields WHERE `name`='deparment';
-DELETE FROM CustomFields WHERE `name`='indirect-supervisor';
+DELETE FROM CustomFields WHERE `name`=\"deparment\";
+DELETE FROM CustomFields WHERE `name`=\"indirect-supervisor\";
 ";
         $this->executeQuery($sql);
     }
