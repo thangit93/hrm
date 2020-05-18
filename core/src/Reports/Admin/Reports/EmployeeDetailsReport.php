@@ -47,8 +47,6 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
         ];
 
         $customFieldsList = BaseService::getInstance()->getCustomFields('Employee');
-        $customFieldsList2 = BaseService::getInstance()->getCustomFields('\Employees\Common\Mo');
-        $customFieldsList = array_merge($customFieldsList, $customFieldsList2);
 
         foreach ($customFieldsList as $customField) {
             $reportColumns[] = [
@@ -83,6 +81,8 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
 
                             if (!empty($date)) {
                                 $row[] = $date->format('d/m/Y');
+                            }else{
+                                $row[] = $item->{$column['column']};
                             }
                         } catch (\Exception $e) {
                             $row[] = $item->{$column['column']};
