@@ -24,10 +24,15 @@ class EmployeeDataImporter extends AbstractDataImporter
         return Employee::class;
     }
 
+    public function getCustomFieldType()
+    {
+        return 'Employee';
+    }
+
     public function fixBeforeSave($object, $data)
     {
         $fullName = $object->first_name;
-        $hash = md5($fullName);
+        $hash = md5(strtoupper($this->convert_vi_to_en($fullName)));
         list($firstName, $lastName, $middleName) = $this->getFirstNameAndLastName($fullName);
         $object->first_name = $firstName;
         $object->last_name = $lastName;
@@ -76,7 +81,7 @@ class EmployeeDataImporter extends AbstractDataImporter
 
                 $object->indirect_supervisors = "[" . implode(',', $indirectSupervisors) . "]";
             } elseif (in_array($column->name, ['birthday', 'joined_date'])) {
-                $value = DateTime::createFromFormat('m/d/Y', $value);
+                $value = DateTime::createFromFormat('Y-m-d H:i:s', $value);
                 if ($value) {
                     $object->{$column->name} = $value->format('Y-m-d');
 
@@ -135,7 +140,7 @@ class EmployeeDataImporter extends AbstractDataImporter
      */
     private function addSupervisor($value)
     {
-        $hash = md5($value);
+        $hash = md5(strtoupper($this->convert_vi_to_en($value)));
 
         if (array_key_exists($hash, $this->supervisors)) {
             return $this->supervisors[$hash];
