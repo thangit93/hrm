@@ -1533,7 +1533,7 @@ msgid "Subordinate Attendance Sheets"
 msgstr "Bảng chấm công cấp dưới"
 
 msgid "Subordinate Overtime Requests"
-msgstr "Yêu cầu làm thêm giờ cấp dưới"
+msgstr "Yêu cầu làm thêm giờ của cấp dưới"
 
 msgid "Overtime Request Approval"
 msgstr "Yêu cầu làm thêm giờ được duyệt"
@@ -2266,3 +2266,6 @@ msgstr "Tên ngân hàng"
 
 msgid "Tên ngân hàng"
 msgstr "Tên ngân hàng"
+
+msgid "Total Time"
+msgstr "Tổng thời gian"
