@@ -1539,7 +1539,7 @@ msgid "Subordinate Overtime Requests"
 msgstr "Yêu cầu làm thêm giờ cấp dưới"
 
 msgid "Overtime Request Approval"
-msgstr "Yêu cầu làm thêm giờ"
+msgstr "Yêu cầu làm thêm giờ được duyệt"
 
 msgid "My Training Sessions"
 msgstr "Phiên đào tạo của tôi"

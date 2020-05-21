@@ -40,13 +40,27 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
   }
 
   getFormFields() {
+    let hours = [];
+    for(let i = 0;i < 24;i++){
+      hours[i] = [i, i];
+    }
+    let minutes = [
+        [0, 0],
+        [15, 15],
+        [30, 30],
+        [45, 45],
+    ];
     return [
       ['id', { label: 'ID', type: 'hidden' }],
       ['category', {
         label: 'Category', type: 'select2', 'allow-null': false, 'remote-source': ['OvertimeCategory', 'id', 'name'],
       }],
-      ['start_time', { label: 'Start Time', type: 'datetime', validation: '' }],
-      ['end_time', { label: 'End Time', type: 'datetime', validation: '' }],
+      ['start_time', { label: 'Start Date', type: 'date', validation: '' }],
+      ['start_hour', { label: 'Start Hour', type: 'select', source: hours }],
+      ['start_minute', { label: 'Start Minute', type: 'select', source: minutes }],
+      ['end_time', { label: 'End Time', type: 'date', validation: '' }],
+      ['end_hour', { label: 'End Hour', type: 'select', source: hours }],
+      ['end_minute', { label: 'End Minute', type: 'select', source: minutes }],
       ['project', {
         label: 'Project',
         type: 'select2',
