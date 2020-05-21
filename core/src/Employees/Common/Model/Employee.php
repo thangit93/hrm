@@ -191,6 +191,7 @@ class Employee extends BaseModel
             $obj->{$customField->name} = $customField->value;
         }
 
+//        var_dump($obj);die;
         return $obj;
     }
 

@@ -23,7 +23,7 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       'category',
       'start_time',
       'end_time',
-      'project',
+      // 'project',
       'status',
     ];
   }
@@ -34,7 +34,7 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       { sTitle: 'Category' },
       { sTitle: 'Start Time' },
       { sTitle: 'End Time' },
-      { sTitle: 'Project' },
+      // { sTitle: 'Project' },
       { sTitle: 'Status' },
     ];
   }
