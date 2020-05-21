@@ -1,7 +1,9 @@
 <?php
+
 namespace Reports\Admin\Reports;
 
 use Classes\BaseService;
+use Classes\LanguageManager;
 use Reports\Admin\Api\ClassBasedReportBuilder;
 use Reports\Admin\Api\ReportBuilderInterface;
 
@@ -24,64 +26,24 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             $filters['job_title'] = $request['job_title'];
         }
 
-
         $mapping = [
-            "job_title" => ["JobTitle","id","name"],
-            "nationality" => ["Nationality","id","name"],
-            "ethnicity" => ["Ethnicity","id","name"],
-            "immigration_status" => ["ImmigrationStatus","id","name"],
-            "employment_status" => ["EmploymentStatus","id","name"],
-            "pay_grade" => ["PayGrade","id","name"],
-            "country" => ["Country","code","name"],
-            "province" => ["Province","id","name"],
-            "department" => ["CompanyStructure","id","title"],
-            "supervisor" => ["Employee","id","first_name+last_name"],
-            "approver1" => ["Employee","id","first_name+last_name"],
-            "approver2" => ["Employee","id","first_name+last_name"],
-            "approver3" => ["Employee","id","first_name+last_name"],
-            "indirect_supervisors" => ["Employee","id","first_name+last_name", true],
+            "job_title" => ["JobTitle", "id", "name"],
+            "employment_status" => ["EmploymentStatus", "id", "name"],
+            "department" => ["CompanyStructure", "id", "title"],
+            "supervisor" => ["Employee", "id", "last_name+middle_name+first_name"],
+            "indirect_supervisors" => ["Employee", "id", "last_name+middle_name+first_name", true],
         ];
 
-
         $reportColumns = [
-            ['label' => 'Employee ID', 'column' => 'employee_id'],
-            ['label' => 'First Name', 'column' => 'first_name'],
-            ['label' => 'Middle Name', 'column' => 'middle_name'],
-            ['label' => 'Last Name', 'column' => 'last_name'],
-            ['label' => 'Nationality', 'column' => 'nationality'],
-            ['label' => 'Date of Birth', 'column' => 'birthday'],
-            ['label' => 'Gender', 'column' => 'gender'],
-            ['label' => 'Marital Status', 'column' => 'marital_status'],
-            ['label' => 'Ethnicity', 'column' => 'ethnicity'],
-            ['label' => 'Immigration Status', 'column' => 'immigration_status'],
-            ['label' => 'SSN Number', 'column' => 'ssn_num'],
-            ['label' => 'NIC', 'column' => 'nic_num'],
-            ['label' => 'Other ID', 'column' => 'other_id'],
-            ['label' => 'Driving License No', 'column' => 'driving_license'],
-            ['label' => 'Employment Status', 'column' => 'employment_status'],
-            ['label' => 'Job Title', 'column' => 'job_title'],
-            ['label' => 'Pay Grade', 'column' => 'pay_grade'],
-            ['label' => 'Work Station Id', 'column' => 'work_station_id'],
-            ['label' => 'Address Line 1', 'column' => 'address1'],
-            ['label' => 'Address Line 2', 'column' => 'address2'],
-            ['label' => 'City', 'column' => 'city'],
-            ['label' => 'Country', 'column' => 'country'],
-            ['label' => 'Province', 'column' => 'province'],
-            ['label' => 'Postal Code', 'column' => 'postal_code'],
-            ['label' => 'Home Phone', 'column' => 'home_phone'],
-            ['label' => 'Mobile Phone', 'column' => 'mobile_phone'],
-            ['label' => 'Work Phone', 'column' => 'work_phone'],
-            ['label' => 'Work Email', 'column' => 'work_email'],
-            ['label' => 'Private Email', 'column' => 'private_email'],
-            ['label' => 'Joined Date', 'column' => 'joined_date'],
-            ['label' => 'Confirmation Date', 'column' => 'confirmation_date'],
-            ['label' => 'Termination Date', 'column' => 'termination_date'],
-            ['label' => 'Department', 'column' => 'department'],
-            ['label' => 'Supervisor', 'column' => 'supervisor'],
-            ['label' => 'Indirect Supervisors', 'column' => 'indirect_supervisors'],
-            ['label' => 'First Level Approver', 'column' => 'approver1'],
-            ['label' => 'Second Level Approver', 'column' => 'approver2'],
-            ['label' => 'Third Level Approver', 'column' => 'approver3'],
+            ['label' => LanguageManager::tran('Employee ID'), 'column' => 'employee_id'],
+            ['label' => LanguageManager::tran('Full Name'), 'column' => 'fullname'],
+            ['label' => LanguageManager::tran('Date of Birth'), 'column' => 'birthday'],
+            ['label' => LanguageManager::tran('Joined Date'), 'column' => 'joined_date'],
+            ['label' => LanguageManager::tran('Employment Status'), 'column' => 'employment_status'],
+            ['label' => LanguageManager::tran('Job Title'), 'column' => 'job_title'],
+            ['label' => LanguageManager::tran('Department'), 'column' => 'department'],
+            ['label' => LanguageManager::tran('Supervisor'), 'column' => 'supervisor'],
+            ['label' => LanguageManager::tran('Indirect Supervisors'), 'column' => 'indirect_supervisors'],
         ];
 
         $customFieldsList = BaseService::getInstance()->getCustomFields('Employee');
@@ -96,14 +58,12 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
         $entries = BaseService::getInstance()->get('Employee', null, $filters);
         $data = [];
         foreach ($entries as $item) {
-            $item =  BaseService::getInstance()->enrichObjectMappings($mapping, $item);
-            $item =  BaseService::getInstance()->enrichObjectCustomFields('Employee', $item);
+            $item = BaseService::getInstance()->enrichObjectMappings($mapping, $item);
+            $item = BaseService::getInstance()->enrichObjectCustomFields('Employee', $item);
             $data[] = $item;
         }
 
         $mappedColumns = array_keys($mapping);
-
-
         $reportData = [];
         $reportData[] = array_column($reportColumns, 'label');
 
@@ -111,9 +71,25 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             $row = [];
             foreach ($reportColumns as $column) {
                 if (in_array($column['column'], $mappedColumns)) {
-                    $row[] = $item->{$column['column'].'_Name'};
+                    $row[] = $item->{$column['column'] . '_Name'};
                 } else {
-                    $row[] = $item->{$column['column']};
+                    if ($column['column'] == 'fullname') {
+                        $row[] = "{$item->last_name} {$item->middle_name} {$item->first_name}";
+                    } elseif (in_array($column['column'], ['birthday', 'joined_date', 'full_working_days'])) {
+                        try {
+                            $date = \DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
+
+                            if (!empty($date)) {
+                                $row[] = $date->format('d/m/Y');
+                            }else{
+                                $row[] = $item->{$column['column']};
+                            }
+                        } catch (\Exception $e) {
+                            $row[] = $item->{$column['column']};
+                        }
+                    } else {
+                        $row[] = $item->{$column['column']};
+                    }
                 }
             }
             $reportData[] = $row;

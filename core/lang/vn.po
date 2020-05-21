@@ -113,9 +113,6 @@ msgstr "Quản trị du lịch"
 msgid "Expense Administration"
 msgstr "Chi phí quản lý"
 
-msgid "Monitor Attendance"
-msgstr "Giám sát chấm công"
-
 msgid "Performance Charts"
 msgstr "Biểu đồ hiệu suất"
 
@@ -2254,3 +2251,18 @@ msgstr "Ngày làm việc"
 
 msgid "Real Hours"
 msgstr "Giờ công thực tế"
+
+msgid "Full Name"
+msgstr "Họ Tên"
+
+msgid "bank_account"
+msgstr "Số tài khoản"
+
+msgid "Số tài khoản"
+msgstr "Số tài khoản"
+
+msgid "bank_name"
+msgstr "Tên ngân hàng"
+
+msgid "Tên ngân hàng"
+msgstr "Tên ngân hàng"
