@@ -23,7 +23,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     <ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
         <li class="active"><a id="tab<?=$moduleMainName?>" href="#tabPage<?=$moduleMainName?>"><?=t('Overtime Requests')?></a></li>
         <li class=""><a id="tab<?=$subModuleMainName?>" href="#tabPage<?=$subModuleMainName?>"><?=t('Subordinate Overtime Requests')?></a></li>
-        <li class=""><a id="tab<?=$appModName?>" href="#tabPage<?=$appModName?>"><?=t('Overtime Request Approval')?></a></li>
+<!--        <li class=""><a id="tab--><?//=$appModName?><!--" href="#tabPage--><?//=$appModName?><!--">--><?//=t('Overtime Request Approval')?><!--</a></li>-->
     </ul>
 
     <div class="tab-content">
@@ -43,14 +43,14 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
             </div>
         </div>
-        <div class="tab-pane" id="tabPage<?=$appModName?>">
-            <div id="<?=$appModName?>" class="reviewBlock" data-content="List" style="padding-left:5px;">
+        <!--<div class="tab-pane" id="tabPage<?/*=$appModName*/?>">
+            <div id="<?/*=$appModName*/?>" class="reviewBlock" data-content="List" style="padding-left:5px;">
 
             </div>
-            <div id="<?=$appModName?>Form" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
+            <div id="<?/*=$appModName*/?>Form" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 
             </div>
-        </div>
+        </div>-->
     </div>
 
 </div>
