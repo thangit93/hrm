@@ -2278,3 +2278,9 @@ msgstr "Xác nhận xóa"
 
 msgid "Are you sure you want to delete this item ?"
 msgstr "Bạn có chắc muốn xóa dữ liệu này không ?"
+
+msgid "Bonus Leave Days"
+msgstr "Ngày nghỉ thêm"
+
+msgid "Previous Balance Days"
+msgstr "Ngày trung bình năm trước"
