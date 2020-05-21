@@ -8,12 +8,16 @@
 
 namespace Reports\Admin\Api;
 
+require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/lib/composer/vendor/autoload.php';
+
 use Classes\BaseService;
 use Classes\S3FileSystem;
 use Classes\SettingsManager;
 use Model\File;
 use Model\ReportFile;
 use Utils\LogManager;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 abstract class ReportBuilder
 {
@@ -21,12 +25,12 @@ abstract class ReportBuilder
     protected function execute($report, $query, $parameters)
     {
         $report->DB()->SetFetchMode(ADODB_FETCH_ASSOC);
-        LogManager::getInstance()->debug("Query: ".$query);
-        LogManager::getInstance()->debug("Parameters: ".json_encode($parameters));
+        LogManager::getInstance()->debug("Query: " . $query);
+        LogManager::getInstance()->debug("Parameters: " . json_encode($parameters));
         $rs = $report->DB()->Execute($query, $parameters);
         if (!$rs) {
             LogManager::getInstance()->info($report->DB()->ErrorMsg());
-            return array("ERROR","Error generating report");
+            return array("ERROR", "Error generating report");
         }
 
         $reportNamesFilled = false;
@@ -39,12 +43,12 @@ abstract class ReportBuilder
                 foreach ($row as $name => $value) {
                     $countIt++;
                     $columnNames[$countIt] = $name;
-                    $reportData[count($reportData)-1][] = $value;
+                    $reportData[count($reportData) - 1][] = $value;
                 }
                 $reportNamesFilled = true;
             } else {
                 foreach ($row as $name => $value) {
-                    $reportData[count($reportData)-1][] = $this->transformData($name, $value);
+                    $reportData[count($reportData) - 1][] = $this->transformData($name, $value);
                 }
             }
         }
@@ -61,18 +65,41 @@ abstract class ReportBuilder
 
     public function createReportFile($report, $data)
     {
-        $fileFirstPart = "Report_".str_replace(" ", "_", $report->name)."-".date("Y-m-d_H-i-s");
-        $fileName = $fileFirstPart.".csv";
+        $fileFirstPart = "Report_" . str_replace(" ", "_", $report->name) . "-" . date("Y-m-d_H-i-s");
+        $fileName = $fileFirstPart . "." . strtolower($report->output);
+        $fileFullName = CLIENT_BASE_PATH . 'data/' . $fileName;
 
-        $fileFullName = CLIENT_BASE_PATH.'data/'.$fileName;
-        $fp = fopen($fileFullName, 'w');
+        if ($report->output == 'CSV') {
+            $fp = fopen($fileFullName, 'w');
 
-        foreach ($data as $fields) {
-            fputcsv($fp, $fields);
+            foreach ($data as $fields) {
+                fputcsv($fp, $fields);
+            }
+
+            fclose($fp);
+        } elseif ($report->output == 'XLSX') {
+            $this->exportXLSXFile($report, $data, $fileFullName);
         }
 
-        fclose($fp);
         return array($fileFirstPart, $fileName, $fileFullName);
+    }
+
+    public function exportXLSXFile($report, $data, $fileFullName)
+    {
+        try {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            foreach ($data as $rowIndex => $columns) {
+                foreach ($columns as $columnIndex => $column) {
+                    $sheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, $column);
+                }
+            }
+            $writer = new Xlsx($spreadsheet);
+            $writer->save($fileFullName);
+        } catch (\Exception $e) {
+            LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
+        }
     }
 
     public function saveFile($fileFirstPart, $file, $fileFullName)
@@ -85,18 +112,18 @@ abstract class ReportBuilder
         $s3Bucket = SettingsManager::getInstance()->getSetting("Files: S3 Bucket");
         $s3WebUrl = SettingsManager::getInstance()->getSetting("Files: S3 Web Url");
 
-        if ($uploadFilesToS3.'' == '1' && !empty($uploadFilesToS3Key)
+        if ($uploadFilesToS3 . '' == '1' && !empty($uploadFilesToS3Key)
             && !empty($uploadFilesToS3Secret) && !empty($s3Bucket) && !empty($s3WebUrl)) {
-            $uploadname = CLIENT_NAME."/".$file;
+            $uploadname = CLIENT_NAME . "/" . $file;
             $s3FileSys = new S3FileSystem($uploadFilesToS3Key, $uploadFilesToS3Secret);
             $res = $s3FileSys->putObject($s3Bucket, $uploadname, $fileFullName, 'authenticated-read');
 
             if (empty($res)) {
-                return array("ERROR",$file);
+                return array("ERROR", $file);
             }
 
             unlink($fileFullName);
-            $file_url = $s3WebUrl.$uploadname;
+            $file_url = $s3WebUrl . $uploadname;
             $file_url = $s3FileSys->generateExpiringURL($file_url);
             $uploadedToS3 = true;
         }
@@ -109,7 +136,7 @@ abstract class ReportBuilder
 
         if (!$ok) {
             LogManager::getInstance()->info($fileObj->ErrorMsg());
-            return array("ERROR","Error generating report");
+            return array("ERROR", "Error generating report");
         }
 
         $reportFile = new ReportFile();
@@ -121,13 +148,13 @@ abstract class ReportBuilder
 
         if (!$ok) {
             LogManager::getInstance()->info($reportFile->ErrorMsg());
-            return array("ERROR","Error generating report");
+            return array("ERROR", "Error generating report");
         }
 
         if ($uploadedToS3) {
-            return array("SUCCESS",$file_url);
+            return array("SUCCESS", $file_url);
         } else {
-            return array("SUCCESS",$file);
+            return array("SUCCESS", $file);
         }
     }
 }

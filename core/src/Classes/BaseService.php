@@ -106,7 +106,8 @@ class BaseService
         $query = "";
         $queryData = array();
         if (!empty($filterStr)) {
-            $filter = json_decode($filterStr, true);
+//            $filter = json_decode($filterStr, true);
+            $filter = $filterStr;
 
             if (!empty($filter)) {
                 LogManager::getInstance()->debug("Building filter query");

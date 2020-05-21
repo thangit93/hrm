@@ -21,6 +21,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
         <li class=""><a id="tabSubEmployeeLeaveAll" href="#tabPageSubEmployeeLeaveAll"><?=t('Subordinate Leave')?></a></li>
         <!--<li class=""><a id="tabSubEmployeeLeaveCancel" href="#tabPageSubEmployeeLeaveCancel"><?/*=t('Cancellation Requests')*/?></a></li>
         <li class=""><a id="tabEmployeeLeaveApproval" href="#tabPageEmployeeLeaveApproval"><?/*=t('Approval Requests')*/?></a></li>-->
+        <li class=""><a id="tabLeaveBalance" href="#tabPageLeaveBalance"><?=t('Leave balance')?></a></li>
     </ul>
 
     <div class="tab-content">
@@ -96,6 +97,11 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
             </div>
         </div>-->
+        <div class="tab-pane" id="tabPageLeaveBalance">
+            <div id="LeaveBalance" class="reviewBlock" data-content="List" style="padding-left:5px;">
+
+            </div>
+        </div>
     </div>
 
 </div>
@@ -113,6 +119,10 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     modJsList['tabSubEmployeeLeaveAll'].preSetFilterExternal({"status":"Pending"});
     modJsList['tabEmployeeLeaveEntitlement'] = new EmployeeLeaveEntitlementAdapter('EmployeeLeaveEntitlement','EmployeeLeaveEntitlement');
     modJsList['tabEmployeeLeaveEntitlement'].setShowAddNew(false);
+    modJsList['tabLeaveBalance'] = new EmployeeLeaveBalanceAdapter('EmployeeLeaveBalance','LeaveBalance');
+    modJsList['tabLeaveBalance'].setShowAddNew(false);
+    // modJsList['tabLeaveBalance'].setRemoteTable(true);
+    modJsList['tabLeaveBalance'].preSetFilterExternal({"status":"Pending"});
 
     var modJs = modJsList['tabEmployeeLeaveAll'];
 
@@ -130,9 +140,9 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                         <label class="control-label" for="leave_status"><?= t('Leave Status')?></label>
                         <div class="controls">
                             <select class="form-control" type="text" id="leave_status" name="leave_status" value="">
-                                <option value="Approved">Approved</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Rejected">Rejected</option>
+                                <option value="Approved"><?= t('Approved')?></option>
+                                <option value="Pending"><?= t('Pending')?></option>
+                                <option value="Rejected"><?= t('Rejected')?></option>
                             </select>
                         </div>
                     </div>

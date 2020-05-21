@@ -75,14 +75,18 @@ class EmployeeLeaveAdapter extends AdapterBase {
         this.leaveInfo = callBackData[1];
         this.currentLeaveRule = callBackData[2];
         $('#leave_days_table_body').html('');
+        let hdm = this.gt('Half Day - Morning');
+        let hda = this.gt('Half Day - Afternoon');
+        let fd = this.gt('Full Day');
+        let nwd = this.gt('Non working day');
         var selectH = '<select id="_id_" class="days" onchange="modJs.updateLeaveDate()">' +
-            '<option value="Half Day - Morning">Half Day - Morning</option>' +
-            '<option value="Half Day - Afternoon">Half Day - Afternoon</option>' +
+            '<option value="Half Day - Morning">' + hdm + '</option>' +
+            '<option value="Half Day - Afternoon">' + hda + '</option>' +
             '</select>';
         var selectF = '<select id="_id_" class="days" onchange="modJs.updateLeaveDate()">' +
-            '<option value="Full Day">Full Day</option>' +
-            '<option value="Half Day - Morning">Half Day - Morning</option>' +
-            '<option value="Half Day - Afternoon">Half Day - Afternoon</option>' +
+            '<option value="Full Day">' + fd + '</option>' +
+            '<option value="Half Day - Morning">' + hdm + '</option>' +
+            '<option value="Half Day - Afternoon">' + hda + '</option>' +
             '</select>';
         var row = '<tr><td>_date_</td><td>_select_</td></tr>';
         var select;
@@ -100,7 +104,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
                 select = select.replace(/_id_/g, tkey);
 
             } else {
-                select = '<span class="label label-info">Non working day</span>';
+                select = '<span class="label label-info">' + nwd + '</span>';
             }
             var trow = row;
 
@@ -203,7 +207,8 @@ class EmployeeLeaveAdapter extends AdapterBase {
     }
 
     getLeaveDaysReadonlySuccessCallBack(callBackData) {
-        var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Leave Date</th><th>Leave Type</th></tr></thead><tbody>_days_</tbody></table> ';
+        var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;">' +
+            '<thead><tr><th>' + this.gt("Leave Date") + '</th><th> ' + this.gt("Leave Type") + ' </th></tr></thead><tbody>_days_</tbody></table> ';
         var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
         var row = '<tr><td>_date_</td><td>_type_</td></tr>';
         var rowLog = '<tr><td><span class="logTime label label-default">_date_</span>&nbsp;&nbsp;<b>_status_</b><br/>_note_</td></tr>';
@@ -218,14 +223,14 @@ class EmployeeLeaveAdapter extends AdapterBase {
         var rowsLogs = "";
         var trow = "";
 
-        html += '<span class="label label-default">Number of Leaves available (' + leaveInfo['availableLeaves'] + ')</span><br/>';
+        html += '<span class="label label-default">' + this.gt("Number of Leaves available") + ' (' + leaveInfo['availableLeaves'] + ')</span><br/>';
 
         var leaveCount = this.calculateNumberOfLeavesObject(days);
 
         if (leaveCount > leaveInfo['availableLeaves']) {
-            html += '<span class="label label-info">Number of Leaves requested (' + leaveCount + ')</span><br/>';
+            html += '<span class="label label-info">' + this.gt("Number of Leaves requested") + ' (' + leaveCount + ')</span><br/>';
         } else {
-            html += '<span class="label label-success">Number of Leaves requested (' + leaveCount + ')</span><br/>';
+            html += '<span class="label label-success">' + this.gt("Number of Leaves requested") + ' (' + leaveCount + ')</span><br/>';
         }
 
 
@@ -502,8 +507,10 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
     }
 
     getLeaveDaysReadonlySuccessCallBack(callBackData) {
-        var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Leave Date</th><th>Leave Type</th></tr></thead><tbody>_days_</tbody></table> ';
-        var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
+        var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;">' +
+            '<thead><tr><th>' + this.gt("Leave Date") + '</th><th>' + this.gt("Leave Type") + '</th></tr></thead><tbody>_days_</tbody></table> ';
+        var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;">' +
+            '<thead><tr><th>' + this.gt("Notes") + '</th></tr></thead><tbody>_days_</tbody></table> ';
         var row = '<tr><td>_date_</td><td>_type_</td></tr>';
         var rowLog = '<tr><td><span class="logTime label label-default">_date_</span>&nbsp;&nbsp;<b>_status_</b><br/>_note_</td></tr>';
 
@@ -517,14 +524,14 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
         var rowsLogs = "";
         var trow = "";
 
-        html += '<span class="label label-default">Number of Leaves available (' + leaveInfo['availableLeaves'] + ')</span><br/>';
+        html += '<span class="label label-default">' + this.gt("Number of Leaves available") + ' (' + leaveInfo['availableLeaves'] + ')</span><br/>';
 
         var leaveCount = this.calculateNumberOfLeavesObject(days);
 
         if (leaveCount > leaveInfo['availableLeaves']) {
-            html += '<span class="label label-info">Number of Leaves requested (' + leaveCount + ')</span><br/>';
+            html += '<span class="label label-info">' + this.gt("Number of Leaves requested") + ' (' + leaveCount + ')</span><br/>';
         } else {
-            html += '<span class="label label-success">Number of Leaves requested (' + leaveCount + ')</span><br/>';
+            html += '<span class="label label-success">' + this.gt("Number of Leaves requested") + ' (' + leaveCount + ')</span><br/>';
         }
 
 
@@ -544,7 +551,7 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
         }
 
         if (leave != null && leave.details != undefined && leave.details != null && leave.details != "") {
-            html += "<br/><b>Reason for Applying leave:</b><br/>";
+            html += `<br/><b>${this.gt("Reason for Applying leave")}:</b><br/>`;
             html += leave.details + "<br/><br/>";
         }
 
@@ -637,4 +644,60 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
     }
 }
 
-module.exports = {EmployeeLeaveAdapter, EmployeeLeaveEntitlementAdapter, SubEmployeeLeaveAdapter};
+class EmployeeLeaveBalanceAdapter extends AdapterBase {
+    getDataMapping() {
+        return [
+            "id",
+            "name",
+            "totalLeaves",
+            "approvedLeaves",
+            "rejectedLeaves",
+            "pendingLeaves",
+            "availableLeaves",
+        ];
+    }
+
+    getHeaders() {
+        return [
+            {"sTitle": "ID", "bVisible": false},
+            {"sTitle": "Leave Type"},
+            {"sTitle": "Days Per Year"},
+            {"sTitle": "Approved Leaves"},
+            {"sTitle": "Rejected Leaves"},
+            {"sTitle": "Pending Leaves"},
+            {"sTitle": "Available Leaves"},
+        ];
+    }
+
+    getFormFields() {
+        return [];
+    }
+
+    showActionButtons() {
+        return false;
+    }
+
+    get() {
+        var that = this;
+        var object = {};
+        var reqJson = JSON.stringify(object);
+        var callBackData = [];
+        callBackData['callBackData'] = [];
+        callBackData['callBackSuccess'] = 'getBalanceSuccessCallBack';
+        callBackData['callBackFail'] = 'getBalanceFailCallBack';
+
+        this.customAction('getLeaveBalance', 'modules=leaveman', reqJson, callBackData);
+    }
+
+    getBalanceSuccessCallBack(data) {
+        var callBackData = [];
+        callBackData['noRender'] = false;
+        this.getSuccessCallBack(callBackData, data);
+    }
+
+    getBalanceFailCallBack(data) {
+
+    }
+}
+
+module.exports = {EmployeeLeaveAdapter, EmployeeLeaveEntitlementAdapter, SubEmployeeLeaveAdapter, EmployeeLeaveBalanceAdapter};
