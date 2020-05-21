@@ -10,8 +10,8 @@
 				<p id="deleteModelBody"></p>
 			</div>
 			<div class="modal-footer">
-				<button class="btn" onclick="modJs.cancelDelete();">Cancel</button>
-				<button class="btn btn-primary" onclick="modJs.confirmDelete();">Delete</button>
+				<button class="btn" onclick="modJs.cancelDelete();"><?= t('Cancel')?></button>
+				<button class="btn btn-primary" onclick="modJs.confirmDelete();"><?= t('Delete')?></button>
 			</div>
 		</div>
 	</div>

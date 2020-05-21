@@ -692,6 +692,8 @@ class LeavesActionManager extends SubActionManager
             $leaves['availableLeaves'] = floatval($leaveMatrix[0]) - $leaves['pendingLeaves'] - $leaves['approvedLeaves'];
             $leaves['tobeAccrued'] = floatval($leaveMatrix[4]['total']) - floatval($leaveMatrix[4]['accrued']);
             $leaves['carriedForward'] = floatval($leaveMatrix[4]['carriedForward']);
+            $leaves['bonusLeaveDays'] = 0;
+            $leaves['previousBalanceDays'] = 0;
 
             $leaveEntitlementArray[] = $leaves;
         }
