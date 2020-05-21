@@ -26,7 +26,7 @@ class EmployeeLeave extends BaseModel
 
     public function getUserAccess()
     {
-        return array("get");
+        return array("get", "delete");
     }
 
     public function getUserOnlyMeAccess()
