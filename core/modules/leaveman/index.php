@@ -15,7 +15,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
     <ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
         <li class="active"><a id="tabEmployeeLeaveAll" href="#tabPageEmployeeLeaveAll"><?=t('All My Leaves')?></a></li>
-        <li class=""><a id="tabEmployeeLeaveEntitlement" href="#tabPageEmployeeLeaveEntitlement"><?=t('Leave Entitlement')?></a></li>
+<!--        <li class=""><a id="tabEmployeeLeaveEntitlement" href="#tabPageEmployeeLeaveEntitlement">--><?//=t('Leave Entitlement')?><!--</a></li>-->
         <!--<li class=""><a id="tabEmployeeLeaveApproved" href="#tabPageEmployeeLeaveApproved"><?/*=t('Approved Leave')*/?></a></li>
         <li class=""><a id="tabEmployeeLeavePending" href="#tabPageEmployeeLeavePending"><?/*=t('Pending Leave')*/?></a></li>-->
         <li class=""><a id="tabSubEmployeeLeaveAll" href="#tabPageSubEmployeeLeaveAll"><?=t('Subordinate Leave')?></a></li>
@@ -33,7 +33,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
             </div>
         </div>
-        <div class="tab-pane active" id="tabPageEmployeeLeaveEntitlement">
+        <!--<div class="tab-pane active" id="tabPageEmployeeLeaveEntitlement">
             <div id="EmployeeLeaveEntitlement" data-content="List" style="padding-left:5px;padding:20px;" class="reviewBlock">
                 <div class="row search-controls" style="padding-bottom:25px;display:none;">
                     <div class="col-lg-4 col-md-4"></div>
@@ -57,7 +57,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 </nav>
             </div>
         </div>
-        <!--<div class="tab-pane" id="tabPageEmployeeLeaveApproved">
+        <div class="tab-pane" id="tabPageEmployeeLeaveApproved">
             <div id="EmployeeLeaveApproved" class="reviewBlock" data-content="List" style="padding-left:5px;">
 
             </div>
@@ -117,8 +117,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     modJsList['tabSubEmployeeLeaveAll'].setShowAddNew(false);
     modJsList['tabSubEmployeeLeaveAll'].setRemoteTable(true);
     modJsList['tabSubEmployeeLeaveAll'].preSetFilterExternal({"status":"Pending"});
-    modJsList['tabEmployeeLeaveEntitlement'] = new EmployeeLeaveEntitlementAdapter('EmployeeLeaveEntitlement','EmployeeLeaveEntitlement');
-    modJsList['tabEmployeeLeaveEntitlement'].setShowAddNew(false);
+    // modJsList['tabEmployeeLeaveEntitlement'] = new EmployeeLeaveEntitlementAdapter('EmployeeLeaveEntitlement','EmployeeLeaveEntitlement');
+    // modJsList['tabEmployeeLeaveEntitlement'].setShowAddNew(false);
     modJsList['tabLeaveBalance'] = new EmployeeLeaveBalanceAdapter('EmployeeLeaveBalance','LeaveBalance');
     modJsList['tabLeaveBalance'].setShowAddNew(false);
     // modJsList['tabLeaveBalance'].setRemoteTable(true);
