@@ -17,3 +17,4 @@ web/modules/dist/*.map
 .gitkeep
 yarn.lock
 /docker-compose.yml
+supervisord.*

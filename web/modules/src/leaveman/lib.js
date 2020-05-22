@@ -19,6 +19,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
             "date_start",
             "date_end",
             "supervisor",
+            "details",
             "status"
         ];
     }
@@ -31,6 +32,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
             {"sTitle": "Leave Start Date"},
             {"sTitle": "Leave End Date"},
             {"sTitle": "Supervisor"},
+            {"sTitle": "Reason"},
             {"sTitle": "Status"}
         ];
     }
@@ -208,8 +210,10 @@ class EmployeeLeaveAdapter extends AdapterBase {
 
     getLeaveDaysReadonlySuccessCallBack(callBackData) {
         var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;">' +
-            '<thead><tr><th>' + this.gt("Leave Date") + '</th><th> ' + this.gt("Leave Type") + ' </th></tr></thead><tbody>_days_</tbody></table> ';
-        var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
+            '<thead><tr><th>' + this.gt("Leave Date") + '</th><th> ' + this.gt("Leave Type") +
+            ' </th></tr></thead><tbody>_days_</tbody></table> ';
+        var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;">' +
+            '<thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
         var row = '<tr><td>_date_</td><td>_type_</td></tr>';
         var rowLog = '<tr><td><span class="logTime label label-default">_date_</span>&nbsp;&nbsp;<b>_status_</b><br/>_note_</td></tr>';
 
@@ -278,10 +282,12 @@ class EmployeeLeaveAdapter extends AdapterBase {
 
     getActionButtonsHtml(id, data) {
         var html = "";
-        if ((this.getTableName() != "EmployeeLeaveAll" && this.getTableName() != "EmployeeLeavePending") || data[4] == "Approved" || data[4] == "Rejected") {
+        if ((this.getTableName() != "EmployeeLeaveAll" && this.getTableName() != "EmployeeLeavePending") || data[6] == "Approved" || data[6] == "Rejected") {
             html = '<div style="width:80px;"><img class="tableActionButton" src="_BASE_images/info.png" style="cursor:pointer;" rel="tooltip" title="Show Leave Days" onclick="modJs.getLeaveDaysReadonly(_id_);return false;"></img></div>';
         } else {
-            html = '<div style="width:80px;"><img class="tableActionButton" src="_BASE_images/info.png" style="cursor:pointer;" rel="tooltip" title="Show Leave Days" onclick="modJs.getLeaveDaysReadonly(_id_);return false;"></img><img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Cancel Leave" onclick="modJs.deleteRow(_id_);return false;"></img></div>';
+            html = '<div style="width:80px;">' +
+                '<img class="tableActionButton" src="_BASE_images/info.png" style="cursor:pointer;" rel="tooltip" title="Show Leave Days" onclick="modJs.getLeaveDaysReadonly(_id_);return false;">' +
+                '</img><img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Cancel Leave" onclick="modJs.deleteRow(_id_);return false;"></img></div>';
         }
         html = html.replace(/_id_/g, id);
         html = html.replace(/_BASE_/g, this.baseUrl);
@@ -650,6 +656,8 @@ class EmployeeLeaveBalanceAdapter extends AdapterBase {
             "id",
             "name",
             "totalLeaves",
+            "bonusLeaveDays",
+            "previousBalanceDays",
             "approvedLeaves",
             "rejectedLeaves",
             "pendingLeaves",
@@ -662,6 +670,8 @@ class EmployeeLeaveBalanceAdapter extends AdapterBase {
             {"sTitle": "ID", "bVisible": false},
             {"sTitle": "Leave Type"},
             {"sTitle": "Days Per Year"},
+            {"sTitle": "Bonus Leave Days"},
+            {"sTitle": "Previous Balance Days"},
             {"sTitle": "Approved Leaves"},
             {"sTitle": "Rejected Leaves"},
             {"sTitle": "Pending Leaves"},

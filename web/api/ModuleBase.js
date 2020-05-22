@@ -2149,11 +2149,16 @@ class ModuleBase {
       t = t.replace(/_label_/g, field[1].label);
     }
 
-
     if (field[1].validation !== undefined && field[1].validation != null && field[1].validation !== '') {
       t = t.replace(/_validation_/g, `validation="${field[1].validation}"`);
     } else {
       t = t.replace(/_validation_/g, '');
+    }
+
+    if (field[1].readonly !== undefined && field[1].readonly != null && field[1].readonly !== '') {
+      t = t.replace(/_readonly_/g, `readonly="${field[1].readonly}"`);
+    } else {
+      t = t.replace(/_readonly_/g, '');
     }
 
     if (field[1].help !== undefined && field[1].help !== null) {

@@ -516,7 +516,7 @@ class BaseService
 
         $list = $processedList;
 
-        if (!empty($mappingStr) && count($map)>0) {
+        if (!empty($mappingStr) && (is_array($map) && count($map)>0) || (is_object($map) && count(get_object_vars($map)))) {
             $list = $this->populateMapping($list, $map);
         }
 
