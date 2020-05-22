@@ -2284,3 +2284,9 @@ msgstr "Ngày nghỉ thêm"
 
 msgid "Previous Balance Days"
 msgstr "Ngày trung bình năm trước"
+
+msgid "To"
+msgstr "Đến"
+
+msgid "From"
+msgstr "Từ"
