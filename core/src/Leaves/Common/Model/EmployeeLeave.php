@@ -8,6 +8,8 @@
 
 namespace Leaves\Common\Model;
 
+use Classes\FileService;
+use Employees\Common\Model\Employee;
 use Model\BaseModel;
 
 class EmployeeLeave extends BaseModel
@@ -32,5 +34,19 @@ class EmployeeLeave extends BaseModel
     public function getUserOnlyMeAccess()
     {
         return array("get","element");
+    }
+
+    public function postProcessGetData($obj)
+    {
+        $obj = FileService::getInstance()->updateSmallProfileImage($obj);
+
+        $employee = new Employee();
+        $empInfo = $employee->find('id = ?', [$obj->employee]);
+
+        if (!empty($empInfo[0]->supervisor) && $empInfo[0]->supervisor != "NULL") {
+            $supervisor = $employee->find('id = ?', [$empInfo[0]->supervisor]);
+            $obj->supervisor = $supervisor[0]->first_name . ' ' . $supervisor[0]->last_name;
+        }
+        return $obj;
     }
 }
