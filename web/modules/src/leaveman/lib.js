@@ -254,7 +254,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
         }
 
         if (leave != null && leave.details != undefined && leave.details != null && leave.details != "") {
-            html += "<br/><b>Reason for Applying leave:</b><br/>";
+            html += "<br/><b>" + this.gt("Reason for Applying leave") + ":</b><br/>";
             html += leave.details + "<br/><br/>";
         }
 
