@@ -58,12 +58,13 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     var modJsList = new Array();
 
     modJsList['tab<?=$moduleMainName?>'] = new <?=$moduleMainName?>Adapter('<?=$moduleMainName?>','<?=$moduleMainName?>');
+    modJsList['tab<?=$moduleMainName?>'].setRemoteTable(true);
 
 
-    modJsList['tab<?=$appModName?>'] = new <?=$moduleMainName?>ApproverAdapter('<?=$appModName?>', '<?=$appModName?>');
+    /*modJsList['tab<?=$appModName?>'] = new <?=$moduleMainName?>ApproverAdapter('<?=$appModName?>', '<?=$appModName?>');
     modJsList['tab<?=$appModName?>'].setShowAddNew(false);
     modJsList['tab<?=$appModName?>'].setShowDelete(false);
-    modJsList['tab<?=$appModName?>'].setShowEdit(false);
+    modJsList['tab<?=$appModName?>'].setShowEdit(false);*/
 
     modJsList['tab<?=$subModuleMainName?>'] = new <?=$subModuleMainName?>Adapter('<?=$moduleMainName?>','<?=$subModuleMainName?>');
     modJsList['tab<?=$subModuleMainName?>'].setRemoteTable(true);
