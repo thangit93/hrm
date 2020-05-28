@@ -6,8 +6,13 @@ use Classes\BaseService;
 use Data\Admin\Api\AbstractDataImporter;
 use DateTime;
 use Employees\Common\Model\Employee;
+use Metadata\Common\Model\CurrencyType;
+use Metadata\Common\Model\CustomFieldValue;
 use Metadata\Common\Model\Nationality;
 use Model\BaseModel;
+use Payroll\Common\Model\DeductionGroup;
+use Payroll\Common\Model\PayFrequency;
+use Salary\Common\Model\PayrollEmployee;
 use Users\Common\Model\User;
 use Utils\LogManager;
 
@@ -64,7 +69,7 @@ class EmployeeDataImporter extends AbstractDataImporter
             if ($column->name == 'job_title') {
                 $jobTitleObject = $this->addJobTitle($value);
                 $object->job_title = $jobTitleObject->id;
-            } elseif ($column->name == 'supervisor') {
+            } elseif ($column->name == 'supervisor' && !empty($value)) {
                 $supervisor = $this->addSupervisor($value);
                 $object->supervisor = $supervisor->id;
             } elseif ($column->name == 'department') {
@@ -80,7 +85,7 @@ class EmployeeDataImporter extends AbstractDataImporter
                 }
 
                 $object->indirect_supervisors = "[" . implode(',', $indirectSupervisors) . "]";
-            } elseif (in_array($column->name, ['birthday', 'joined_date'])) {
+            } elseif (in_array($column->name, ['birthday', 'joined_date']) && !empty($value)) {
                 $value = DateTime::createFromFormat('Y-m-d H:i:s', $value);
                 if ($value) {
                     $object->{$column->name} = $value->format('Y-m-d');
@@ -92,11 +97,16 @@ class EmployeeDataImporter extends AbstractDataImporter
                 } else {
                     $object->{$column->name} = $value;
                 }
+            } elseif ($column->name == 'emp_level') {
+                $object->custom3 = $value;
             }
         }
 
         $object->employee_id = $this->convert_vi_to_en("{$firstName}{$lastName}{$birthday->format('Y')}");
         $this->supervisors[$hash] = $object;
+
+        $object->birthday = !empty($object->birthday) ? $object->birthday : null;
+        $object->supervisor = !empty($object->supervisor) ? $object->supervisor : null;
 
         return $object;
     }
@@ -106,6 +116,61 @@ class EmployeeDataImporter extends AbstractDataImporter
         if (!empty($object) && !empty($object->first_name) && !empty($object->last_name) && !empty($object->birthday)) {
             $this->createUser($object->first_name, $object->last_name, $object->birthday, $object);
         }
+
+        if (!empty($object)) {
+            $this->addPayrollEmployee($object);
+
+            if ($object->custom3 == 'Giám đốc') {
+                $this->setFullWorkingDay($object);
+            }
+        }
+    }
+
+    private function setFullWorkingDay($employee)
+    {
+        $model = new CustomFieldValue();
+        $model->type = 'Employee';
+        $model->name = 'full_working_days';
+        $model->object_id = $employee->id;
+        $model->value = '2020-01-01';
+        $model->Save();
+    }
+
+    private function addPayrollEmployee($employee)
+    {
+        $model = new PayrollEmployee();
+        $model->employee = $employee->id;
+        $model->pay_frequency = $this->getPayFrequency()->id;
+        $model->currency = $this->getCurrency()->id;
+        $model->deduction_group = $this->getDeductionGroup()->id;
+        $model->Save();
+    }
+
+    private function getPayFrequency()
+    {
+        $model = new PayFrequency();
+        /** @var array $list */
+        $list = $model->Find('name = ?', ['name' => 'Monthly']);
+
+        return array_shift($list);
+    }
+
+    private function getCurrency()
+    {
+        $model = new CurrencyType();
+        /** @var array $list */
+        $list = $model->Find('code = ?', ['code' => 'VND']);
+
+        return array_shift($list);
+    }
+
+    private function getDeductionGroup()
+    {
+        $model = new DeductionGroup();
+        /** @var array $groups */
+        $groups = $model->Find('1 = 1', []);
+
+        return array_shift($groups);
     }
 
     /**
@@ -187,7 +252,6 @@ class EmployeeDataImporter extends AbstractDataImporter
 
         return $object;
     }
-
 
     /**
      * @return BaseModel
