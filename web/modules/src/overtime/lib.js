@@ -24,6 +24,8 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       'start_time',
       'end_time',
       // 'project',
+      "supervisor",
+      "notes",
       'status',
     ];
   }
@@ -35,6 +37,8 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       { sTitle: 'Start Time' },
       { sTitle: 'End Time' },
       // { sTitle: 'Project' },
+      {"sTitle": "Supervisor"},
+      {"sTitle": "Reason"},
       { sTitle: 'Status' },
     ];
   }

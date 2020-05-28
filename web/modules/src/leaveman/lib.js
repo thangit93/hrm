@@ -379,6 +379,7 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
             "leave_type",
             "date_start",
             "date_end",
+            "details",
             "status"
         ];
     }
@@ -390,6 +391,7 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
             {"sTitle": "Leave Type"},
             {"sTitle": "Leave Start Date"},
             {"sTitle": "Leave End Date"},
+            {"sTitle": "Reason"},
             {"sTitle": "Status"}
         ];
     }
