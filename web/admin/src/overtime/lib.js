@@ -54,7 +54,8 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       'category',
       'start_time',
       'end_time',
-      'project',
+      // 'project',
+      "notes",
       'status',
     ];
   }
@@ -66,7 +67,8 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       { sTitle: 'Category' },
       { sTitle: 'Start Time' },
       { sTitle: 'End Time' },
-      { sTitle: 'Project' },
+      // { sTitle: 'Project' },
+      {"sTitle": "Reason"},
       { sTitle: 'Status' },
     ];
   }

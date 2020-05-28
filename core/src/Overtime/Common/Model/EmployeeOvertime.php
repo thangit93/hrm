@@ -8,8 +8,10 @@
 
 namespace Overtime\Common\Model;
 
+use Classes\FileService;
 use Classes\IceResponse;
 use Classes\SettingsManager;
+use Employees\Common\Model\Employee;
 use Model\ApproveModel;
 
 class EmployeeOvertime extends ApproveModel
@@ -74,5 +76,19 @@ class EmployeeOvertime extends ApproveModel
             return new IceResponse(IceResponse::ERROR, 'Incorrect start and end time');
         }
         return new IceResponse(IceResponse::SUCCESS, "");
+    }
+
+    public function postProcessGetData($obj)
+    {
+        $obj = FileService::getInstance()->updateSmallProfileImage($obj);
+
+        $employee = new Employee();
+        $empInfo = $employee->find('id = ?', [$obj->employee]);
+
+        if (!empty($empInfo[0]->supervisor) && $empInfo[0]->supervisor != "NULL") {
+            $supervisor = $employee->find('id = ?', [$empInfo[0]->supervisor]);
+            $obj->supervisor = $supervisor[0]->first_name . ' ' . $supervisor[0]->last_name;
+        }
+        return $obj;
     }
 }
