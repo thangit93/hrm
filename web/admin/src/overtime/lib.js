@@ -56,6 +56,7 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       'end_time',
       // 'project',
       "notes",
+      "total_time",
       'status',
     ];
   }
@@ -68,7 +69,8 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       { sTitle: 'Start Time' },
       { sTitle: 'End Time' },
       // { sTitle: 'Project' },
-      {"sTitle": "Reason"},
+      {"sTitle": "Location"},
+      {"sTitle": "Total Time"},
       { sTitle: 'Status' },
     ];
   }
@@ -88,9 +90,10 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       }],
       ['start_time', { label: 'Start Time', type: 'datetime', validation: '' }],
       ['end_time', { label: 'End Time', type: 'datetime', validation: '' }],
-      ['project', {
+      /*['project', {
         label: 'Project', type: 'select2', 'allow-null': true, 'null=label': 'none', 'remote-source': ['Project', 'id', 'name'],
-      }],
+      }],*/
+      ['total_time', { label: 'Total Time', type: 'text', readonly: true, validation: 'none' }],
       ['notes', { label: 'Notes', type: 'textarea', validation: 'none' }],
     ];
   }

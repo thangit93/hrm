@@ -2292,3 +2292,6 @@ msgstr "Tính số giờ làm thêm"
 
 msgid "SalaryUtil_getSalaryOvertime"
 msgstr "Tính tiền làm thêm giờ"
+
+msgid "Location"
+msgstr "Địa điểm"
