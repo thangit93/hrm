@@ -411,10 +411,69 @@ class EmployeeSalaryBonusAdapter extends AdapterBase {
     }
 }
 
+/*
+ * EmployeeSalaryOvertimeAdapter
+ */
+
+class EmployeeSalaryOvertimeAdapter extends AdapterBase {
+    getDataMapping() {
+        return this.getTableFields();
+    }
+
+    getTableFields() {
+        return [
+            'id',
+            'amount',
+        ];
+    }
+
+    getCustomTableParams() {
+        const that = this;
+        return {
+            aoColumnDefs: [
+                {
+                    fnRender(data, cell) {
+                        return that.preProcessRemoteTableData(data, cell, 1);
+                    },
+                    aTargets: [1],
+                },
+                {
+                    fnRender: that.getActionButtons,
+                    aTargets: [that.getDataMapping().length],
+                },
+            ],
+        };
+    }
+
+    preProcessRemoteTableData(data, cell, id) {
+        if (id === 1) {
+            cell = parseInt(cell)
+            cell = new Intl.NumberFormat('en-VN').format(cell)
+        }
+
+        return cell;
+    }
+
+    getHeaders() {
+        return [
+            {sTitle: 'ID', bVisible: false},
+            {sTitle: 'Amount'},
+        ];
+    }
+
+    getFormFields() {
+        return [
+            ['id', {label: 'ID', type: 'hidden'}],
+            ['amount', {label: 'Amount', type: 'text', validation: 'integer'}],
+        ];
+    }
+}
+
 module.exports = {
     SalaryComponentTypeAdapter,
     SalaryComponentAdapter,
     EmployeeSalaryAdapter,
     EmployeeSalaryDepositAdapter,
     EmployeeSalaryBonusAdapter,
+    EmployeeSalaryOvertimeAdapter,
 };
