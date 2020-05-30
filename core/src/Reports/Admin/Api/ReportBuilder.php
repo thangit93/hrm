@@ -92,7 +92,7 @@ abstract class ReportBuilder
 
             foreach ($data as $rowIndex => $columns) {
                 foreach ($columns as $columnIndex => $column) {
-                    $sheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, $column);
+                    $sheet->setCellValueByColumnAndRow($columnIndex + 1, $rowIndex + 1, str_replace(',', '', $column));
                 }
             }
             $writer = new Xlsx($spreadsheet);
