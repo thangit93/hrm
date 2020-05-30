@@ -26,6 +26,7 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       // 'project',
       "supervisor",
       "notes",
+      "total_time",
       'status',
     ];
   }
@@ -38,7 +39,8 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       { sTitle: 'End Time' },
       // { sTitle: 'Project' },
       {"sTitle": "Supervisor"},
-      {"sTitle": "Reason"},
+      {"sTitle": "Location"},
+      {"sTitle": "Total Time"},
       { sTitle: 'Status' },
     ];
   }
@@ -59,7 +61,7 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
         'remote-source': ['Project', 'id', 'name'],
       }],*/
       ['total_time', { label: 'Total Time', type: 'text', readonly: true, validation: 'none' }],
-      ['notes', { label: 'Reason', type: 'textarea', validation: 'none' }],
+      ['notes', { label: 'Location', type: 'textarea', validation: 'none' }],
     ];
   }
 

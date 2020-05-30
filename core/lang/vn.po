@@ -2280,3 +2280,6 @@ msgstr "Đến"
 
 msgid "From"
 msgstr "Từ"
+
+msgid "Location"
+msgstr "Địa điểm"

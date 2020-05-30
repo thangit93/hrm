@@ -91,6 +91,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 <script>
     var modJsList = new Array();
     modJsList['tabLeaveType'] = new LeaveTypeAdapter('LeaveType');
+    modJsList['tabLeaveType'].setRemoteTable(true);
     modJsList['tabLeaveRule'] = new LeaveRuleAdapter('LeaveRule');
     modJsList['tabLeavePeriod'] = new LeavePeriodAdapter('LeavePeriod');
     modJsList['tabWorkDay'] = new WorkDayAdapter('WorkDay');
