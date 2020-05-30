@@ -9,9 +9,14 @@ use Classes\CustomFieldManager;
 use DateTime;
 use Employees\Common\Model\Employee;
 use Exception;
+use Leaves\Common\Model\EmployeeLeave;
+use Leaves\Common\Model\EmployeeLeaveDay;
+use Leaves\Common\Model\LeaveType;
+use Overtime\Admin\Api\OvertimePayrollUtils;
 use Salary\Common\Model\EmployeeSalary;
 use Salary\Common\Model\EmployeeSalaryBonus;
 use Salary\Common\Model\EmployeeSalaryDeposit;
+use Salary\Common\Model\EmployeeSalaryOvertime;
 
 /**
  * Class SalaryUtil
@@ -55,21 +60,38 @@ class SalaryUtil
 
         $now = new DateTime();
 
-        if (!empty($from)) {
+        /*if (!empty($from)) {
             $empSalaries = array_filter($empSalaries, function ($empSalary) use ($from) {
-                return empty($empSalary->start_date) || $empSalary->start_date >= $from;
+                if (empty($empSalary->start_date)) {
+                    return true;
+                }
+                $startDateObj = DateTime::createFromFormat('Y-m-d', $empSalary->start_date);
+                $fromObj = DateTime::createFromFormat('Y-m-d', $from);
+
+                return $startDateObj >= $fromObj;
             });
-        }
+        }*/
 
         if (!empty($to)) {
             $empSalaries = array_filter($empSalaries, function ($empSalary) use ($to) {
-                return empty($empSalary->start_date) || $empSalary->start_date <= $to;
+                if (empty($empSalary->start_date)) {
+                    return true;
+                }
+
+                $startDateObj = DateTime::createFromFormat('Y-m-d', $empSalary->start_date);
+                $toObj = DateTime::createFromFormat('Y-m-d', $to);
+
+                return $startDateObj <= $toObj;
             });
         }
 
         $empSalaries = array_filter($empSalaries, function ($empSalary) use ($now) {
+            if (empty($empSalary->start_date)) {
+                return true;
+            }
+
             $startDate = DateTime::createFromFormat('Y-m-d', $empSalary->start_date);
-            return ($now >= $startDate || empty($empSalary->start_date) || ($empSalary->start_date == 'NULL'));
+            return ($now >= $startDate || ($empSalary->start_date == 'NULL'));
         });
 
         /** @var EmployeeSalary $a */
@@ -130,6 +152,7 @@ class SalaryUtil
         $totalWorkingDays = AttendanceUtil::getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
         $totalRealSalary = 0;
         $totalAtSum = 0;
+        $dayOfWeek = $startDateObj->format('w');
         $data = [];
 
         while ($startDateObj <= $endDateObj) {
@@ -142,20 +165,38 @@ class SalaryUtil
             if (!$isFullWorkingDay) {
                 /** @var array $atts */
                 $atts = AttendanceUtil::getAttendancesData($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+                $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
 
-                if (empty($atts)) {
+                if (empty($atts) && empty($employeeLeaveDays)) {
                     $startDateObj->add(\DateInterval::createFromDateString('1 day'));
                     continue;
                 }
 
-                $att = array_shift($atts);
-                $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
-                $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
-                $atSum = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
+                $atSum = 0;
+
+                if (!empty($atts) && empty($employeeLeaveDays)) {
+                    $att = array_shift($atts);
+                    $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
+                    $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
+                    $atSum = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
+                }
+
+                if (!empty($employeeLeaveDays)) {
+                    foreach ($employeeLeaveDays as $employeeLeaveDay) {
+                        foreach ($employeeLeaveDay as $day) {
+                            $atSum += $day->period;
+
+                            if ($dayOfWeek < 6 && $dayOfWeek >= 1 && $atSum > 1) {
+                                $atSum = 1;
+                            } elseif ($dayOfWeek == 6 && $atSum > 0.5) {
+                                $atSum = 0.5;
+                            }
+                        }
+                    }
+                }
             } else {
                 $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 09:00:00");
                 $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 17:00:00");
-                $dayOfWeek = $startDateObj->format('w');
 
                 if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
                     $atSum = 1;
@@ -175,8 +216,8 @@ class SalaryUtil
 
             $data[] = [
                 'date' => $startDateObj->format('Y-m-d'),
-                'checkIn' => $checkIn->format('Y-m-d Y:i:s'),
-                'checkOut' => $checkOut->format('Y-m-d Y:i:s'),
+                'checkIn' => $checkIn ? $checkIn->format('Y-m-d Y:i:s') : '',
+                'checkOut' => $checkOut ? $checkOut->format('Y-m-d Y:i:s') : '',
                 'salaryComponents' => implode(',', $salaryComponents),
                 'totalWorkingDays' => $totalWorkingDays,
                 'atSum' => $atSum,
@@ -192,6 +233,59 @@ class SalaryUtil
         }
 
         return round($totalRealSalary);
+    }
+
+    private function getEmployeeLeave($employeeId, $startDate, $endDate)
+    {
+        $employeeLeavesModel = new EmployeeLeave();
+        /** @var array $employeeLeaves */
+        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ?', [
+            $employeeId,
+            $startDate,
+            $endDate,
+        ]);
+
+        $leaveDays = [];
+
+        foreach ($employeeLeaves as $employeeLeave) {
+            $leaveType = $this->getLeaveType($employeeLeave->leave_type);
+
+            if (empty($leaveType) || empty($leaveType->pay)) {
+                continue;
+            }
+
+            $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate);
+        }
+
+        return $leaveDays;
+    }
+
+    private function getLeaveDays($employeeLeaveId, $startDate, $endDate)
+    {
+        $model = new EmployeeLeaveDay();
+        $dates = $model->Find('employee_leave = ? and (leave_date = ? or leave_date = ?)', [
+            $employeeLeaveId,
+            $startDate,
+            $endDate
+        ]);
+
+        foreach ($dates as $date) {
+            if ($date->leave_type == 'Full Day') {
+                $date->period = 1;
+            } else {
+                $date->period = 0.5;
+            }
+        }
+
+        return $dates;
+    }
+
+    private function getLeaveType($id)
+    {
+        $model = new LeaveType();
+        /** @var array $obj */
+        $obj = $model->Find('id = ?', [$id]);
+        return array_shift($obj);
     }
 
     public function getSalaryDeposit($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
@@ -240,6 +334,33 @@ class SalaryUtil
         }
 
         return round($totalSalaryBonus);
+    }
+
+    public function getSalaryOvertime($employeeId, $startDate, $endDate, $salaryComponents = "", $toArray = false)
+    {
+        $totalSalaryOvertime = 0;
+
+        try {
+            $model = new EmployeeSalaryOvertime();
+            /** @var array $overtimes */
+            $overtimes = $model->Find('1 = 1', []);
+            $overtime = array_shift($overtimes);
+
+            $overtimeUtils = new OvertimePayrollUtils();
+            $ot = $overtimeUtils->getApprovedTimeInRequests($employeeId, $startDate, $endDate);
+            $totalSalaryOvertime = round($overtime->amount) * $ot;
+        } catch (Exception $e) {
+        }
+
+        $data = [
+            round($totalSalaryOvertime)
+        ];
+
+        if (!empty($toArray)) {
+            return $data;
+        }
+
+        return round($totalSalaryOvertime);
     }
 
     /**

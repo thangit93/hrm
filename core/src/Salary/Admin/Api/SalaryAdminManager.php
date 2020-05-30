@@ -33,6 +33,7 @@ class SalaryAdminManager extends AbstractModuleManager
         $this->addModelClass('EmployeeSalaryDeposit');
         $this->addModelClass('EmployeeSalaryBonus');
         $this->addModelClass('PayrollEmployee');
+        $this->addModelClass('EmployeeSalaryOvertime');
     }
 
     public function initCalculationHooks()
@@ -60,6 +61,12 @@ class SalaryAdminManager extends AbstractModuleManager
             LanguageManager::tran('Salary Bonus'),
             SalaryUtil::class,
             'getSalaryBonus'
+        );
+        $this->addCalculationHook(
+            'SalaryUtil_getSalaryOvertime',
+            LanguageManager::tran('Salary Overtime'),
+            SalaryUtil::class,
+            'getSalaryOvertime'
         );
     }
 }

@@ -184,6 +184,27 @@ if($action == 'get'){
 	readfile($fileName);
 	exit;
 
+}else if($action == 'view'){
+	$fileName = $_REQUEST['file'];
+	$fileName = str_replace("..","",$fileName);
+	$fileName = str_replace("/","",$fileName);
+	$fileName = CLIENT_BASE_PATH.'data/'.$fileName;
+	if(!file_exists($fileName)){
+		exit;
+	}
+//	header('Content-Description: File Transfer');
+//	header('Content-Type: application/octet-stream');
+//	header('Content-Disposition: attachment; filename='.basename($fileName));
+//	header('Content-Transfer-Encoding: binary');
+//	header('Expires: 0');
+//	header('Cache-Control: must-revalidate');
+//	header('Pragma: public');
+//	header('Content-Length: ' . filesize($fileName));
+	ob_clean();
+	flush();
+	readfile($fileName);
+	exit;
+
 }else if($action == 'rsp'){ // linked clicked from password change email
 	$user = new \Users\Common\Model\User();
 	if(!empty($_REQUEST['key'])){

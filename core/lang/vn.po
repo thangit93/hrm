@@ -2281,5 +2281,17 @@ msgstr "Đến"
 msgid "From"
 msgstr "Từ"
 
+msgid "Employee Salary Overtime"
+msgstr "Lương Làm Thêm Giờ"
+
+msgid "Salary Overtime"
+msgstr "Tiền Làm Thêm Giờ"
+
+msgid "OvertimePayrollUtils_getApprovedTimeInRequests"
+msgstr "Tính số giờ làm thêm"
+
+msgid "SalaryUtil_getSalaryOvertime"
+msgstr "Tính tiền làm thêm giờ"
+
 msgid "Location"
 msgstr "Địa điểm"
