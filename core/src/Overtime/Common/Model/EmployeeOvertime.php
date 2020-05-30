@@ -81,6 +81,7 @@ class EmployeeOvertime extends ApproveModel
     public function postProcessGetData($obj)
     {
         $obj = FileService::getInstance()->updateSmallProfileImage($obj);
+        $obj->status = t($obj->status);
 
         $employee = new Employee();
         $empInfo = $employee->find('id = ?', [$obj->employee]);
