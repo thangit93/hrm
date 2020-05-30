@@ -20,7 +20,7 @@ $logoFileUrl = \Classes\UIManager::getInstance()->getCompanyLogoUrl();
         <meta charset="utf-8">
         <title><?=$companyName?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="shortcut icon" href="https://icehrm.s3.amazonaws.com/images/icon16.png">
+        <link rel="shortcut icon" href="<?=BASE_URL?>/images/favicon.png">
         <meta name="author" content="">
 
 	    <link rel="image_src" href="<?=!empty($meta->imageUrl)?$meta->imageUrl:$logoFileUrl?>"/>

@@ -552,6 +552,11 @@ class PayrollActionManager extends SubActionManager
                 foreach ($valueMap as $empId => $rowData) {
                     $employee = $employeesById[$empId];
                     $employee = $empModel->getBankAccount($employee);
+
+                    if (empty($employee) || $employee->bank_name != 'ACB') {
+                        continue;
+                    }
+
                     $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
                     $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
                     $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->bank_account);
@@ -617,6 +622,11 @@ class PayrollActionManager extends SubActionManager
                 foreach ($valueMap as $empId => $rowData) {
                     $employee = $employeesById[$empId];
                     $employee = $empModel->getBankAccount($employee);
+
+                    if (empty($employee) || $employee->bank_name == 'ACB') {
+                        continue;
+                    }
+
                     $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
                     $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
                     $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->employee_id);

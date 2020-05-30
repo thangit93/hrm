@@ -265,14 +265,15 @@ class ReportAdapter extends AdapterBase {
     let link;
 
     if (fileName.indexOf('https:') === 0) {
-      link = `<a href="${fileName}" target="_blank" style="font-size:14px;font-weight:bold;">Download Report <img src="_BASE_images/download.png"></img> </a>`;
+      link = `<a href="${fileName}" target="_blank" style="font-size:14px;font-weight:bold;">${this.gt('Download Report')} <img src="_BASE_images/download.png"></img> </a>`;
     } else {
-      link = `<a href="${modJs.getCustomActionUrl('download', { file: fileName })}" target="_blank" style="font-size:14px;font-weight:bold;">Download Report <img src="_BASE_images/download.png"></img> </a>`;
+      link = `<a href="${modJs.getCustomActionUrl('download', { file: fileName })}" target="_blank" style="font-size:14px;font-weight:bold;">${this.gt('Download Report')} <img src="_BASE_images/download.png"></img> </a>`;
     }
     link = link.replace(/_BASE_/g, this.baseUrl);
-
-    if (this.currentReport.output === 'PDF' || this.currentReport.output === 'JSON') {
-      this.showMessage('Download Report', link);
+    if (this.currentReport.output === 'PDF') {
+      this.showDomElement(this.gt('Download Report'), `<p>${link}</p><iframe style="height: 60vh; width: 100%" src="${modJs.getCustomActionUrl('view', { file: fileName })}"></iframe>`);
+    }else if (this.currentReport.output === 'JSON') {
+      this.showMessage(this.gt('Download Report'), link);
     } else {
       if (serverData[1].length === 0) {
         this.showMessage('Empty Report', 'There were no data for selected filters');
@@ -307,7 +308,7 @@ class ReportAdapter extends AdapterBase {
         aaData: data,
         aoColumns: headers,
         bSort: false,
-        iDisplayLength: 15,
+        iDisplayLength: 40,
         iDisplayStart: 0,
       };
 
