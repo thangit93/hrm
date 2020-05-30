@@ -5,6 +5,8 @@ namespace Reports\Admin\Reports;
 use Classes\BaseService;
 use Classes\CustomFieldManager;
 use Classes\LanguageManager;
+use DateTime;
+use Exception;
 use Reports\Admin\Api\ClassBasedReportBuilder;
 use Reports\Admin\Api\ReportBuilderInterface;
 use Salary\Common\Model\EmployeeSalary;
@@ -99,14 +101,14 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
                         $row[] = "{$item->last_name} {$item->middle_name} {$item->first_name}";
                     } elseif (in_array($column['column'], ['birthday', 'joined_date', 'full_working_days'])) {
                         try {
-                            $date = \DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
+                            $date = DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
 
                             if (!empty($date)) {
                                 $row[] = $date->format('d/m/Y');
                             } else {
                                 $row[] = $item->{$column['column']};
                             }
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $row[] = $item->{$column['column']};
                         }
                     } elseif ($column['column'] == 'employee_salary') {
@@ -114,10 +116,6 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
                         $empSalaryModel = new EmployeeSalary();
                         /** @var array $empSalaries */
                         $empSalaries = $empSalaryModel->Find('employee = ? AND component = ? order by id DESC', [$item->id, $salaryComponentId]);
-
-                        if($item->id == 402){
-                            $debug = true;
-                        }
 
                         foreach ($empSalaries as $empSalary) {
                             $empSalary->start_date = null;
@@ -139,10 +137,22 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
                         usort($empSalaries, function ($a, $b) {
                             if (empty($a->start_date) && !empty($b->start_date)) {
                                 return -1;
+                            }
+                            if (!empty($a->start_date) && empty($b->start_date)) {
+                                return 1;
                             } elseif ((empty($a->start_date) && empty($b->start_date)) || ($a->start_date == $b->start_date)) {
                                 return 0;
-                            } elseif ($a->start_date < $b->start_date) {
-                                return -1;
+                            } elseif (!empty($a->start_date) && !empty($b->start_date)) {
+                                $startDate1 = DateTime::createFromFormat('Y-m-d', $a->start_date);
+                                $startDate2 = DateTime::createFromFormat('Y-m-d', $b->start_date);
+
+                                if ($startDate1 > $startDate2) {
+                                    return 1;
+                                } elseif ($startDate1 == $startDate2) {
+                                    return 0;
+                                } else {
+                                    return -1;
+                                }
                             } else {
                                 return 1;
                             }
