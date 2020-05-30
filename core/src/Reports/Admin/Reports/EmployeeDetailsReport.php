@@ -3,7 +3,10 @@
 namespace Reports\Admin\Reports;
 
 use Classes\BaseService;
+use Classes\CustomFieldManager;
 use Classes\LanguageManager;
+use DateTime;
+use Exception;
 use Reports\Admin\Api\ClassBasedReportBuilder;
 use Reports\Admin\Api\ReportBuilderInterface;
 use Salary\Common\Model\EmployeeSalary;
@@ -33,7 +36,7 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             "employment_status" => ["EmploymentStatus", "id", "name"],
             "department" => ["CompanyStructure", "id", "title"],
             "supervisor" => ["Employee", "id", "last_name+middle_name+first_name"],
-            "indirect_supervisors" => ["Employee", "id", "last_name+middle_name+first_name", true],
+//            "indirect_supervisors" => ["Employee", "id", "last_name+middle_name+first_name", true],
         ];
 
         $reportColumns = [
@@ -45,12 +48,16 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             ['label' => LanguageManager::tran('Job Title'), 'column' => 'job_title'],
             ['label' => LanguageManager::tran('Department'), 'column' => 'department'],
             ['label' => LanguageManager::tran('Supervisor'), 'column' => 'supervisor'],
-            ['label' => LanguageManager::tran('Indirect Supervisors'), 'column' => 'indirect_supervisors'],
+//            ['label' => LanguageManager::tran('Indirect Supervisors'), 'column' => 'indirect_supervisors'],
         ];
 
         $customFieldsList = BaseService::getInstance()->getCustomFields('Employee');
 
         foreach ($customFieldsList as $customField) {
+            if (in_array($customField->name, ['emp_department', 'emp_level', 'full_working_days'])) {
+                continue;
+            }
+
             $reportColumns[] = [
                 'label' => $customField->field_label,
                 'column' => $customField->name,
@@ -94,22 +101,64 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
                         $row[] = "{$item->last_name} {$item->middle_name} {$item->first_name}";
                     } elseif (in_array($column['column'], ['birthday', 'joined_date', 'full_working_days'])) {
                         try {
-                            $date = \DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
+                            $date = DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
 
                             if (!empty($date)) {
                                 $row[] = $date->format('d/m/Y');
                             } else {
                                 $row[] = $item->{$column['column']};
                             }
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $row[] = $item->{$column['column']};
                         }
                     } elseif ($column['column'] == 'employee_salary') {
                         $salaryComponentId = $column['id'];
                         $empSalaryModel = new EmployeeSalary();
                         /** @var array $empSalaries */
-                        $empSalaries = $empSalaryModel->Find('employee = ? AND component = ?', [$item->id, $salaryComponentId]);
-                        $empSalary = array_shift($empSalaries);
+                        $empSalaries = $empSalaryModel->Find('employee = ? AND component = ? order by id DESC', [$item->id, $salaryComponentId]);
+
+                        foreach ($empSalaries as $empSalary) {
+                            $empSalary->start_date = null;
+                            $customFieldManager = new CustomFieldManager();
+                            /** @var array $startDates */
+                            $startDates = $customFieldManager->getCustomField('EmployeeSalary', $empSalary->id, 'start_date');
+
+                            if (!empty($startDates)) {
+                                $startDate = array_shift($startDates);
+
+                                if (!empty($startDate) && $startDate->value != 'NULL') {
+                                    $empSalary->start_date = $startDate->value;
+                                }
+                            } else {
+                                $startDate = null;
+                            }
+                        }
+
+                        usort($empSalaries, function ($a, $b) {
+                            if (empty($a->start_date) && !empty($b->start_date)) {
+                                return -1;
+                            }
+                            if (!empty($a->start_date) && empty($b->start_date)) {
+                                return 1;
+                            } elseif ((empty($a->start_date) && empty($b->start_date)) || ($a->start_date == $b->start_date)) {
+                                return 0;
+                            } elseif (!empty($a->start_date) && !empty($b->start_date)) {
+                                $startDate1 = DateTime::createFromFormat('Y-m-d', $a->start_date);
+                                $startDate2 = DateTime::createFromFormat('Y-m-d', $b->start_date);
+
+                                if ($startDate1 > $startDate2) {
+                                    return 1;
+                                } elseif ($startDate1 == $startDate2) {
+                                    return 0;
+                                } else {
+                                    return -1;
+                                }
+                            } else {
+                                return 1;
+                            }
+                        });
+
+                        $empSalary = array_pop($empSalaries);
                         unset($column['id']);
                         $row[] = number_format($empSalary->amount);
                     } else {
