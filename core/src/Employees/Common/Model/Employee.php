@@ -199,7 +199,7 @@ class Employee extends BaseModel
     {
         $customFieldManager = new CustomFieldManager();
         /** @var array $customFields */
-        $customFields = $customFieldManager->getCustomField('\Employees\Common\Mo', $obj->id, 'bank_account');
+        $customFields = $customFieldManager->getCustomField('Employee', $obj->id, 'bank_account');
         $customField = array_shift($customFields);
 
         if (!empty($customField->value) && $customField->value != "NULL") {
@@ -207,7 +207,7 @@ class Employee extends BaseModel
         }
 
         /** @var array $customFields */
-        $customFields = $customFieldManager->getCustomField('\Employees\Common\Mo', $obj->id, 'bank_name');
+        $customFields = $customFieldManager->getCustomField('Employee', $obj->id, 'bank_name');
         $customField = array_shift($customFields);
 
         if (!empty($customField->value) && $customField->value != "NULL") {

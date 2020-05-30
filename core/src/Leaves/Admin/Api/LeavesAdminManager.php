@@ -6,6 +6,7 @@
 namespace Leaves\Admin\Api;
 
 use Classes\AbstractModuleManager;
+use Classes\LanguageManager;
 
 class LeavesAdminManager extends AbstractModuleManager
 {
@@ -26,5 +27,15 @@ class LeavesAdminManager extends AbstractModuleManager
     {
         $this->addModelClass('EmployeeLeave');
         $this->addModelClass('LeaveType');
+    }
+
+    public function initCalculationHooks()
+    {
+        $this->addCalculationHook(
+            'EmployeeLeaveUtil_getEmployeeLeave',
+            LanguageManager::tran('Leave Days'),
+            EmployeeLeaveUtil::class,
+            'calculateEmployeeLeave'
+        );
     }
 }

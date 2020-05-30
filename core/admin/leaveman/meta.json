@@ -6,5 +6,5 @@
   "user_levels": ["Admin"],
   "permissions": [],
   "model_namespace": "\\Leaves\\Common\\Model",
-  "manager": "\\Leaves\\User\\Api\\LeavesModulesManager"
+  "manager": "\\Leaves\\Admin\\Api\\LeavesAdminManager"
 }
