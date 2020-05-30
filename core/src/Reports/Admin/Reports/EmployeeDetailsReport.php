@@ -6,6 +6,8 @@ use Classes\BaseService;
 use Classes\LanguageManager;
 use Reports\Admin\Api\ClassBasedReportBuilder;
 use Reports\Admin\Api\ReportBuilderInterface;
+use Salary\Common\Model\EmployeeSalary;
+use Salary\Common\Model\SalaryComponent;
 
 class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBuilderInterface
 {
@@ -55,6 +57,21 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             ];
         }
 
+        $currentUser = BaseService::getInstance()->getCurrentUser();
+
+        if ($currentUser->user_level == 'Admin') {
+            $salaryComponentModel = new SalaryComponent();
+            $salaryComponents = $salaryComponentModel->Find('1 = 1', []);
+
+            foreach ($salaryComponents as $salaryComponent) {
+                $reportColumns[] = [
+                    'label' => $salaryComponent->name,
+                    'column' => 'employee_salary',
+                    'id' => $salaryComponent->id,
+                ];
+            }
+        }
+
         $entries = BaseService::getInstance()->get('Employee', null, $filters);
         $data = [];
         foreach ($entries as $item) {
@@ -81,12 +98,20 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
 
                             if (!empty($date)) {
                                 $row[] = $date->format('d/m/Y');
-                            }else{
+                            } else {
                                 $row[] = $item->{$column['column']};
                             }
                         } catch (\Exception $e) {
                             $row[] = $item->{$column['column']};
                         }
+                    } elseif ($column['column'] == 'employee_salary') {
+                        $salaryComponentId = $column['id'];
+                        $empSalaryModel = new EmployeeSalary();
+                        /** @var array $empSalaries */
+                        $empSalaries = $empSalaryModel->Find('employee = ? AND component = ?', [$item->id, $salaryComponentId]);
+                        $empSalary = array_shift($empSalaries);
+                        unset($column['id']);
+                        $row[] = number_format($empSalary->amount);
                     } else {
                         $row[] = $item->{$column['column']};
                     }
