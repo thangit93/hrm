@@ -2319,3 +2319,6 @@ msgstr "Thứ bảy"
 
 msgid "Sunday"
 msgstr "Chủ nhật"
+
+msgid "For All Countries"
+msgstr "Cho tất cả các nước"
