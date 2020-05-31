@@ -2295,3 +2295,27 @@ msgstr "Tính tiền làm thêm giờ"
 
 msgid "Location"
 msgstr "Địa điểm"
+
+msgid "Non-working Day"
+msgstr "Ngày nghỉ"
+
+msgid "Monday"
+msgstr "Thứ hai"
+
+msgid "Tuesday"
+msgstr "Thứ ba"
+
+msgid "Wednesday"
+msgstr "Thứ tư"
+
+msgid "Thursday"
+msgstr "Thứ năm"
+
+msgid "Friday"
+msgstr "Thứ sáu"
+
+msgid "Saturday"
+msgstr "Thứ bảy"
+
+msgid "Sunday"
+msgstr "Chủ nhật"

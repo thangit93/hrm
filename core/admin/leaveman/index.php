@@ -95,6 +95,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     modJsList['tabLeaveRule'] = new LeaveRuleAdapter('LeaveRule');
     modJsList['tabLeavePeriod'] = new LeavePeriodAdapter('LeavePeriod');
     modJsList['tabWorkDay'] = new WorkDayAdapter('WorkDay');
+    modJsList['tabWorkDay'].setRemoteTable(true);
     modJsList['tabHoliDay'] = new HoliDayAdapter('HoliDay','HoliDay','','dateh');
     modJsList['tabEmployeeLeave'] = new EmployeeLeaveAdapter('EmployeeLeave','EmployeeLeave','','date_start desc');
     modJsList['tabEmployeeLeave'].setShowAddNew(false);
