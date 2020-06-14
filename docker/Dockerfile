@@ -20,6 +20,6 @@ COPY xdebug-cli.ini /etc/php/7.3/cli/conf.d/xdebug.ini
 
 RUN php -v
 
-EXPOSE 9000
+EXPOSE 9001
 
 CMD ["/apache-foreground.sh"]

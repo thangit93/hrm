@@ -282,7 +282,12 @@ class BaseService
             $filter = json_decode($filterStr);
             if (!empty($filter)) {
                 LogManager::getInstance()->debug("Building filter query");
-                if (method_exists($obj, 'getCustomFilterQuery')) {
+                /*if (method_exists($obj, 'getAttendanceDateByMonth')) {
+                    LogManager::getInstance()->debug("Method: getCustomFilterQuery exists");
+                    $response = $obj->getAttendanceDateByMonth($filter);
+                    $query = $response[0];
+                    $queryData = $response[1];
+                } else*/if (method_exists($obj, 'getCustomFilterQuery')) {
                     LogManager::getInstance()->debug("Method: getCustomFilterQuery exists");
                     $response = $obj->getCustomFilterQuery($filter);
                     $query = $response[0];

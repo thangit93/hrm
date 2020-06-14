@@ -23,7 +23,7 @@ class EmployeeSalaryDeposit extends BaseModel
 
     public function getManagerAccess()
     {
-        return array();
+        return array("get", "element", "save", "delete");
     }
 
     public function getUserAccess()

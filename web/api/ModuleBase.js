@@ -1014,8 +1014,8 @@ class ModuleBase {
   makeEmptyDateFieldsNull(params) {
     const fields = this.getFormFields();
     fields.forEach((field) => {
-      if ((field[1].type === 'date' || field[1].type === 'datetime')
-                && (params[field[0]] === '' || params[field[0]] === '0000-00-00' || params[field[0]] === '0000-00-00 00:00:00')) {
+      if ((field[1].type === 'date' || field[1].type === 'datetime' || field[1].type === 'yearmonth')
+                && (params[field[0]] === '' || params[field[0]] === '0000-00' || params[field[0]] === '0000-00-00' || params[field[0]] === '0000-00-00 00:00:00')) {
         if (field[1].validation === 'none') {
           params[field[0]] = 'NULL';
         } else {
@@ -1425,6 +1425,16 @@ class ModuleBase {
         leapday: '-02-29',
         separator: '-',
         alias: 'yyyy/mm/dd',
+      });
+    });
+
+    $tempDomObj.find('[yearmonthmask]').each(function () {
+      $(this).inputmask({
+        mask: 'y-1',
+        placeholder: 'YYYY-MM',
+        // leapday: '-02-29',
+        separator: '-',
+        alias: 'yyyy/mm',
       });
     });
 
@@ -1966,6 +1976,10 @@ class ModuleBase {
         if (object[fields[i][0]] !== '0000-00-00' && object[fields[i][0]] !== '' && object[fields[i][0]] != null && object[fields[i][0]] !== undefined) {
           $(`${formId} #${fields[i][0]}_date`).datepicker('setValue', object[fields[i][0]]);
         }
+      } else if (fields[i][1].type === 'yearmonth') {
+        if (object[fields[i][0]] !== '0000-00' && object[fields[i][0]] !== '' && object[fields[i][0]] != null && object[fields[i][0]] !== undefined) {
+          $(`${formId} #${fields[i][0]}_date`).datepicker('setValue', object[fields[i][0]]);
+        }
       } else if (fields[i][1].type === 'colorpick') {
         if (object[fields[i][0]] != null && object[fields[i][0]] !== undefined) {
           $(`${formId} #${fields[i][0]}_colorpick`).colorpicker('setValue', object[fields[i][0]]);
@@ -2111,6 +2125,9 @@ class ModuleBase {
       t = t.replace(/_id_/g, field[0]);
       t = t.replace(/_label_/g, field[1].label);
     } else if (field[1].type === 'date') {
+      t = t.replace(/_id_/g, field[0]);
+      t = t.replace(/_label_/g, field[1].label);
+    } else if (field[1].type === 'yearmonth') {
       t = t.replace(/_id_/g, field[0]);
       t = t.replace(/_label_/g, field[1].label);
     } else if (field[1].type === 'datetime') {
