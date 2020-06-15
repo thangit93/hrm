@@ -19,4 +19,4 @@ The site is available at http://localhost/. MySQL is reachable via `host: mysql`
 
 Open terminal cd to folder core/robo and run command:
 
-`php robo.phar migrate:all app`
+`php robo.phar migrate:all app` 
