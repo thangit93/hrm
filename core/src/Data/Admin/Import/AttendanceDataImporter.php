@@ -119,6 +119,7 @@ class AttendanceDataImporter extends AbstractDataImporter
 
             //loop from start date to end date
             while ($days > 0) {
+                $this->clearOldData($startDate->format('Y-m-d'));
                 LogManager::getInstance()->info("[{$employee->id}] Date: " . $startDate->format('Y-m-d'));
 
                 //create new attendance item
@@ -177,6 +178,27 @@ class AttendanceDataImporter extends AbstractDataImporter
         }
 
         return $res;
+    }
+
+    public function clearOldData($date, $employeeId = null)
+    {
+        $data = [
+            $date,
+            $date,
+        ];
+        $query = 'Select * From Attendance WHERE (DATE_FORMAT(in_time, "%Y-%m-%d") = ? OR DATE_FORMAT(out_time, "%Y-%m-%d") = ?)';
+
+        if (!empty($employeeId)) {
+            $query .= ' AND employee = ?';
+            $data[] = $employeeId;
+        }
+
+        $model = new Attendance();
+        $oldData = $model->FindFromRawQuery($query, $data);
+        LogManager::getInstance()->info("[Clear Old Attendance Data] Date {$date} - Num Of Records: " . count($oldData));
+        foreach ($oldData as $item) {
+            $item->Delete();
+        }
     }
 
     /**

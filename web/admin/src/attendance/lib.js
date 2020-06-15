@@ -42,9 +42,9 @@ class AttendanceAdapter extends AdapterBase {
         label: 'Employee', type: 'select2', 'allow-null': false, 'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
       }],
       ['id', { label: 'ID', type: 'hidden' }],
-      ['in_time', { label: 'Time-In', type: 'datetime' }],
-      ['out_time', { label: 'Time-Out', type: 'datetime', validation: 'none' }],
-      ['note', { label: 'Note', type: 'textarea', validation: 'none' }],
+      ['date', { label: 'Working Date', type: 'date' }],
+      ['in_time', { label: 'Time-In', type: 'time', validation: 'none' }],
+      ['out_time', { label: 'Time-Out', type: 'time', validation: 'none' }],
     ];
   }
 
@@ -54,11 +54,11 @@ class AttendanceAdapter extends AdapterBase {
         label: 'Employee', type: 'select2', 'allow-null': true, 'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
       }],
       ['in_time', {
-        label: 'Start Date', type: 'date', 'allow-null': true, validation: 'none'
+        label: 'Start Date', type: 'yearmonth'
       }],
-      ['out_time', {
+      /*['out_time', {
         label: 'End Date', type: 'date', 'allow-null': true, validation: 'none'
-      }],
+      }],*/
     ];
   }
 
@@ -339,7 +339,7 @@ class AttendanceAdapter extends AdapterBase {
     const deleteButton = '<img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Delete" onclick="modJs.deleteRow(_id_);return false;"></img>';
     /*const photoButton = '<img class="tableActionButton" src="_BASE_images/map.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Show Photo" onclick="modJs.showPunchImages(_id_);return false;"></img>';*/
 
-    let html = '';
+    let html = '<div style="width:80px;">_edit__delete_</div>';
     /*if (this.photoAttendance === 1) {
       html = '<div style="width:80px;">_edit__delete__photo_</div>';
     } else {
@@ -348,7 +348,7 @@ class AttendanceAdapter extends AdapterBase {
 
     // html = html.replace('_photo_', photoButton);
 
-    if (this.showDelete) {
+    /*if (this.showDelete) {
       html = html.replace('_delete_', deleteButton);
     } else {
       html = html.replace('_delete_', '');
@@ -359,10 +359,10 @@ class AttendanceAdapter extends AdapterBase {
     } else {
       html = html.replace('_edit_', '');
     }
-
     html = html.replace(/_id_/g, id);
     html = html.replace(/_BASE_/g, this.baseUrl);
-    return html;
+    return html;*/
+    return '';
   }
 }
 

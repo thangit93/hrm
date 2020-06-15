@@ -55,6 +55,7 @@ $fieldTemplates['colorpick'] = file_get_contents(CLIENT_PATH.'/templates/fields/
 $fieldTemplates['signature'] = file_get_contents(CLIENT_PATH.'/templates/fields/signature.html');
 $fieldTemplates['simplemde'] = file_get_contents(CLIENT_PATH.'/templates/fields/simplemde.html');
 $fieldTemplates['tinymce'] = file_get_contents(CLIENT_PATH.'/templates/fields/tinymce.html');
+$fieldTemplates['yearmonth'] = file_get_contents(CLIENT_PATH.'/templates/fields/yearmonth.html');
 
 $templates = array();
 $templates['formTemplate'] = file_get_contents(CLIENT_PATH.'/templates/form_template.html');
@@ -105,6 +106,10 @@ if(file_exists(MODULE_PATH.'/templates/fields/colorpick.html')){
 
 if(file_exists(MODULE_PATH.'/templates/fields/signature.html')){
     $fieldTemplates['signature'] = file_get_contents(MODULE_PATH.'/templates/fields/signature.html');
+}
+
+if(file_exists(MODULE_PATH.'/templates/fields/yearmonth.html')){
+    $fieldTemplates['yearmonth'] = file_get_contents(MODULE_PATH.'/templates/fields/yearmonth.html');
 }
 
 

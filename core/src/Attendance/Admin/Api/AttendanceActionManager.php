@@ -3,6 +3,7 @@
  Copyright (c) 2018 [Glacies UG, Berlin, Germany] (http://glacies.de)
  Developer: Thilina Hasantha (http://lk.linkedin.com/in/thilinah | https://github.com/thilinah)
  */
+
 namespace Attendance\Admin\Api;
 
 use Attendance\Common\Model\Attendance;
@@ -10,6 +11,7 @@ use Classes\BaseService;
 use Classes\IceResponse;
 use Classes\LanguageManager;
 use Classes\SubActionManager;
+use Data\Admin\Import\AttendanceDataImporter;
 use Utils\LogManager;
 
 class AttendanceActionManager extends SubActionManager
@@ -17,19 +19,27 @@ class AttendanceActionManager extends SubActionManager
 
     public function savePunch($req)
     {
-
         $employee = $this->baseService->getElement('Employee', $req->employee, null, true);
+        $outDate = $inDate = $req->date;
         $inDateTime = $req->in_time;
-        $inDateArr = explode(" ", $inDateTime);
-        $inDate = $inDateArr[0];
         $outDateTime = $req->out_time;
-        $outDate = "";
-        if (!empty($outDateTime)) {
-            $outDateArr = explode(" ", $outDateTime);
-            $outDate = $outDateArr[0];
+        $workingDay = 0;
+
+        $helper = new AttendanceDataImporter();
+        $helper->clearOldData($inDate, $employee->id);
+
+        if (empty($inDateTime) && empty($outDateTime)) {
+            return new IceResponse(IceResponse::SUCCESS);
         }
 
-        $note = $req->note;
+        $inDateTime = !empty($inDateTime) ? "{$inDate} {$inDateTime}:00" : "";
+        $outDateTime = !empty($outDateTime) ? "{$outDate} {$outDateTime}:00" : "";
+
+        if (!empty($inDateTime) && !empty($outDateTime)) {
+            $workingDay = AttendanceUtil::calculateWorkingDay($inDateTime, $outDateTime);
+        }
+
+        $note = $workingDay;
 
         //check if dates are differnet
         if (!empty($outDate) && $inDate != $outDate) {
@@ -48,7 +58,7 @@ class AttendanceActionManager extends SubActionManager
         $attendance = new Attendance();
         $attendanceList = $attendance->Find(
             "employee = ? and DATE_FORMAT( in_time,  '%Y-%m-%d' ) = ?",
-            array($employee->id,$inDate)
+            array($employee->id, $inDate)
         );
 
         foreach ($attendanceList as $attendance) {
@@ -88,7 +98,7 @@ class AttendanceActionManager extends SubActionManager
         if (!empty($req->id)) {
             $attendance->Load("id = ?", array($req->id));
         }
-        $attendance->in_time = $inDateTime;
+        $attendance->in_time = !empty($inDateTime)? $inDateTime : null;
         if (empty($outDateTime)) {
             $attendance->out_time = null;
         } else {

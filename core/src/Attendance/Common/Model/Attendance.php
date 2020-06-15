@@ -89,6 +89,59 @@ class Attendance extends BaseModel
                 }
             } else {
                 if (!empty($v) && $v != 'NULL') {
+                    if (in_array($k, ['in_time',])) {
+                        $date = \DateTime::createFromFormat('Y-m-d', "{$v}-26");
+                        $startDate = clone $date;
+                        $endDate = clone $date;
+                        $startDate->sub(\DateInterval::createFromDateString('1 month'));
+                        $endDate->sub(\DateInterval::createFromDateString('1 day'));
+                        $query .= " and ((DATE_FORMAT(in_time, '%Y-%m-%d') >= '{$startDate->format('Y-m-d')}' AND DATE_FORMAT(in_time, '%Y-%m-%d') <= '{$endDate->format('Y-m-d')}') OR (DATE_FORMAT(out_time, '%Y-%m-%d') >= '{$startDate->format('Y-m-d')}' AND DATE_FORMAT(out_time, '%Y-%m-%d') <= '{$endDate->format('Y-m-d')}'))";
+                        $v = null;
+                    } else {
+                        $query .= " and " . $k . "=?";
+                    }
+                    if ($v == '__myid__') {
+                        $v = $this->getCurrentProfileId();
+                    }
+                    if (!empty($v)) {
+                        $queryData[] = $v;
+                    }
+                }
+            }
+        }
+
+        return array($query, $queryData);
+    }
+
+    public function getAttendanceDateByMonth($filter)
+    {
+        $query = "";
+        $queryData = array();
+        foreach ($filter as $k => $v) {
+            if (empty($v)) {
+                continue;
+            }
+            if (is_array($v)) {
+                if (empty($v)) {
+                    continue;
+                }
+                $length = count($v);
+                for ($i = 0; $i < $length; $i++) {
+                    if ($i == 0) {
+                        $query .= " and (";
+                    }
+
+                    $query .= $k . " like ?";
+
+                    if ($i < $length - 1) {
+                        $query .= " or ";
+                    } else {
+                        $query .= ")";
+                    }
+                    $queryData[] = "%" . $v[$i] . "%";
+                }
+            } else {
+                if (!empty($v) && $v != 'NULL') {
                     if (in_array($k, ['in_time', 'out_time'])) {
                         if ($k == 'in_time') {
                             $query .= " and " . $k . " >= ?";
@@ -115,13 +168,14 @@ class Attendance extends BaseModel
     {
         $inTimeObj = \DateTime::createFromFormat('Y-m-d H:i:s', $obj->in_time);
         $outTimeObj = \DateTime::createFromFormat('Y-m-d H:i:s', $obj->out_time);
-        $obj->working_date = $inTimeObj->format('d/m/Y');
 
         if ($inTimeObj) {
+            $obj->working_date = $inTimeObj->format('d/m/Y');
             $obj->in_time = $inTimeObj->format('H:i');
         }
 
         if ($outTimeObj) {
+            $obj->working_date = $outTimeObj->format('d/m/Y');
             $obj->out_time = $outTimeObj->format('H:i');
         }
 
