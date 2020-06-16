@@ -2322,3 +2322,6 @@ msgstr "Chủ nhật"
 
 msgid "For All Countries"
 msgstr "Cho tất cả các nước"
+
+msgid "Coefficient"
+msgstr "Hệ số"

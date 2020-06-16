@@ -292,7 +292,7 @@ class WorkDayAdapter extends AdapterBase {
             "id",
             "name",
             "status",
-            "country"
+            // "country"
         ];
     }
 
@@ -301,7 +301,7 @@ class WorkDayAdapter extends AdapterBase {
             {"sTitle": "ID", "bVisible": false},
             {"sTitle": "Day"},
             {"sTitle": "Status"},
-            {"sTitle": "Country"}
+            // {"sTitle": "Country"}
 
         ];
     }
@@ -373,7 +373,7 @@ class HoliDayAdapter extends AdapterBase {
             "name",
             "dateh",
             "status",
-            "country"
+            // "country"
         ];
     }
 
@@ -383,7 +383,7 @@ class HoliDayAdapter extends AdapterBase {
             { "sTitle": "Name" },
             { "sTitle": "Date" },
             { "sTitle": "Status" },
-            { "sTitle": "Country" }
+            // { "sTitle": "Country" }
         ];
     }
 
