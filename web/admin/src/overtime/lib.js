@@ -15,6 +15,8 @@ class OvertimeCategoryAdapter extends AdapterBase {
     return [
       'id',
       'name',
+      'coefficient',
+      'type',
     ];
   }
 
@@ -22,6 +24,8 @@ class OvertimeCategoryAdapter extends AdapterBase {
     return [
       { sTitle: 'ID', bVisible: false },
       { sTitle: 'Name' },
+      { sTitle: 'Coefficient' },
+      { sTitle: 'Type' },
     ];
   }
 
@@ -29,6 +33,8 @@ class OvertimeCategoryAdapter extends AdapterBase {
     return [
       ['id', { label: 'ID', type: 'hidden' }],
       ['name', { label: 'Name', type: 'text', validation: '' }],
+      ['coefficient', { label: 'Coefficient', type: 'text', validation: '' }],
+      ['type', { label: 'Type', type: 'text', validation: '' }],
     ];
   }
 }
