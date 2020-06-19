@@ -12,6 +12,8 @@ use Classes\IceResponse;
 use Classes\LanguageManager;
 use Classes\SubActionManager;
 use Data\Admin\Import\AttendanceDataImporter;
+use DateTime;
+use Employees\Common\Model\Employee;
 use Utils\LogManager;
 
 class AttendanceActionManager extends SubActionManager
@@ -98,7 +100,7 @@ class AttendanceActionManager extends SubActionManager
         if (!empty($req->id)) {
             $attendance->Load("id = ?", array($req->id));
         }
-        $attendance->in_time = !empty($inDateTime)? $inDateTime : null;
+        $attendance->in_time = !empty($inDateTime) ? $inDateTime : null;
         if (empty($outDateTime)) {
             $attendance->out_time = null;
         } else {
@@ -123,5 +125,151 @@ class AttendanceActionManager extends SubActionManager
             '{"employee":["Employee","id","first_name+last_name"]}'
         );
         return new IceResponse(IceResponse::SUCCESS, $attendance);
+    }
+
+    public function getAttendanceReport($req)
+    {
+        $filterStr = $req->ft ?? null;
+        $employeeId = null;
+        $month = null;
+
+        if (!empty($filterStr)) {
+            $filter = json_decode($filterStr, true);
+            $employeeId = !empty($filter['employee']) ? $filter['employee'] : null;
+            $month = !empty($filter['in_time']) ? $filter['in_time'] : null;
+        }
+
+        if (empty($month)) {
+            $month = new \DateTime();
+        } else {
+            $month = \DateTime::createFromFormat('Y-m', "{$month}");
+        }
+
+        $endDate = clone $month;
+        $endDate->setDate($endDate->format('Y'), $endDate->format('m'), 25);
+
+        $empModel = new Employee();
+        $empQuery = '1 = 1';
+        $empQueryData = [];
+
+        $attModel = new Attendance();
+
+        if (!empty($employeeId)) {
+            $empQuery .= " AND id = ?";
+            $empQueryData[] = $employeeId;
+        }
+
+        $employees = $empModel->Find($empQuery, $empQueryData);
+
+        $data = [];
+        $dataHeader = [];
+        $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
+        $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+        while ($startDate <= $endDate) {
+            $dataHeader[] = $startDate->format('Y-m-d');
+            $startDate->add(\DateInterval::createFromDateString('1 day'));
+        }
+
+        foreach ($employees as $employee) {
+            $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
+            $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+
+            while ($startDate <= $endDate) {
+                $query = "((DATE_FORMAT(in_time, '%Y-%m-%d') = \"{$startDate->format("Y-m-d")}\") OR (DATE_FORMAT(out_time, '%Y-%m-%d') = \"{$startDate->format("Y-m-d")}\")) AND employee = \"{$employee->id}\"";
+                /** @var array $atts */
+                $atts = $attModel->Find($query);
+
+                $att = array_shift($atts);
+                $employeeDob = "";
+
+                if ($employee->birthday) {
+                    $employeeDob = DateTime::createFromFormat("Y-m-d", $employee->birthday)->format('Y');
+                }
+
+                $dataDay = [];
+                $dataDay['employee_id'] = $employee->id;
+                $dataDay['name'] = "{$employee->first_name} {$employee->last_name} {$employeeDob}";
+                $dataDay['date'] = $startDate->format('Y-m-d');
+                $dataDay['total'] = 0;
+
+                if (!empty($att)) {
+                    $checkInTime = "";
+                    $checkOutTime = "";
+
+                    if (!empty($att->in_time)) {
+                        $checkIn = \DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
+                        $checkInTime = $checkIn->format('H:i');
+                    }
+
+                    if ($att->out_time) {
+                        $checkOut = \DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
+                        $checkOutTime = $checkOut->format('H:i');
+                    }
+
+                    $dataDay['in'] = $checkInTime;
+                    $dataDay['out'] = $checkOutTime;
+
+                    if (!empty($att->in_time) && !empty($att->out_time)) {
+                        $dataDay['total'] = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employee->id);
+                    }
+
+                } else {
+                    $dataDay = array_merge($dataDay, [
+                        'in' => '',
+                        'out' => '',
+                    ]);
+                }
+
+                $data[$employee->id][] = $dataDay;
+
+                $startDate->add(\DateInterval::createFromDateString('1 day'));
+            }
+        }
+
+        $responseData = [
+            'header' => $dataHeader,
+            'data' => $data,
+        ];
+
+        return new IceResponse(IceResponse::SUCCESS, $responseData);
+    }
+
+    public function updateAttendance($req)
+    {
+        $date = $req->date;
+        $fieldname = $req->fieldname;
+        $employee_id = $req->employee_id;
+        $in = $req->in;
+        $out = $req->out;
+
+        $attendance = new Attendance();
+        $attendance->Load('1=1 AND employee = ? AND (DATE_FORMAT( in_time,  \'%Y-%m-%d\' ) = ? OR DATE_FORMAT( out_time,  \'%Y-%m-%d\' ) = ?)', [$employee_id, $date, $date]);
+
+        if(empty($attendance->employee)){
+            $attendance->employee = $employee_id;
+        }
+
+        if ($fieldname == "in") {
+            $attendance->in_time = "{$date} {$in}:00";
+        } elseif ($fieldname == "out") {
+            $attendance->out_time = "{$date} {$out}:00";
+        }
+
+        $total = 0;
+
+        if(!empty($attendance->in_time) && !empty($attendance->out_time)){
+            $total = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time);
+        }
+
+        $attendance->note = $total;
+        $attendance->Save();
+
+        return new IceResponse(IceResponse::SUCCESS, [
+            'employee_id' => $attendance->employee,
+            'in' => $in,
+            'out' => $out,
+            'date' => $date,
+            'total' => $total,
+        ]);
     }
 }

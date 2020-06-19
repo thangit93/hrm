@@ -5,11 +5,13 @@
  * of the tasks related to retriving and saving data. This can be referred within any module using
  * BaseService::getInstance()
  *
-@class BaseService
+ * @class BaseService
  */
 
 namespace Classes;
 
+use Attendance\Admin\Api\AttendanceUtil;
+use Attendance\Common\Model\Attendance;
 use Classes\Crypt\AesCtr;
 use Classes\Email\EmailSender;
 use Company\Common\Model\CompanyStructure;
@@ -38,7 +40,7 @@ class BaseService
     public $auditManager = null;
     /* @var NotificationManager $notificationManager */
     public $notificationManager = null;
-    /* @var SettingsManager $settingsManager*/
+    /* @var SettingsManager $settingsManager */
     public $settingsManager = null;
     public $fileFields = null;
     public $moduleManagers = null;
@@ -128,23 +130,23 @@ class BaseService
         if (empty($orderBy)) {
             $orderBy = "";
         } else {
-            $orderBy = " ORDER BY ".$orderBy;
+            $orderBy = " ORDER BY " . $orderBy;
         }
 
         if (in_array($table, $this->userTables)) {
             $cemp = $this->getCurrentProfileId();
             if (!empty($cemp)) {
                 $signInMappingField = SIGN_IN_ELEMENT_MAPPING_FIELD_NAME;
-                LogManager::getInstance()->debug("Query: ".$signInMappingField." = ?".$query.$orderBy);
-                LogManager::getInstance()->debug("Query Data: ".print_r(array_merge(array($cemp), $queryData), true));
-                $list = $obj->Find($signInMappingField." = ?".$query.$orderBy, array_merge(array($cemp), $queryData));
+                LogManager::getInstance()->debug("Query: " . $signInMappingField . " = ?" . $query . $orderBy);
+                LogManager::getInstance()->debug("Query Data: " . print_r(array_merge(array($cemp), $queryData), true));
+                $list = $obj->Find($signInMappingField . " = ?" . $query . $orderBy, array_merge(array($cemp), $queryData));
             } else {
                 $list = array();
             }
         } else {
-            LogManager::getInstance()->debug("Query: "."1=1".$query.$orderBy);
-            LogManager::getInstance()->debug("Query Data: ".print_r($queryData, true));
-            $list = $obj->Find("1=1".$query.$orderBy, $queryData);
+            LogManager::getInstance()->debug("Query: " . "1=1" . $query . $orderBy);
+            LogManager::getInstance()->debug("Query Data: " . print_r($queryData, true));
+            $list = $obj->Find("1=1" . $query . $orderBy, $queryData);
         }
 
         $newList = array();
@@ -152,7 +154,7 @@ class BaseService
             $newList[] = $this->cleanUpAdoDB($listObj);
         }
 
-        if (!empty($mappingStr) && count($map)>0) {
+        if (!empty($mappingStr) && count($map) > 0) {
             $list = $this->populateMapping($newList, $map);
         }
 
@@ -190,23 +192,23 @@ class BaseService
                     continue;
                 }
                 $length = count($v);
-                for ($i = 0; $i<$length; $i++) {
+                for ($i = 0; $i < $length; $i++) {
                     if ($i == 0) {
-                        $query.=" and (";
+                        $query .= " and (";
                     }
 
-                    $query.=$k." like ?";
+                    $query .= $k . " like ?";
 
-                    if ($i < $length -1) {
-                        $query.=" or ";
+                    if ($i < $length - 1) {
+                        $query .= " or ";
                     } else {
-                        $query.=")";
+                        $query .= ")";
                     }
-                    $queryData[] = "%".$v[$i]."%";
+                    $queryData[] = "%" . $v[$i] . "%";
                 }
             } else {
                 if (!empty($v) && $v != 'NULL') {
-                    $query.=" and ".$k."=?";
+                    $query .= " and " . $k . "=?";
                     if ($v == '__myid__') {
                         $v = $this->getCurrentProfileId();
                     }
@@ -269,7 +271,8 @@ class BaseService
         $isSubOrdinates = false,
         $skipProfileRestriction = false,
         $sortData = array()
-    ) {
+    )
+    {
         if (!empty($mappingStr)) {
             $map = json_decode($mappingStr);
         }
@@ -287,7 +290,8 @@ class BaseService
                     $response = $obj->getAttendanceDateByMonth($filter);
                     $query = $response[0];
                     $queryData = $response[1];
-                } else*/if (method_exists($obj, 'getCustomFilterQuery')) {
+                } else*/
+                if (method_exists($obj, 'getCustomFilterQuery')) {
                     LogManager::getInstance()->debug("Method: getCustomFilterQuery exists");
                     $response = $obj->getCustomFilterQuery($filter);
                     $query = $response[0];
@@ -300,8 +304,8 @@ class BaseService
                 }
             }
 
-            LogManager::getInstance()->debug("Filter Query:".$query);
-            LogManager::getInstance()->debug("Filter Query Data:".json_encode($queryData));
+            LogManager::getInstance()->debug("Filter Query:" . $query);
+            LogManager::getInstance()->debug("Filter Query Data:" . json_encode($queryData));
         }
 
         if (!empty($searchTerm) && !empty($searchColumns)) {
@@ -311,25 +315,25 @@ class BaseService
                 $tempQuery = " and (";
                 foreach ($searchColumnList as $col) {
                     if ($tempQuery != " and (") {
-                        $tempQuery.=" or ";
+                        $tempQuery .= " or ";
                     }
-                    $tempQuery.=$col." like ?";
-                    $queryData[] = "%".$searchTerm."%";
+                    $tempQuery .= $col . " like ?";
+                    $queryData[] = "%" . $searchTerm . "%";
                 }
-                $query.= $tempQuery.")";
+                $query .= $tempQuery . ")";
             }
         }
 
-        if (!empty($sortData) && $sortData['sorting']."" == "1" && isset($sortData['column'])) {
-            if(in_array($sortData['column'], ['working_date'])){
+        if (!empty($sortData) && $sortData['sorting'] . "" == "1" && isset($sortData['column'])) {
+            if (in_array($sortData['column'], ['working_date'])) {
                 $sortData['column'] = 'in_time';
             }
-            $orderBy = " ORDER BY ".$sortData['column']." ".$sortData['order'];
+            $orderBy = " ORDER BY " . $sortData['column'] . " " . $sortData['order'];
         } else {
             if (empty($orderBy)) {
                 $orderBy = "";
             } else {
-                $orderBy = " ORDER BY ".$orderBy;
+                $orderBy = " ORDER BY " . $orderBy;
             }
         }
 
@@ -345,10 +349,10 @@ class BaseService
                     //$signInMappingField = SIGN_IN_ELEMENT_MAPPING_FIELD_NAME;
                     $signInMappingField = $obj->getUserOnlyMeAccessField();
                     LogManager::getInstance()->debug(
-                        "Data Load Query (x1):"."1=1".$signInMappingField." = ?".$query.$orderBy.$limit
+                        "Data Load Query (x1):" . "1=1" . $signInMappingField . " = ?" . $query . $orderBy . $limit
                     );
-                    LogManager::getInstance()->debug("Data Load Query Data (x1):".json_encode($queryData));
-                    $list = $obj->Find($signInMappingField." = ?".$query.$orderBy.$limit, $queryData);
+                    LogManager::getInstance()->debug("Data Load Query Data (x1):" . json_encode($queryData));
+                    $list = $obj->Find($signInMappingField . " = ?" . $query . $orderBy . $limit, $queryData);
                 } else {
                     $profileClass = $this->getFullQualifiedModelClassName(ucfirst(SIGN_IN_ELEMENT_MAPPING_FIELD_NAME));
                     $subordinate = new $profileClass();
@@ -365,8 +369,8 @@ class BaseService
 
                         $childCompaniesIds = array();
                         if (SettingsManager::getInstance()->getSetting(
-                            'System: Child Company Structure Managers Enabled'
-                        ) == '1'
+                                'System: Child Company Structure Managers Enabled'
+                            ) == '1'
                         ) {
                             $childCompaniesResp = CompanyStructure::getAllChildCompanyStructures($cempObj->department);
                             $childCompanies = $childCompaniesResp->getObject();
@@ -390,9 +394,9 @@ class BaseService
                     $subordinatesIds = "";
                     foreach ($subordinates as $sub) {
                         if ($subordinatesIds != "") {
-                            $subordinatesIds.=",";
+                            $subordinatesIds .= ",";
                         }
-                        $subordinatesIds.=$sub->id;
+                        $subordinatesIds .= $sub->id;
                     }
 
                     if ($obj->allowIndirectMapping()) {
@@ -404,19 +408,19 @@ class BaseService
                             $indirectSupervisors = json_decode($ie->indirect_supervisors, true);
                             if (in_array($cemp, $indirectSupervisors)) {
                                 if ($subordinatesIds != "") {
-                                    $subordinatesIds.=",";
+                                    $subordinatesIds .= ",";
                                 }
-                                $subordinatesIds.=$ie->id;
+                                $subordinatesIds .= $ie->id;
                             }
                         }
                     }
 
                     $signInMappingField = $obj->getUserOnlyMeAccessField();
                     LogManager::getInstance()->debug(
-                        "Data Load Query (x2):"."1=1".$signInMappingField." in (".$subordinatesIds.") "
-                        .$query.$orderBy.$limit
+                        "Data Load Query (x2):" . "1=1" . $signInMappingField . " in (" . $subordinatesIds . ") "
+                        . $query . $orderBy . $limit
                     );
-                    LogManager::getInstance()->debug("Data Load Query Data (x2):".json_encode($queryData));
+                    LogManager::getInstance()->debug("Data Load Query Data (x2):" . json_encode($queryData));
                     if (!empty($subordinatesIds)) {
                         $list = $obj->Find(
                             $signInMappingField . " in (" . $subordinatesIds . ") " . $query . $orderBy . $limit,
@@ -446,8 +450,8 @@ class BaseService
 
                     $childCompaniesIds = array();
                     if (SettingsManager::getInstance()->getSetting(
-                        'System: Child Company Structure Managers Enabled'
-                    ) == '1'
+                            'System: Child Company Structure Managers Enabled'
+                        ) == '1'
                     ) {
                         $childCompaniesResp = CompanyStructure::getAllChildCompanyStructures($cempObj->department);
                         $childCompanies = $childCompaniesResp->getObject();
@@ -471,9 +475,9 @@ class BaseService
                 $subordinatesIds = "";
                 foreach ($subordinates as $sub) {
                     if ($subordinatesIds != "") {
-                        $subordinatesIds.=",";
+                        $subordinatesIds .= ",";
                     }
-                    $subordinatesIds.=$sub->id;
+                    $subordinatesIds .= $sub->id;
                 }
 
                 if ($obj->allowIndirectMapping()) {
@@ -485,34 +489,34 @@ class BaseService
                         $indirectSupervisors = json_decode($ie->indirect_supervisors, true);
                         if (in_array($cemp, $indirectSupervisors)) {
                             if ($subordinatesIds != "") {
-                                $subordinatesIds.=",";
+                                $subordinatesIds .= ",";
                             }
-                            $subordinatesIds.=$ie->id;
+                            $subordinatesIds .= $ie->id;
                         }
                     }
                 }
 
                 $signInMappingField = $obj->getUserOnlyMeAccessField();
                 LogManager::getInstance()->debug(
-                    "Data Load Query (a1):".$signInMappingField." in (".$subordinatesIds.") ".$query.$orderBy.$limit
+                    "Data Load Query (a1):" . $signInMappingField . " in (" . $subordinatesIds . ") " . $query . $orderBy . $limit
                 );
                 $list = $obj->Find(
-                    $signInMappingField." in (".$subordinatesIds.") ".$query.$orderBy.$limit,
+                    $signInMappingField . " in (" . $subordinatesIds . ") " . $query . $orderBy . $limit,
                     $queryData
                 );
             } else {
-                $list = $obj->Find("1=1".$query.$orderBy.$limit, $queryData);
+                $list = $obj->Find("1=1" . $query . $orderBy . $limit, $queryData);
             }
         } else {
-            $list = $obj->Find("1=1".$query.$orderBy.$limit, $queryData);
+            $list = $obj->Find("1=1" . $query . $orderBy . $limit, $queryData);
         }
 
         if (!$list) {
-            LogManager::getInstance()->debug("Get Data Error:".$obj->ErrorMsg());
+            LogManager::getInstance()->debug("Get Data Error:" . $obj->ErrorMsg());
         }
 
-        LogManager::getInstance()->debug("Data Load Query:"."1=1".$query.$orderBy.$limit);
-        LogManager::getInstance()->debug("Data Load Query Data:".json_encode($queryData));
+        LogManager::getInstance()->debug("Data Load Query:" . "1=1" . $query . $orderBy . $limit);
+        LogManager::getInstance()->debug("Data Load Query Data:" . json_encode($queryData));
 
         $processedList = array();
         foreach ($list as $obj) {
@@ -521,7 +525,7 @@ class BaseService
 
         $list = $processedList;
 
-        if (!empty($mappingStr) && (is_array($map) && count($map)>0) || (is_object($map) && count(get_object_vars($map)))) {
+        if (!empty($mappingStr) && (is_array($map) && count($map) > 0) || (is_object($map) && count(get_object_vars($map)))) {
             $list = $this->populateMapping($list, $map);
         }
 
@@ -546,7 +550,7 @@ class BaseService
             $item = $this->populateMappingItem($item, $map);
             $listNew[] = $item;
         }
-        return  $listNew;
+        return $listNew;
     }
 
     public function populateMappingItem($item, $map)
@@ -554,19 +558,19 @@ class BaseService
         foreach ($map as $k => $v) {
             $fTable = $this->getFullQualifiedModelClassName($v[0]);
             $tObj = new $fTable();
-            $tObj->Load($v[1]."= ?", array($item->$k));
+            $tObj->Load($v[1] . "= ?", array($item->$k));
 
             if ($tObj->{$v[1]} == $item->$k) {
                 $v[2] = str_replace("+", " ", $v[2]);
                 $values = explode(" ", $v[2]);
                 if (count($values) == 1) {
-                    $idField = $k."_id";
+                    $idField = $k . "_id";
                     $item->$idField = $item->$k;
                     $item->$k = $tObj->{$v[2]};
 
-                    if($v[2] == 'birthday'){
+                    if ($v[2] == 'birthday') {
                         $item->$k = $this->getYOB($tObj);
-                    }else{
+                    } else {
                         $item->$k = $tObj->{$v[2]};
                     }
                 } else {
@@ -575,19 +579,19 @@ class BaseService
                         if ($objVal != "") {
                             $objVal .= " ";
                         }
-                        if($v == 'birthday'){
+                        if ($v == 'birthday') {
                             $objVal .= $this->getYOB($tObj);
-                        }else{
+                        } else {
                             $objVal .= $tObj->$v;
                         }
                     }
-                    $idField = $k."_id";
+                    $idField = $k . "_id";
                     $item->$idField = $item->$k;
                     $item->$k = $objVal;
                 }
             }
         }
-        return  $item;
+        return $item;
     }
 
     /**
@@ -632,7 +636,7 @@ class BaseService
             $obj = $this->enrichObjectCustomFields($table, $obj);
 
             $obj = $obj->postProcessGetElement($obj);
-            return  $this->cleanUpAdoDB($obj->postProcessGetData($obj));
+            return $this->cleanUpAdoDB($obj->postProcessGetData($obj));
         }
         return null;
     }
@@ -678,7 +682,7 @@ class BaseService
 
 
         if ($ele->validateCSRF()
-            && (empty($obj->csrf) || $obj->csrf !== SessionUtils::getSessionObject('csrf-'.$table))) {
+            && (empty($obj->csrf) || $obj->csrf !== SessionUtils::getSessionObject('csrf-' . $table))) {
             return new IceResponse(
                 IceResponse::ERROR,
                 "CSRF Error"
@@ -764,19 +768,19 @@ class BaseService
             if ($isAdd) {
                 $this->audit(
                     IceConstants::AUDIT_ERROR,
-                    "Error occurred while adding an object to ".$table." \ Error: ".$error
+                    "Error occurred while adding an object to " . $table . " \ Error: " . $error
                 );
             } else {
                 $this->audit(
                     IceConstants::AUDIT_ERROR,
-                    "Error occurred while editing an object in ".$table." [id:".$ele->id."] \ Error: ".$error
+                    "Error occurred while editing an object in " . $table . " [id:" . $ele->id . "] \ Error: " . $error
                 );
             }
             return new IceResponse(IceResponse::ERROR, $this->findError($error));
         }
 
         $customFields = $ele->getCustomFields($obj);
-        LogManager::getInstance()->error("Custom:".json_encode($customFields));
+        LogManager::getInstance()->error("Custom:" . json_encode($customFields));
         foreach ($obj as $k => $v) {
             if (isset($customFields[$k])) {
                 $this->customFieldManager->addCustomField($table, $ele->id, $k, $v);
@@ -785,10 +789,10 @@ class BaseService
 
         if ($isAdd) {
             $ele->executePostSaveActions($ele);
-            $this->audit(IceConstants::AUDIT_ADD, "Added an object to ".$table." [id:".$ele->id."]");
+            $this->audit(IceConstants::AUDIT_ADD, "Added an object to " . $table . " [id:" . $ele->id . "]");
         } else {
             $ele->executePostUpdateActions($ele);
-            $this->audit(IceConstants::AUDIT_EDIT, "Edited an object in ".$table." [id:".$ele->id."]");
+            $this->audit(IceConstants::AUDIT_EDIT, "Edited an object in " . $table . " [id:" . $ele->id . "]");
         }
 
         return new IceResponse(IceResponse::SUCCESS, $ele);
@@ -864,7 +868,7 @@ class BaseService
                 $dataEntryBackup->Save();
             }
 
-            $this->audit(IceConstants::AUDIT_DELETE, "Deleted an object in ".$table." [id:".$ele->id."]");
+            $this->audit(IceConstants::AUDIT_DELETE, "Deleted an object in " . $table . " [id:" . $ele->id . "]");
         }
 
         if (isset($fileFields[$table])) {
@@ -917,7 +921,7 @@ class BaseService
                     $list = $ele->$method(array());
                 }
             } else {
-                LogManager::getInstance()->debug("Could not find method:".$method." in Class:".$table);
+                LogManager::getInstance()->debug("Could not find method:" . $method . " in Class:" . $table);
                 $list = $ele->Find('1 = 1', array());
             }
         } else {
@@ -927,9 +931,9 @@ class BaseService
         foreach ($list as $obj) {
             $obj = $this->cleanUpAdoDB($obj);
             if (count($values) == 1) {
-                if($value == 'birthday'){
+                if ($value == 'birthday') {
                     $ret[$obj->$key] = $this->getYOB($obj);
-                }else{
+                } else {
                     $ret[$obj->$key] = $obj->$value;
                 }
             } else {
@@ -938,9 +942,9 @@ class BaseService
                     if ($objVal != "") {
                         $objVal .= " ";
                     }
-                    if($v == 'birthday'){
+                    if ($v == 'birthday') {
                         $objVal .= $this->getYOB($obj);
-                    }else{
+                    } else {
                         $objVal .= $obj->$v;
                     }
                 }
@@ -956,7 +960,8 @@ class BaseService
      * @param $obj
      * @return string
      */
-    private function getYOB($obj){
+    private function getYOB($obj)
+    {
         try {
             $birthday = new \DateTime($obj->birthday);
             return $birthday->format('Y');
@@ -1080,7 +1085,7 @@ class BaseService
     {
         $user = new User();
         $signInMappingField = SIGN_IN_ELEMENT_MAPPING_FIELD_NAME;
-        $user->load($signInMappingField." = ?", array($profileId));
+        $user->load($signInMappingField . " = ?", array($profileId));
         if ($user->$signInMappingField == $profileId) {
             return $user;
         }
@@ -1182,7 +1187,7 @@ class BaseService
         $accessMatrix = array();
 
         //Construct permission method
-        $permMethod = "get".$this->currentUser->user_level."Access";
+        $permMethod = "get" . $this->currentUser->user_level . "Access";
         $userOnlyMeAccessRequestField = $object->getUserOnlyMeAccessRequestField();
         $userOnlyMeAccessField = $object->getUserOnlyMeAccessField();
         if (method_exists($object, $permMethod)) {
@@ -1216,14 +1221,14 @@ class BaseService
             // Employees should be able to update their own records
             if (!empty($table) && in_array($type, $accessMatrix)) {
                 if (!empty($this->currentUser->$userOnlyMeAccessRequestField)
-                    && in_array($table, $this->userTables) ) {
+                    && in_array($table, $this->userTables)) {
                     return true;
                 }
             }
         }
 
         $ret['status'] = "ERROR";
-        $ret['message'] = $type." ".get_class($object)." Access violation";
+        $ret['message'] = $type . " " . get_class($object) . " Access violation";
         echo json_encode($ret);
         exit();
     }
@@ -1288,14 +1293,14 @@ class BaseService
     public function loadModulePermissions($group, $name, $userLevel)
     {
         $module = new Module();
-        $module->Load("update_path = ?", array($group.">".$name));
+        $module->Load("update_path = ?", array($group . ">" . $name));
 
         $arr = array();
         $arr['user'] = json_decode($module->user_levels, true);
-        $arr['user_roles'] = !empty($module->user_roles)?json_decode($module->user_roles, true):array();
+        $arr['user_roles'] = !empty($module->user_roles) ? json_decode($module->user_roles, true) : array();
 
         $permission = new Permission();
-        $modulePerms = $permission->Find("module_id = ? and user_level = ?", array($module->id,$userLevel));
+        $modulePerms = $permission->Find("module_id = ? and user_level = ?", array($module->id, $userLevel));
 
         $perms = array();
         foreach ($modulePerms as $p) {
@@ -1434,7 +1439,7 @@ class BaseService
     public function fixJSON($json)
     {
         $noJSONRequests = SettingsManager::getInstance()->getSetting("System: Do not pass JSON in request");
-        if ($noJSONRequests."" == "1") {
+        if ($noJSONRequests . "" == "1") {
             $json = base64_decode($json);
         }
         return $json;
@@ -1446,7 +1451,7 @@ class BaseService
             $this->moduleManagers = array();
         }
         $moduleObject = $moduleManager->getModuleObject();
-        $this->moduleManagers[$moduleManager->getModuleType()."_".$moduleObject['name']] = $moduleManager;
+        $this->moduleManagers[$moduleManager->getModuleType() . "_" . $moduleObject['name']] = $moduleManager;
     }
 
     public function getModuleManagers()
@@ -1456,7 +1461,7 @@ class BaseService
 
     public function getModuleManagerNames()
     {
-        $keys =  array_keys($this->moduleManagers);
+        $keys = array_keys($this->moduleManagers);
         $arr = array();
         foreach ($keys as $key) {
             $arr[$key] = 1;
@@ -1467,7 +1472,7 @@ class BaseService
 
     public function getModuleManager($type, $name)
     {
-        return isset($this->moduleManagers[$type."_".$name]) ? $this->moduleManagers[$type."_".$name] : null;
+        return isset($this->moduleManagers[$type . "_" . $name]) ? $this->moduleManagers[$type . "_" . $name] : null;
     }
 
     public function setEmailSender($emailSender)
@@ -1490,7 +1495,7 @@ class BaseService
     public function getCustomFields($type)
     {
         $customField = new CustomField();
-        $data = $customField->Find("type = ? and display = ?", array($type,'Form'));
+        $data = $customField->Find("type = ? and display = ?", array($type, 'Form'));
         return $data;
     }
 
@@ -1535,7 +1540,7 @@ class BaseService
     public function getItemFromCache($class, $id)
     {
         $class = $this->getFullQualifiedModelClassName($class);
-        $data = MemcacheService::getInstance()->get($class."-".$id);
+        $data = MemcacheService::getInstance()->get($class . "-" . $id);
         if ($data !== false) {
             return unserialize($data);
         }
@@ -1546,7 +1551,7 @@ class BaseService
             return null;
         }
 
-        MemcacheService::getInstance()->set($class."-".$id, serialize($obj), 10 * 60);
+        MemcacheService::getInstance()->set($class . "-" . $id, serialize($obj), 10 * 60);
 
         return $obj;
     }
@@ -1646,7 +1651,7 @@ END;
         if (isset($this->modelClassMap[$class])) {
             return $this->modelClassMap[$class];
         }
-        return '\\Model\\'.$class;
+        return '\\Model\\' . $class;
     }
 
     /**
@@ -1679,8 +1684,8 @@ END;
         ) {
             $departmentHeadFound = true;
         } elseif (SettingsManager::getInstance()->getSetting(
-            'System: Child Company Structure Managers Enabled'
-        ) == '1'
+                'System: Child Company Structure Managers Enabled'
+            ) == '1'
         ) {
             $companyStructure = new CompanyStructure();
             $companyStructure->Load('id = ?', array($subordinate->department));
@@ -1700,7 +1705,7 @@ END;
                     $companyStructure->Load('id = ?', array($parentCompanyStructure));
                 }
             } while (!empty($companyStructure->id)
-                && !empty($parentCompanyStructure)
+            && !empty($parentCompanyStructure)
             );
         }
 
@@ -1755,8 +1760,8 @@ END;
 
     public function generateCsrf($formId)
     {
-        $csrfToken = sha1(rand(4500, 100000) . time(). CLIENT_BASE_URL. $this->currentUser->id);
-        SessionUtils::saveSessionObject('csrf-'.$formId, $csrfToken);
+        $csrfToken = sha1(rand(4500, 100000) . time() . CLIENT_BASE_URL . $this->currentUser->id);
+        SessionUtils::saveSessionObject('csrf-' . $formId, $csrfToken);
         return $csrfToken;
     }
 

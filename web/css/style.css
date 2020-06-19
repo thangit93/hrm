@@ -880,3 +880,26 @@ table.dataTable{
     width: 100%;
     margin-top: 20px;
 }
+
+.table-attendance thead th{
+    border: 1px solid #ddd !important;
+}
+
+.box-body .table-responsive{
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.table-attendance td {
+    width: 50px !important;
+    text-align: center !important;
+}
+
+.table-attendance .editable input{
+    width: 50px;
+}
+
+.table-attendance thead td{
+    border: 1px solid #ddd !important;
+    text-align: center !important;
+}

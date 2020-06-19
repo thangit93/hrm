@@ -39,9 +39,9 @@ if(empty($currentEmployeeTimeZone)){
 var modJsList = [];
 modJsList['tabAttendance'] = new AttendanceAdapter('Attendance','Attendance','','in_time desc');
 modJsList['tabAttendance'].setUseServerTime(<?=$useServerTime?>);
-modJsList['tabAttendance'].setPhotoAttendance(<?=$photoAttendance == '1'?>);
+modJsList['tabAttendance'].setPhotoAttendance(false);
 modJsList['tabAttendance'].setRemoteTable(true);
-modJsList['tabAttendance'].updatePunchButton(true);
+modJsList['tabAttendance'].updatePunchButton(false);
 modJsList['tabAttendance'].setShowAddNew(false);
 
 

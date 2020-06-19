@@ -94,10 +94,10 @@ $mapAttendance = \Classes\SettingsManager::getInstance()->getSetting('Attendance
 <script>
   var modJsList = new Array();
   modJsList['tabAttendance'] = new AttendanceAdapter('Attendance','Attendance','','in_time desc');
-  modJsList['tabAttendance'].setRemoteTable(true);
-  modJsList['tabAttendance'].setPhotoAttendance(<?=$photoAttendance == '1' || $mapAttendance == '1'?>);
+  modJsList['tabAttendance'].setRemoteTable(false);
+  modJsList['tabAttendance'].setPhotoAttendance(false);
+  modJsList['tabAttendance'].setShowAddNew(false);
   // modJsList['tabAttendanceStatus'] = new AttendanceStatusAdapter('AttendanceStatus','AttendanceStatus','','');
-  // modJsList['tabAttendanceStatus'].setShowAddNew(false);
   var modJs = modJsList['tabAttendance'];
 
 </script>
