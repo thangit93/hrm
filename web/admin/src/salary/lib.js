@@ -423,7 +423,9 @@ class EmployeeSalaryOvertimeAdapter extends AdapterBase {
     getTableFields() {
         return [
             'id',
+            'employee',
             'amount',
+            'date',
         ];
     }
 
@@ -433,9 +435,15 @@ class EmployeeSalaryOvertimeAdapter extends AdapterBase {
             aoColumnDefs: [
                 {
                     fnRender(data, cell) {
-                        return that.preProcessRemoteTableData(data, cell, 1);
+                        return that.preProcessRemoteTableData(data, cell, 2);
                     },
-                    aTargets: [1],
+                    aTargets: [2],
+                },
+                {
+                    fnRender(data, cell) {
+                        return that.preProcessRemoteTableData(data, cell, 3);
+                    },
+                    aTargets: [3],
                 },
                 {
                     fnRender: that.getActionButtons,
@@ -446,9 +454,18 @@ class EmployeeSalaryOvertimeAdapter extends AdapterBase {
     }
 
     preProcessRemoteTableData(data, cell, id) {
-        if (id === 1) {
+        if (id === 2) {
             cell = parseInt(cell)
             cell = new Intl.NumberFormat('en-VN').format(cell)
+        }else if(id === 3){
+            if (!cell || cell === 'NULL' || cell.length < 1 || cell === '0000-00-00 00:00:00' || cell === '' || cell === undefined || cell == null) {
+                return '';
+            }
+            if (Date.parse(cell)) {
+                return Date.parse(cell).toString('d/M/yyyy');
+            }
+
+            return '';
         }
 
         return cell;
@@ -457,14 +474,22 @@ class EmployeeSalaryOvertimeAdapter extends AdapterBase {
     getHeaders() {
         return [
             {sTitle: 'ID', bVisible: false},
+            {sTitle: 'Employee'},
             {sTitle: 'Amount'},
+            {sTitle: 'Date'},
         ];
     }
 
     getFormFields() {
         return [
             ['id', {label: 'ID', type: 'hidden'}],
+            ['employee', {
+                label: 'Employee',
+                type: 'select2',
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday']
+            }],
             ['amount', {label: 'Amount', type: 'text', validation: 'integer'}],
+            ['date', {label: 'Date', type: 'date', validation: 'none'}],
         ];
     }
 }

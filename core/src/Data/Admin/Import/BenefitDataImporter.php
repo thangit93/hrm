@@ -8,6 +8,7 @@ use Employees\Common\Model\Employee;
 use Metadata\Common\Model\CustomFieldValue;
 use Salary\Common\Model\EmployeeSalary;
 use Salary\Common\Model\EmployeeSalaryBonus;
+use Salary\Common\Model\EmployeeSalaryOvertime;
 use Salary\Common\Model\SalaryComponent;
 use Utils\LogManager;
 
@@ -53,7 +54,7 @@ class BenefitDataImporter extends \Data\Admin\Api\AbstractDataImporter
         $parkingComponent = $this->getSalaryComponent($parkingComponentName);
 
         foreach ($lines as $line) {
-            list($employeeId, $name, $baseSalary, $jobTitleAllowance, $phoneAllowance, $parkingAllowance, $bonus) = explode(',', $line);
+            list($employeeId, $name, $baseSalary, $jobTitleAllowance, $phoneAllowance, $parkingAllowance, $bonus, $overtime) = explode(',', $line);
             $employee = $this->getEmployee($employeeId);
 
             // Save job title allowance
@@ -74,12 +75,26 @@ class BenefitDataImporter extends \Data\Admin\Api\AbstractDataImporter
 
             // Save bonus
             $this->addEmployeeSalaryBonus($employee, $bonus, $date->format('Y-m-d H:i:s'));
+
+            // Save bonus
+            $this->addEmployeeSalaryOvertime($employee, $overtime, $date->format('Y-m-d H:i:s'));
         }
     }
 
     private function addEmployeeSalaryBonus($employee, $amount, $date)
     {
         $bonus = new EmployeeSalaryBonus();
+        $bonus->employee = $employee->id;
+        $bonus->amount = $amount;
+        $bonus->date = $date;
+        $bonus->Save();
+
+        return $bonus;
+    }
+
+    private function addEmployeeSalaryOvertime($employee, $amount, $date)
+    {
+        $bonus = new EmployeeSalaryOvertime();
         $bonus->employee = $employee->id;
         $bonus->amount = $amount;
         $bonus->date = $date;
