@@ -105,7 +105,63 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
   }
 }
 
+class ReportOvertimeAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'name',
+      'coefficient',
+      'type',
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Name' },
+      { sTitle: 'Coefficient' },
+      { sTitle: 'Type' },
+    ];
+  }
+
+  get() {
+    var that = this;
+    var object = {
+      ft: that.filter
+    };
+    var reqJson = JSON.stringify(object);
+    var callBackData = [];
+    callBackData['callBackData'] = [];
+    callBackData['callBackSuccess'] = 'getBalanceSuccessCallBack';
+    callBackData['callBackFail'] = 'getBalanceFailCallBack';
+
+    this.customAction('getReportOvertime', 'admin=overtime', reqJson, callBackData);
+  }
+
+  getBalanceSuccessCallBack(data) {
+    var callBackData = [];
+    callBackData['noRender'] = false;
+    this.getSuccessCallBack(callBackData, data);
+  }
+
+  getBalanceFailCallBack(data) {
+
+  }
+
+  getFilters() {
+    return [
+      ['start_date', {
+        label: 'Start Date', type: 'yearmonth'
+      }],
+      ['end_date', {
+        label: 'End Date', type: 'yearmonth'
+      }]
+    ];
+  }
+}
+
 module.exports = {
   OvertimeCategoryAdapter,
   EmployeeOvertimeAdminAdapter,
+  ReportOvertimeAdapter
 };
