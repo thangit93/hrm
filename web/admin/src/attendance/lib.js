@@ -361,6 +361,13 @@ class AttendanceAdapter extends AdapterBase {
     tableHeaderHtml += '<td>&nbsp;</td>';
 
     $.each(headers, function (index, col) {
+      if ((index + 1) === headers.length) {
+        tableHeaderHtml += '<td rowspan="2">';
+        tableHeaderHtml += '<b>' + that.gt(col) + '</b>';
+        tableHeaderHtml += '</td>';
+        return;
+      }
+
       tableHeaderHtml += '<td colspan="3">';
       tableHeaderHtml += '<b>' + that.gt(col) + '</b>';
       tableHeaderHtml += '</td>';
@@ -371,6 +378,10 @@ class AttendanceAdapter extends AdapterBase {
     tableHeaderHtml += '<tr>';
     tableHeaderHtml += '<td>&nbsp;</td>';
     $.each(headers, function (index, col) {
+      if ((index + 1) === headers.length) {
+        return;
+      }
+
       tableHeaderHtml += '<td width="50">';
       tableHeaderHtml += '<b>' + that.gt("In") + '</b>';
       tableHeaderHtml += '</td>';
@@ -438,13 +449,20 @@ class AttendanceAdapter extends AdapterBase {
           colClass += 'total ';
         }
 
+        if((index + 1 ) === row.length){
+          tableHtml += '<td>';
+          tableHtml += col;
+          tableHtml += '</td>';
+          return;
+        }
+
         tableHtml += '<td data-fieldname="in" data-date="' + col.date + '" data-employee_id="' + col.employee_id + '" data-in="' + col.in + '" data-out="' + col.out + '" class="editable ' + colClass + '">';
         tableHtml += col.in;
         tableHtml += '</td>';
         tableHtml += '<td data-fieldname="out" data-date="' + col.date + '" data-employee_id="' + col.employee_id + '" data-in="' + col.in + '" data-out="' + col.out + '" class="editable ' + colClass + '">';
         tableHtml += col.out;
         tableHtml += '</td>';
-        tableHtml += '<td style="border-right: 2px solid #333;background-color: #428bcac2;color: #ffffff;font-weight: bold;" class="' + colClass + " total-" + col.employee_id + col.date + '">';
+        tableHtml += '<td style="background-color: #428bcac2;color: #ffffff;font-weight: bold;" class="' + colClass + " total-" + col.employee_id + col.date + '">';
         tableHtml += col.total;
         tableHtml += '</td>';
       });

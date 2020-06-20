@@ -170,9 +170,12 @@ class AttendanceActionManager extends SubActionManager
             $startDate->add(\DateInterval::createFromDateString('1 day'));
         }
 
+        $dataHeader[] = LanguageManager::tran('Total');
+
         foreach ($employees as $employee) {
             $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
             $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+            $total = 0;
 
             while ($startDate <= $endDate) {
                 $query = "((DATE_FORMAT(in_time, '%Y-%m-%d') = \"{$startDate->format("Y-m-d")}\") OR (DATE_FORMAT(out_time, '%Y-%m-%d') = \"{$startDate->format("Y-m-d")}\")) AND employee = \"{$employee->id}\"";
@@ -221,9 +224,12 @@ class AttendanceActionManager extends SubActionManager
                 }
 
                 $data[$employee->id][] = $dataDay;
+                $total += $dataDay['total'];
 
                 $startDate->add(\DateInterval::createFromDateString('1 day'));
             }
+
+            $data[$employee->id][] = $total;
         }
 
         $responseData = [
