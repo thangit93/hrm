@@ -105,7 +105,37 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
   }
 }
 
+class OvertimeReportAdapter extends AdapterBase {
+  getDataMapping() {
+    return [
+      'id',
+      'name',
+      'coefficient',
+      'type',
+    ];
+  }
+
+  getHeaders() {
+    return [
+      { sTitle: 'ID', bVisible: false },
+      { sTitle: 'Name' },
+      { sTitle: 'Coefficient' },
+      { sTitle: 'Type' },
+    ];
+  }
+
+  getFormFields() {
+    return [
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['name', { label: 'Name', type: 'text', validation: '' }],
+      ['coefficient', { label: 'Coefficient', type: 'text', validation: '' }],
+      ['type', { label: 'Type', type: 'text', validation: '' }],
+    ];
+  }
+}
+
 module.exports = {
   OvertimeCategoryAdapter,
   EmployeeOvertimeAdminAdapter,
+  OvertimeReportAdapter,
 };

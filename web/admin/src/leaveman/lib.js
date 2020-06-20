@@ -232,52 +232,52 @@ class LeavePeriodAdapter extends AdapterBase {
         var rowsLogs = "";
         var trow = "";
 
-        html += '<span class="label label-default">Number of Leaves available ('+leaveInfo['availableLeaves']+')</span><br/>';
+        html += '<span class="label label-default">Number of Leaves available (' + leaveInfo['availableLeaves'] + ')</span><br/>';
 
         var leaveCount = this.calculateNumberOfLeavesObject(days);
 
-        if(leaveCount > leaveInfo['availableLeaves']){
-            html += '<span class="label label-info">Number of Leaves requested ('+leaveCount+')</span><br/>';
-        }else{
-            html += '<span class="label label-success">Number of Leaves requested ('+leaveCount+')</span><br/>';
+        if (leaveCount > leaveInfo['availableLeaves']) {
+            html += '<span class="label label-info">Number of Leaves requested (' + leaveCount + ')</span><br/>';
+        } else {
+            html += '<span class="label label-success">Number of Leaves requested (' + leaveCount + ')</span><br/>';
         }
 
 
-        for(var i=0;i<days.length;i++){
+        for (var i = 0; i < days.length; i++) {
             trow = row;
-            trow = trow.replace(/_date_/g,Date.parse(days[i].leave_date).toString('MMM d, yyyy (dddd)'));
-            trow = trow.replace(/_type_/g,days[i].leave_type);
+            trow = trow.replace(/_date_/g, Date.parse(days[i].leave_date).toString('MMM d, yyyy (dddd)'));
+            trow = trow.replace(/_type_/g, days[i].leave_type);
             rows += trow;
         }
 
-        for(var i=0;i<leaveLogs.length;i++){
+        for (var i = 0; i < leaveLogs.length; i++) {
             trow = rowLog;
-            trow = trow.replace(/_date_/g,leaveLogs[i].time);
-            trow = trow.replace(/_status_/g,leaveLogs[i].status_from+" -> "+leaveLogs[i].status_to);
-            trow = trow.replace(/_note_/g,leaveLogs[i].note);
+            trow = trow.replace(/_date_/g, leaveLogs[i].time);
+            trow = trow.replace(/_status_/g, leaveLogs[i].status_from + " -> " + leaveLogs[i].status_to);
+            trow = trow.replace(/_note_/g, leaveLogs[i].note);
             rowsLogs += trow;
         }
 
-        if(leave != null && leave.details != undefined && leave.details != null && leave.details != ""){
+        if (leave != null && leave.details != undefined && leave.details != null && leave.details != "") {
             html += "<br/><b>Reason for Applying leave:</b><br/>";
-            html += leave.details+"<br/><br/>";
+            html += leave.details + "<br/><br/>";
         }
 
-        table = table.replace('_days_',rows);
+        table = table.replace('_days_', rows);
 
 
-        html+= "<br/>";
-        html+= table;
+        html += "<br/>";
+        html += table;
 
-        if(rowsLogs != ""){
-            tableLog = tableLog.replace('_days_',rowsLogs);
-            html+= tableLog;
+        if (rowsLogs != "") {
+            tableLog = tableLog.replace('_days_', rowsLogs);
+            html += tableLog;
         }
 
-        if(leaveInfo['attachment'] != null && leaveInfo['attachment'] != undefined && leaveInfo['attachment'] != ""){
-            html += '<label onclick="download(\''+leaveInfo['attachment']+'\','+'modJs.getLeaveDaysReadonly,['+leaveId+']);" style="cursor:pointer;">View Attachment <i class="icon-play-circle"></i></label>';
+        if (leaveInfo['attachment'] != null && leaveInfo['attachment'] != undefined && leaveInfo['attachment'] != "") {
+            html += '<label onclick="download(\'' + leaveInfo['attachment'] + '\',' + 'modJs.getLeaveDaysReadonly,[' + leaveId + ']);" style="cursor:pointer;">View Attachment <i class="icon-play-circle"></i></label>';
         }
-        this.showMessage("Leave Days",html);
+        this.showMessage("Leave Days", html);
         timeUtils.convertToRelativeTime($(".logTime"));
     }
 
@@ -329,31 +329,37 @@ class WorkDayAdapter extends AdapterBase {
         ];
     }
 
-    getFilters(){
+    getFilters() {
         return [
-            [ "country", {"label":"Country","type":"select","allow-null":true,"null-label":"For All Countries","remote-source":["Country","id","name"]}]
+            ["country", {
+                "label": "Country",
+                "type": "select",
+                "allow-null": true,
+                "null-label": "For All Countries",
+                "remote-source": ["Country", "id", "name"]
+            }]
         ];
     }
 
-    getActionButtonsHtml(id, data){
+    getActionButtonsHtml(id, data) {
         var html = '<div style="width:50px;"><img class="tableActionButton" src="_BASE_images/edit.png" style="cursor:pointer;" rel="tooltip" title="Edit" onclick="modJs.edit(_id_);return false;"></img>__DeleteButton__</div>';
         var deleteButton = '<img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Delete" onclick="modJs.deleteRow(_id_);return false;"></img>';
 
 
-        if(data[3] != undefined && data[3] != null && data[3] != ""){
-            html = html.replace(/__DeleteButton__/g,deleteButton);
-        }else{
+        if (data[3] != undefined && data[3] != null && data[3] != "") {
+            html = html.replace(/__DeleteButton__/g, deleteButton);
+        } else {
             data[3] = "For All Countries";
-            html = html.replace(/__DeleteButton__/g,"");
+            html = html.replace(/__DeleteButton__/g, "");
         }
 
-        html = html.replace(/_id_/g,id);
-        html = html.replace(/_BASE_/g,this.baseUrl);
+        html = html.replace(/_id_/g, id);
+        html = html.replace(/_BASE_/g, this.baseUrl);
 
         return html;
     }
 
-    getCustomTableParams(){
+    getCustomTableParams() {
         return {
             "bPaginate": false,
             "bFilter": false,
@@ -379,27 +385,43 @@ class HoliDayAdapter extends AdapterBase {
 
     getHeaders() {
         return [
-            { "sTitle": "ID" ,"bVisible":false},
-            { "sTitle": "Name" },
-            { "sTitle": "Date" },
-            { "sTitle": "Status" },
+            {"sTitle": "ID", "bVisible": false},
+            {"sTitle": "Name"},
+            {"sTitle": "Date"},
+            {"sTitle": "Status"},
             // { "sTitle": "Country" }
         ];
     }
 
     getFormFields() {
         return [
-            [ "id", {"label":"ID","type":"hidden","validation":""}],
-            [ "name", {"label":"Name","type":"text","validation":""}],
-            [ "dateh", {"label":"Date","type":"date","validation":""}],
-            [ "status", {"label":"Status","type":"select","source":[["Full Day","Full Day"],["Half Day","Half Day"]]}],
-            [ "country", {"label":"Country","type":"select","allow-null":true,"null-label":"For All Countries","remote-source":["Country","id","name"]}]
+            ["id", {"label": "ID", "type": "hidden", "validation": ""}],
+            ["name", {"label": "Name", "type": "text", "validation": ""}],
+            ["dateh", {"label": "Date", "type": "date", "validation": ""}],
+            ["status", {
+                "label": "Status",
+                "type": "select",
+                "source": [["Full Day", "Full Day"], ["Half Day", "Half Day"]]
+            }],
+            ["country", {
+                "label": "Country",
+                "type": "select",
+                "allow-null": true,
+                "null-label": "For All Countries",
+                "remote-source": ["Country", "id", "name"]
+            }]
         ];
     }
 
-    getFilters(){
+    getFilters() {
         return [
-            [ "country", {"label":"Country","type":"select","allow-null":true,"null-label":"For All Countries","remote-source":["Country","id","name"]}]
+            ["country", {
+                "label": "Country",
+                "type": "select",
+                "allow-null": true,
+                "null-label": "For All Countries",
+                "remote-source": ["Country", "id", "name"]
+            }]
         ];
     }
 
@@ -407,8 +429,8 @@ class HoliDayAdapter extends AdapterBase {
         return 'https://antnest.vn';
     }
 
-    getActionButtonsHtml(id, data){
-        if(data[4] == undefined || data[4] == null && data[4] == ""){
+    getActionButtonsHtml(id, data) {
+        if (data[4] == undefined || data[4] == null && data[4] == "") {
             data[4] = "For All Countries";
         }
         return super.getActionButtonsHtml(id, data);
@@ -429,33 +451,38 @@ class EmployeeLeaveAdapter extends AdapterBase {
 
     getHeaders() {
         return [
-            { "sTitle": "ID" ,"bVisible":false},
-            { "sTitle": "Employee" },
-            { "sTitle": "Leave Type" },
-            { "sTitle": "Leave Start Date"},
-            { "sTitle": "Leave End Date"},
-            { "sTitle": "Status"}
+            {"sTitle": "ID", "bVisible": false},
+            {"sTitle": "Employee"},
+            {"sTitle": "Leave Type"},
+            {"sTitle": "Leave Start Date"},
+            {"sTitle": "Leave End Date"},
+            {"sTitle": "Status"}
         ];
     }
 
     getFormFields() {
         return [
-            [ "id", {"label":"ID","type":"hidden"}],
-            [ "employee", {"label":"Employee","type":"select","allow-null":false,"remote-source":["Employee","id","first_name+last_name"]}],
-            [ "leave_type", {"label":"Leave Type","type":"select","remote-source":["LeaveType","id","name"]}],
-            [ "date_start", {"label":"Leave Start Date","type":"date","validation":""}],
-            [ "date_end", {"label":"Leave Start Date","type":"date","validation":""}],
-            [ "details", {"label":"Reason","type":"textarea","validation":"none"}]
+            ["id", {"label": "ID", "type": "hidden"}],
+            ["employee", {
+                "label": "Employee",
+                "type": "select",
+                "allow-null": false,
+                "remote-source": ["Employee", "id", "first_name+last_name"]
+            }],
+            ["leave_type", {"label": "Leave Type", "type": "select", "remote-source": ["LeaveType", "id", "name"]}],
+            ["date_start", {"label": "Leave Start Date", "type": "date", "validation": ""}],
+            ["date_end", {"label": "Leave Start Date", "type": "date", "validation": ""}],
+            ["details", {"label": "Reason", "type": "textarea", "validation": "none"}]
         ];
     }
 
-    calculateNumberOfLeaves(days){
+    calculateNumberOfLeaves(days) {
         var sum = 0.0;
         for (var prop in days) {
-            if(days.hasOwnProperty(prop)){
-                if(days[prop] == "Full Day"){
+            if (days.hasOwnProperty(prop)) {
+                if (days[prop] == "Full Day") {
                     sum += 1;
-                }else{
+                } else {
                     sum += 0.5;
                 }
             }
@@ -463,21 +490,21 @@ class EmployeeLeaveAdapter extends AdapterBase {
         return sum;
     }
 
-    calculateNumberOfLeavesObject(days){
+    calculateNumberOfLeavesObject(days) {
         var sum = 0.0;
-        for(var i=0;i<days.length;i++){
-            if(days[i].leave_type == "Full Day"){
+        for (var i = 0; i < days.length; i++) {
+            if (days[i].leave_type == "Full Day") {
                 sum += 1;
-            }else{
+            } else {
                 sum += 0.5;
             }
         }
         return sum;
     }
 
-    getLeaveDaysReadonly(leaveId){
+    getLeaveDaysReadonly(leaveId) {
         var that = this;
-        var object = {"leave_id":leaveId};
+        var object = {"leave_id": leaveId};
         var reqJson = JSON.stringify(object);
 
         var callBackData = [];
@@ -485,10 +512,10 @@ class EmployeeLeaveAdapter extends AdapterBase {
         callBackData['callBackSuccess'] = 'getLeaveDaysReadonlySuccessCallBack';
         callBackData['callBackFail'] = 'getLeaveDaysReadonlyFailCallBack';
 
-        this.customAction('getLeaveDaysReadonly','admin=leaveman',reqJson,callBackData);
+        this.customAction('getLeaveDaysReadonly', 'admin=leaveman', reqJson, callBackData);
     }
 
-    getLeaveDaysReadonlySuccessCallBack(callBackData){
+    getLeaveDaysReadonlySuccessCallBack(callBackData) {
 
         var table = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Leave Date</th><th>Leave Type</th></tr></thead><tbody>_days_</tbody></table> ';
         var tableLog = '<table class="table table-condensed table-bordered table-striped" style="font-size:14px;"><thead><tr><th>Notes</th></tr></thead><tbody>_days_</tbody></table> ';
@@ -505,66 +532,66 @@ class EmployeeLeaveAdapter extends AdapterBase {
         var rowsLogs = "";
         var trow = "";
 
-        html += '<span class="label label-default">Number of Leaves available ('+leaveInfo['availableLeaves']+')</span><br/>';
+        html += '<span class="label label-default">Number of Leaves available (' + leaveInfo['availableLeaves'] + ')</span><br/>';
 
         var leaveCount = this.calculateNumberOfLeavesObject(days);
 
-        if(leaveCount > leaveInfo['availableLeaves']){
-            html += '<span class="label label-info">Number of Leaves requested ('+leaveCount+')</span><br/>';
-        }else{
-            html += '<span class="label label-success">Number of Leaves requested ('+leaveCount+')</span><br/>';
+        if (leaveCount > leaveInfo['availableLeaves']) {
+            html += '<span class="label label-info">Number of Leaves requested (' + leaveCount + ')</span><br/>';
+        } else {
+            html += '<span class="label label-success">Number of Leaves requested (' + leaveCount + ')</span><br/>';
         }
 
 
-        for(var i=0;i<days.length;i++){
+        for (var i = 0; i < days.length; i++) {
             trow = row;
-            trow = trow.replace(/_date_/g,Date.parse(days[i].leave_date).toString('MMM d, yyyy (dddd)'));
-            trow = trow.replace(/_type_/g,days[i].leave_type);
+            trow = trow.replace(/_date_/g, Date.parse(days[i].leave_date).toString('MMM d, yyyy (dddd)'));
+            trow = trow.replace(/_type_/g, days[i].leave_type);
             rows += trow;
         }
 
-        for(var i=0;i<leaveLogs.length;i++){
+        for (var i = 0; i < leaveLogs.length; i++) {
             trow = rowLog;
-            trow = trow.replace(/_date_/g,leaveLogs[i].time);
-            trow = trow.replace(/_status_/g,leaveLogs[i].status_from+" -> "+leaveLogs[i].status_to);
-            trow = trow.replace(/_note_/g,leaveLogs[i].note);
+            trow = trow.replace(/_date_/g, leaveLogs[i].time);
+            trow = trow.replace(/_status_/g, leaveLogs[i].status_from + " -> " + leaveLogs[i].status_to);
+            trow = trow.replace(/_note_/g, leaveLogs[i].note);
             rowsLogs += trow;
         }
 
-        if(leave != null && leave.details != undefined && leave.details != null && leave.details != ""){
+        if (leave != null && leave.details != undefined && leave.details != null && leave.details != "") {
             html += "<br/><b>Reason for Applying leave:</b><br/>";
-            html += leave.details+"<br/><br/>";
+            html += leave.details + "<br/><br/>";
         }
 
-        table = table.replace('_days_',rows);
+        table = table.replace('_days_', rows);
 
 
-        html+= "<br/>";
-        html+= table;
+        html += "<br/>";
+        html += table;
 
-        if(rowsLogs != ""){
-            tableLog = tableLog.replace('_days_',rowsLogs);
-            html+= tableLog;
+        if (rowsLogs != "") {
+            tableLog = tableLog.replace('_days_', rowsLogs);
+            html += tableLog;
         }
 
-        if(leaveInfo['attachment'] != null && leaveInfo['attachment'] != undefined && leaveInfo['attachment'] != ""){
-            html += '<label onclick="download(\''+leaveInfo['attachment']+'\','+'modJs.getLeaveDaysReadonly,['+leaveId+']);" style="cursor:pointer;">View Attachment <i class="icon-play-circle"></i></label>';
+        if (leaveInfo['attachment'] != null && leaveInfo['attachment'] != undefined && leaveInfo['attachment'] != "") {
+            html += '<label onclick="download(\'' + leaveInfo['attachment'] + '\',' + 'modJs.getLeaveDaysReadonly,[' + leaveId + ']);" style="cursor:pointer;">View Attachment <i class="icon-play-circle"></i></label>';
         }
-        this.showMessage("Leave Days",html);
+        this.showMessage("Leave Days", html);
         timeUtils.convertToRelativeTime($(".logTime"));
     }
 
     getLeaveDaysReadonlyFailCallBack(callBackData) {
-        this.showMessage("Error","Error Occured while Reading leave days from Server");
+        this.showMessage("Error", "Error Occured while Reading leave days from Server");
     }
 
-    getActionButtonsHtml(id,data) {
+    getActionButtonsHtml(id, data) {
         var html = "";
         html = '<div style="width:80px;"><img class="tableActionButton" src="_BASE_images/info.png" style="cursor:pointer;" rel="tooltip" title="Show Leave Days" onclick="modJs.getLeaveDaysReadonly(_id_);return false;"></img><img class="tableActionButton" src="_BASE_images/run.png" style="cursor:pointer;margin-left:15px;" rel="tooltip" title="Change Leave Status" onclick="modJs.openLeaveStatus(_id_,\'_status_\');return false;"></img><img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Cancel Leave" onclick="modJs.deleteRow(_id_);return false;"></img></div>';
 
-        html = html.replace(/_id_/g,id);
-        html = html.replace(/_status_/g,data[5]);
-        html = html.replace(/_BASE_/g,this.baseUrl);
+        html = html.replace(/_id_/g, id);
+        html = html.replace(/_status_/g, data[5]);
+        html = html.replace(/_BASE_/g, this.baseUrl);
 
         return html;
     }
@@ -572,9 +599,9 @@ class EmployeeLeaveAdapter extends AdapterBase {
     getCustomSuccessCallBack(serverData) {
         var data = [];
         var mapping = this.getDataMapping();
-        for(var i=0;i<serverData.length;i++){
+        for (var i = 0; i < serverData.length; i++) {
             var row = [];
-            for(var j=0;j<mapping.length;j++){
+            for (var j = 0; j < mapping.length; j++) {
                 row[j] = serverData[i][mapping[j]];
             }
             data.push(row);
@@ -583,8 +610,8 @@ class EmployeeLeaveAdapter extends AdapterBase {
         this.tableData = data;
 
         this.createTable(this.getTableName());
-        $("#"+this.getTableName()+'Form').hide();
-        $("#"+this.getTableName()).show();
+        $("#" + this.getTableName() + 'Form').hide();
+        $("#" + this.getTableName()).show();
 
     }
 
@@ -592,7 +619,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
         return true;
     }
 
-    openLeaveStatus(leaveId,status) {
+    openLeaveStatus(leaveId, status) {
         $('#leaveStatusModel').modal('show');
         $('#leave_status').val(status);
         this.leaveStatusChangeId = leaveId;
@@ -606,12 +633,12 @@ class EmployeeLeaveAdapter extends AdapterBase {
         var leaveStatus = $('#leave_status').val();
         var reason = $('#leave_reason').val();
 
-        if(leaveStatus == undefined || leaveStatus == null || leaveStatus == ""){
+        if (leaveStatus == undefined || leaveStatus == null || leaveStatus == "") {
             this.showMessage("Error", "Please select leave status");
             return;
         }
 
-        var object = {"id":this.leaveStatusChangeId,"status":leaveStatus,"reason":reason};
+        var object = {"id": this.leaveStatusChangeId, "status": leaveStatus, "reason": reason};
 
         var reqJson = JSON.stringify(object);
 
@@ -620,7 +647,7 @@ class EmployeeLeaveAdapter extends AdapterBase {
         callBackData['callBackSuccess'] = 'changeLeaveStatusSuccessCallBack';
         callBackData['callBackFail'] = 'changeLeaveStatusFailCallBack';
 
-        this.customAction('changeLeaveStatus','admin=leaveman',reqJson,callBackData);
+        this.customAction('changeLeaveStatus', 'admin=leaveman', reqJson, callBackData);
 
         this.closeLeaveStatus();
         this.leaveStatusChangeId = null;
@@ -635,10 +662,21 @@ class EmployeeLeaveAdapter extends AdapterBase {
         this.showMessage("Error", "Error occured while changing leave status");
     }
 
-    getFilters(){
+    getFilters() {
         return [
-            [ "employee", {"label":"Employee","type":"select2","allow-null":false,"remote-source":["Employee","id","first_name+last_name"]}],
-            [ "leave_type", {"label":"Leave Type","type":"select","allow-null":true,"null-label":"All Leave Types","remote-source":["LeaveType","id","name"]}]
+            ["employee", {
+                "label": "Employee",
+                "type": "select2",
+                "allow-null": false,
+                "remote-source": ["Employee", "id", "first_name+last_name"]
+            }],
+            ["leave_type", {
+                "label": "Leave Type",
+                "type": "select",
+                "allow-null": true,
+                "null-label": "All Leave Types",
+                "remote-source": ["LeaveType", "id", "name"]
+            }]
         ];
     }
 
@@ -647,4 +685,89 @@ class EmployeeLeaveAdapter extends AdapterBase {
     }
 }
 
-module.exports = {LeaveTypeAdapter, LeaveRuleAdapter, LeavePeriodAdapter, WorkDayAdapter, HoliDayAdapter, EmployeeLeaveAdapter};
+class ReportLeaveAdapter extends AdapterBase {
+    getDataMapping() {
+        return [
+            "id",
+            "name",
+            "joinedDate",
+            "approvedLeaves",
+            "availableLeaves",
+        ];
+    }
+
+    getHeaders() {
+        return [
+            {"sTitle": "ID", "bVisible": false},
+            {"sTitle": "Name"},
+            {"sTitle": "Joined Date"},
+            {"sTitle": "Approved Leaves"},
+            {"sTitle": "Available Leaves"},
+        ];
+    }
+
+    getFormFields() {
+        return [];
+    }
+
+    showActionButtons() {
+        return false;
+    }
+
+    get() {
+        var that = this;
+        var object = {
+            ft: that.filter
+        };
+        var reqJson = JSON.stringify(object);
+        var callBackData = [];
+        callBackData['callBackData'] = [];
+        callBackData['callBackSuccess'] = 'getBalanceSuccessCallBack';
+        callBackData['callBackFail'] = 'getBalanceFailCallBack';
+
+        this.customAction('getReportLeaves', 'admin=leaveman', reqJson, callBackData);
+    }
+
+    getBalanceSuccessCallBack(data) {
+        var callBackData = [];
+        callBackData['noRender'] = false;
+        this.getSuccessCallBack(callBackData, data);
+    }
+
+    getBalanceFailCallBack(data) {
+
+    }
+
+    getFilters() {
+        return [
+            ['start_date', {
+                label: 'Start Date', type: 'yearmonth'
+            }],
+            ['end_date', {
+                label: 'End Date', type: 'yearmonth'
+            }]
+        ];
+    }
+
+    getCustomTableParams() {
+        return {
+            "bPaginate": false,
+            "bFilter": false,
+            "bInfo": false
+        };
+    }
+
+    getHelpLink() {
+        return 'https://antnest.vn';
+    }
+}
+
+module.exports = {
+    LeaveTypeAdapter,
+    LeaveRuleAdapter,
+    LeavePeriodAdapter,
+    WorkDayAdapter,
+    HoliDayAdapter,
+    EmployeeLeaveAdapter,
+    ReportLeaveAdapter
+};

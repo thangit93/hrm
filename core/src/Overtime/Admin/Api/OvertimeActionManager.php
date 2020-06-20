@@ -52,4 +52,9 @@ class OvertimeActionManager extends ApproveAdminActionManager
     {
         return parent::changeStatus($req);
     }
+
+    public function getReportOvertime($req)
+    {
+
+    }
 }
