@@ -8,7 +8,7 @@ namespace Classes\Migration;
  * Class v20200415_234355_create_employee_salary_deposit
  * @package Classes\Migration
  */
-class v20200620_161200_create_employeeSalaryOvertime_v2 extends AbstractMigration
+class v20200620_161200_create_employeeSalaryOT_v2 extends AbstractMigration
 {
     public function up()
     {
