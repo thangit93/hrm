@@ -68,7 +68,6 @@ class LeavesActionManager extends SubActionManager
 
     public function getCurrentLeavePeriod($startDate, $endDate)
     {
-
         $leavePeriod = new LeavePeriod();
         $leavePeriod->Load("date_start <= ? and date_end >= ?", array($startDate, $endDate));
         if (empty($leavePeriod->id)) {
@@ -81,7 +80,13 @@ class LeavesActionManager extends SubActionManager
             if (!empty($leavePeriod1->id) && !empty($leavePeriod2->id)) {
                 return new IceResponse(IceResponse::ERROR, "You are trying to apply leaveman in two leave periods. You may apply leaveman til $leavePeriod1->date_end. Rest you have to apply seperately");
             } else {
-                return new IceResponse(IceResponse::ERROR, "The leave period for your leave application is not defined. Please inform administrator");
+                $leavePeriod->name = 'Year ' . date('Y');
+                $leavePeriod->date_start = date('Y-m-01');
+                $leavePeriod->date_end = date('Y-m-t');
+                $leavePeriod->status = 'Active';
+                $leavePeriod->save();
+                return new IceResponse(IceResponse::SUCCESS, $leavePeriod);
+                #return new IceResponse(IceResponse::ERROR, "The leave period for your leave application is not defined. Please inform administrator");
             }
 
         } else {
