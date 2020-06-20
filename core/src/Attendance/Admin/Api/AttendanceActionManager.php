@@ -149,7 +149,7 @@ class AttendanceActionManager extends SubActionManager
         $endDate->setDate($endDate->format('Y'), $endDate->format('m'), 25);
 
         $empModel = new Employee();
-        $empQuery = '1 = 1';
+        $empQuery = '1 = 1 AND status = "Active"';
         $empQueryData = [];
 
         $attModel = new Attendance();
@@ -251,19 +251,39 @@ class AttendanceActionManager extends SubActionManager
         $attendance = new Attendance();
         $attendance->Load('1=1 AND employee = ? AND (DATE_FORMAT( in_time,  \'%Y-%m-%d\' ) = ? OR DATE_FORMAT( out_time,  \'%Y-%m-%d\' ) = ?)', [$employee_id, $date, $date]);
 
-        if(empty($attendance->employee)){
+        if (empty($attendance->employee)) {
             $attendance->employee = $employee_id;
         }
 
         if ($fieldname == "in") {
-            $attendance->in_time = "{$date} {$in}:00";
+            if (!empty($in)) {
+                $attendance->in_time = "{$date} {$in}:00";
+            } else {
+                $attendance->in_time = null;
+            }
         } elseif ($fieldname == "out") {
-            $attendance->out_time = "{$date} {$out}:00";
+            if (!empty($out)) {
+                $attendance->out_time = "{$date} {$out}:00";
+            } else {
+                $attendance->out_time = null;
+            }
         }
 
         $total = 0;
 
-        if(!empty($attendance->in_time) && !empty($attendance->out_time)){
+        if (empty($attendance->in_time) && empty($attendance->out_time)) {
+            $attendance->Delete();
+
+            return new IceResponse(IceResponse::SUCCESS, [
+                'employee_id' => $attendance->employee,
+                'in' => $in,
+                'out' => $out,
+                'date' => $date,
+                'total' => $total,
+            ]);
+        }
+
+        if (!empty($attendance->in_time) && !empty($attendance->out_time)) {
             $total = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time);
         }
 

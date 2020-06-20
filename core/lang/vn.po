@@ -2325,3 +2325,6 @@ msgstr "Cho tất cả các nước"
 
 msgid "Coefficient"
 msgstr "Hệ số"
+
+msgid "New Employee Salary"
+msgstr "Bảng lương Mới Nhất"
