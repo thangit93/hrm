@@ -4,7 +4,8 @@ import {
     LeavePeriodAdapter,
     WorkDayAdapter,
     HoliDayAdapter,
-    EmployeeLeaveAdapter
+    EmployeeLeaveAdapter,
+    ReportLeaveAdapter
 } from './lib';
 
 window.LeaveTypeAdapter = LeaveTypeAdapter;
@@ -13,3 +14,4 @@ window.LeavePeriodAdapter = LeavePeriodAdapter;
 window.WorkDayAdapter = WorkDayAdapter;
 window.HoliDayAdapter = HoliDayAdapter;
 window.EmployeeLeaveAdapter = EmployeeLeaveAdapter;
+window.ReportLeaveAdapter = ReportLeaveAdapter;
