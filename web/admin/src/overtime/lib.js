@@ -105,7 +105,7 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
   }
 }
 
-class ReportOvertimeAdapter extends AdapterBase {
+class OvertimeReportAdapter extends AdapterBase {
   getDataMapping() {
     return [
       'id',
@@ -124,38 +124,12 @@ class ReportOvertimeAdapter extends AdapterBase {
     ];
   }
 
-  get() {
-    var that = this;
-    var object = {
-      ft: that.filter
-    };
-    var reqJson = JSON.stringify(object);
-    var callBackData = [];
-    callBackData['callBackData'] = [];
-    callBackData['callBackSuccess'] = 'getBalanceSuccessCallBack';
-    callBackData['callBackFail'] = 'getBalanceFailCallBack';
-
-    this.customAction('getReportOvertime', 'admin=overtime', reqJson, callBackData);
-  }
-
-  getBalanceSuccessCallBack(data) {
-    var callBackData = [];
-    callBackData['noRender'] = false;
-    this.getSuccessCallBack(callBackData, data);
-  }
-
-  getBalanceFailCallBack(data) {
-
-  }
-
-  getFilters() {
+  getFormFields() {
     return [
-      ['start_date', {
-        label: 'Start Date', type: 'yearmonth'
-      }],
-      ['end_date', {
-        label: 'End Date', type: 'yearmonth'
-      }]
+      ['id', { label: 'ID', type: 'hidden' }],
+      ['name', { label: 'Name', type: 'text', validation: '' }],
+      ['coefficient', { label: 'Coefficient', type: 'text', validation: '' }],
+      ['type', { label: 'Type', type: 'text', validation: '' }],
     ];
   }
 }
@@ -163,5 +137,5 @@ class ReportOvertimeAdapter extends AdapterBase {
 module.exports = {
   OvertimeCategoryAdapter,
   EmployeeOvertimeAdminAdapter,
-  ReportOvertimeAdapter
+  OvertimeReportAdapter,
 };
