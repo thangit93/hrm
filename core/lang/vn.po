@@ -2331,3 +2331,6 @@ msgstr "Báo Cáo Nghỉ Phép"
 
 msgid "Report Overtime"
 msgstr "Báo Cáo Làm Thêm Giờ"
+
+msgid "New Employee Salary"
+msgstr "Bảng lương Mới Nhất"
