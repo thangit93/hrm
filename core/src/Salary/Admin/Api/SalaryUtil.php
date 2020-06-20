@@ -152,10 +152,11 @@ class SalaryUtil
         $totalWorkingDays = AttendanceUtil::getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
         $totalRealSalary = 0;
         $totalAtSum = 0;
-        $dayOfWeek = $startDateObj->format('w');
         $data = [];
 
         while ($startDateObj <= $endDateObj) {
+            $dayOfWeek = $startDateObj->format('w');
+
             if ($totalAtSum >= $totalWorkingDays) {
                 break;
             }
@@ -340,21 +341,18 @@ class SalaryUtil
     {
         $totalSalaryOvertime = 0;
 
-        try {
-            $model = new EmployeeSalaryOvertime();
-            /** @var array $overtimes */
-            $overtimes = $model->Find('1 = 1', []);
-            $overtime = array_shift($overtimes);
+        $model = new EmployeeSalaryOvertime();
+        $overtime = $model->Find('employee = ? AND date >= ? AND date <= ?', [
+            $employeeId,
+            $startDate,
+            $endDate,
+        ]);
 
-            $overtimeUtils = new OvertimePayrollUtils();
-            $ot = $overtimeUtils->getApprovedTimeInRequests($employeeId, $startDate, $endDate);
-            $totalSalaryOvertime = round($overtime->amount) * $ot;
-        } catch (Exception $e) {
+        $data = [];
+        foreach ($overtime as $item) {
+            $data[] = $item;
+            $totalSalaryOvertime += round($item->amount);
         }
-
-        $data = [
-            round($totalSalaryOvertime)
-        ];
 
         if (!empty($toArray)) {
             return $data;
