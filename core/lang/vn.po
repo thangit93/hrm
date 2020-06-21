@@ -2325,3 +2325,15 @@ msgstr "Cho tất cả các nước"
 
 msgid "Coefficient"
 msgstr "Hệ số"
+
+msgid "Report Leaves"
+msgstr "Báo Cáo Nghỉ Phép"
+
+msgid "Report Overtime"
+msgstr "Báo Cáo Làm Thêm Giờ"
+
+msgid "Export Report"
+msgstr "Xuất Báo Cáo"
+
+msgid "New Employee Salary"
+msgstr "Bảng lương Mới Nhất"

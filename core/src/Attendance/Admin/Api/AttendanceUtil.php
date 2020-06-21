@@ -88,8 +88,13 @@ class AttendanceUtil
             return 0.5;
         }
 
+        //start before 09:00 and left before 17:00
+        if ($timeStart >= $checkIn && $timeEnd > $checkOut) {
+            return 0.5;
+        }
+
         //start before 09:00 and left after 17:00
-        if ($timeStart > $checkIn && $timeEnd <= $checkOut) {
+        if ($timeStart >= $checkIn && $timeEnd <= $checkOut) {
             $dayOfWeek = $checkIn->format('w');
 
             if ($dayOfWeek >= 1 && $dayOfWeek < 6) {

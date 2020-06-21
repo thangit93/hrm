@@ -7,10 +7,11 @@ import AdapterBase from '../../../api/AdapterBase';
 import FormValidation from '../../../api/FormValidation';
 
 class AttendanceAdapter extends AdapterBase {
-  constructor(endPoint, tab, filter, orderBy) {
+  /*constructor(endPoint, tab, filter, orderBy) {
     super(endPoint, tab, filter, orderBy);
     this.photoAttendance = false;
-  }
+    this.setRemoteTable(false);
+  }*/
 
   getDataMapping() {
     return [
@@ -267,15 +268,140 @@ class AttendanceAdapter extends AdapterBase {
     this.showMessage('Error', callBackData);
   }
 
-  createTableServer(elementId) {
+  get(callBackData) {
     const that = this;
-    const headers = this.getHeaders();
+    if (this.getRemoteTable()) {
+      this.createTableServer(this.getTableName());
+      $(`#${this.getTableName()}Form`).hide();
+      $(`#${this.getTableName()}`).show();
+      return;
+    }
 
-    headers.push({ sTitle: '', sClass: 'center' });
+    let sourceMappingJson = JSON.stringify(this.getSourceMapping());
 
-    // add translations
-    for (const index in headers) {
-      headers[index].sTitle = this.gt(headers[index].sTitle);
+    let filterJson = '';
+    if (this.getFilter() !== null) {
+      filterJson = JSON.stringify(this.getFilter());
+    }
+
+    let orderBy = '';
+    if (this.getOrderBy() !== null) {
+      orderBy = this.getOrderBy();
+    }
+
+    sourceMappingJson = this.fixJSON(sourceMappingJson);
+    filterJson = this.fixJSON(filterJson);
+
+    that.showLoader();
+    $.post(this.moduleRelativeURL, {
+      t: this.table, a: 'ca', sa: 'getAttendanceReport', mod: 'admin=attendance', sm: sourceMappingJson, ft: filterJson, ob: orderBy,
+    }, (data) => {
+      if (data.status === 'SUCCESS') {
+        that.getSuccessCallBack(callBackData, data.data);
+      } else {
+        that.getFailCallBack(callBackData, data.data);
+      }
+    }, 'json').always(() => { that.hideLoader(); });
+
+    that.initFieldMasterData();
+
+    this.trackEvent('get', this.tab, this.table);
+    // var url = this.getDataUrl();
+    // console.log(url);
+  }
+
+  getSuccessCallBack(callBackData, serverData) {
+    const headers = serverData.header;
+    const data = serverData.data;
+    const mapping = this.getDataMapping();
+
+    for (let i = 0; i < serverData.data.length; i++) {
+      console.log("Data I: ");
+      console.log(serverData.data[i]);
+      const row = [];
+      for (let j = 0; j < serverData.data[i]; j++) {
+        row[j] = serverData.data[i][j];
+      }
+      data.push(this.preProcessTableData(row));
+    }
+
+    this.sourceData = serverData.data;
+    if (callBackData.callBack !== undefined && callBackData.callBack !== null) {
+      if (callBackData.callBackData === undefined || callBackData.callBackData === null) {
+        callBackData.callBackData = [];
+      }
+      callBackData.callBackData.push(serverData);
+      callBackData.callBackData.push(data);
+      this.callFunction(callBackData.callBack, callBackData.callBackData);
+    }
+
+    this.headers = headers;
+    this.tableData = data;
+
+    if (!(callBackData.noRender !== undefined && callBackData.noRender !== null && callBackData.noRender === true)) {
+      this.createTable(this.getTableName());
+      $(`#${this.getTableName()}Form`).hide();
+      $(`#${this.getTableName()}`).show();
+    }
+  }
+
+  createTable(elementId) {
+    const that = this;
+
+    if (this.getRemoteTable()) {
+      this.createTableServer(elementId);
+      return;
+    }
+
+    const headers = this.headers;
+
+    let tableHeaderHtml = '';
+    tableHeaderHtml += '<thead>';
+    tableHeaderHtml += '<tr>';
+    tableHeaderHtml += '<td>&nbsp;</td>';
+
+    $.each(headers, function (index, col) {
+      if ((index + 1) === headers.length) {
+        tableHeaderHtml += '<td rowspan="2">';
+        tableHeaderHtml += '<b>' + that.gt(col) + '</b>';
+        tableHeaderHtml += '</td>';
+        return;
+      }
+
+      tableHeaderHtml += '<td colspan="3">';
+      tableHeaderHtml += '<b>' + that.gt(col) + '</b>';
+      tableHeaderHtml += '</td>';
+    });
+
+    tableHeaderHtml += '</tr>';
+
+    tableHeaderHtml += '<tr>';
+    tableHeaderHtml += '<td>&nbsp;</td>';
+    $.each(headers, function (index, col) {
+      if ((index + 1) === headers.length) {
+        return;
+      }
+
+      tableHeaderHtml += '<td width="50">';
+      tableHeaderHtml += '<b>' + that.gt("In") + '</b>';
+      tableHeaderHtml += '</td>';
+      tableHeaderHtml += '<td width="50">';
+      tableHeaderHtml += '<b>' + that.gt("Out") + '</b>';
+      tableHeaderHtml += '</td>';
+      tableHeaderHtml += '<td width="50">';
+      tableHeaderHtml += '<b>' + that.gt("Total") + '</b>';
+      tableHeaderHtml += '</td>';
+    });
+
+    tableHeaderHtml += '</tr>';
+    tableHeaderHtml += '</thead>';
+
+    const data = this.getTableData();
+
+    if (this.showActionButtons()) {
+      for (let i = 0; i < data.length; i++) {
+        data[i].push(this.getActionButtonsHtml(data[i][0], data[i]));
+      }
     }
 
     let html = '';
@@ -288,48 +414,103 @@ class AttendanceAdapter extends AdapterBase {
       start = parseInt(activePage, 10) * 15 - 15;
     }
 
-
     $(`#${elementId}`).html(html);
+    $('.box-body.table-responsive table').addClass('table table-bordered table-striped table-attendance').append(tableHeaderHtml);
 
     const dataTableParams = {
       oLanguage: {
         sLengthMenu: '_MENU_ records per page',
       },
-      bProcessing: true,
-      bServerSide: true,
-      sAjaxSource: that.getDataUrl(that.getDataMapping()),
+      aaData: data,
       aoColumns: headers,
       bSort: that.isSortable(),
-      parent: that,
       iDisplayLength: 15,
       iDisplayStart: start,
     };
-
-    if (this.showActionButtons()) {
-      dataTableParams.aoColumnDefs = [
-        {
-          fnRender: that.getActionButtons,
-          aTargets: [that.getDataMapping().length],
-        },
-      ];
-    }
 
     const customTableParams = this.getCustomTableParams();
 
     $.extend(dataTableParams, customTableParams);
 
-    $(`#${elementId} #grid`).dataTable(dataTableParams);
+    let tableHtml = '';
+    tableHtml += '<tbody>';
+    let rowIndex = 0;
 
-    $('.dataTables_paginate ul').addClass('pagination');
-    $('.dataTables_length').hide();
-    $('.dataTables_filter input').addClass('form-control');
-    $('.dataTables_filter input').attr('placeholder', 'Search');
-    $('.dataTables_filter label').contents().filter(function () {
-      return (this.nodeType === 3);
-    }).remove();
-    $('.dataTables_filter').remove();
+    $.each(data, function (index, row) {
+      let rowClass = (rowIndex % 2 === 0) ? 'even' : 'odd;'
+      tableHtml += '<tr class="' + rowClass + '">';
+      tableHtml += '<td style="border-right: 2px solid #333">';
+      tableHtml += row[0].name;
+      tableHtml += '</td>';
+      $.each(row, function (index, col) {
+        let colClass = '';
+
+        if (index % 3 === 0 && index > 0) {
+          colClass += 'total ';
+        }
+
+        if((index + 1 ) === row.length){
+          tableHtml += '<td>';
+          tableHtml += col;
+          tableHtml += '</td>';
+          return;
+        }
+
+        tableHtml += '<td data-fieldname="in" data-date="' + col.date + '" data-employee_id="' + col.employee_id + '" data-in="' + col.in + '" data-out="' + col.out + '" class="editable ' + colClass + '">';
+        tableHtml += col.in;
+        tableHtml += '</td>';
+        tableHtml += '<td data-fieldname="out" data-date="' + col.date + '" data-employee_id="' + col.employee_id + '" data-in="' + col.in + '" data-out="' + col.out + '" class="editable ' + colClass + '">';
+        tableHtml += col.out;
+        tableHtml += '</td>';
+        tableHtml += '<td style="background-color: #428bcac2;color: #ffffff;font-weight: bold;" class="' + colClass + " total-" + col.employee_id + col.date + '">';
+        tableHtml += col.total;
+        tableHtml += '</td>';
+      });
+      tableHtml += '</tr>';
+      rowIndex++;
+    })
+    tableHtml += '</tbody>';
+
+    $('body .box-body.table-responsive table').on('dblclick', '.editable', function () {
+      that.editAttendance(that, this);
+    })
+    $('.box-body.table-responsive').attr('style', 'width: 100%; overflow-x: scroll;').find('table').append(tableHtml);
 
     $('.tableActionButton').tooltip();
+  }
+
+  editAttendance(that, el) {
+    const data = $(el).data();
+    let value = (data.fieldname === 'in') ? data.in : data.out;
+    let input = '<input data-fieldname="' + data.fieldname + '" data-date="' + data.date + '" data-employee_id="' + data.employee_id + '" type="text" value="' + value + '"/>';
+
+    $(el).html(input);
+    $(el).find('input').inputmask('datetime', {
+      mask: '99:99',
+      placeholder: 'hh:mm',
+      separator: ':',
+      alias: 'h:s',
+    }).on('change', function () {
+      const value = $(this).val();
+
+      if (data.fieldname === 'in') {
+        data.in = value;
+      } else {
+        data.out = value;
+      }
+      that.showLoader();
+      $.post(that.moduleRelativeURL, {
+        t: this.table, a: 'ca', sa: 'updateAttendance', mod: 'admin=attendance', sm: "", ft: "", ob: "", fieldname: data.fieldname, date: data.date, employee_id: data.employee_id, in: data.in, out: data.out,
+      }, (res) => {
+        if(res.status === "SUCCESS"){
+          let data = res.data;
+          $(el).attr('data-in', data.in).attr('data-out', data.out).html(value);
+          $('body .box-body.table-responsive table').find(".total-" + data.employee_id + data.date).html(data.total)
+        }
+      }, 'json').always(() => {
+        that.hideLoader();
+      });
+    })
   }
 
   getActionButtonsHtml(id, data) {

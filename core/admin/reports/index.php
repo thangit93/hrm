@@ -9,7 +9,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		<li class="active"><a id="tabReport" href="#tabPageReport"><?=t('Reports')?></a></li>
-		<li class=""><a id="tabExports" href="#tabPageExports"><?=t('Exports')?></a></li>
+<!--		<li class=""><a id="tabExports" href="#tabPageExports">--><?//=t('Exports')?><!--</a></li>-->
 	</ul>
 
 	<div class="tab-content">
@@ -21,14 +21,14 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
 			</div>
 		</div>
-		<div class="tab-pane" id="tabPageExports">
+		<!--<div class="tab-pane" id="tabPageExports">
 			<div id="Exports" class="reviewBlock" data-content="List" style="padding-left:5px;">
 
 			</div>
 			<div id="ExportsForm" class="reviewBlock" data-content="Form" style="padding-left:5px;display:none;">
 
 			</div>
-		</div>
+		</div>-->
 	</div>
 
 </div>
@@ -39,9 +39,9 @@ modJsList['tabReport'] = new ReportAdapter('Report','Report','{"type":"Reports"}
 modJsList['tabReport'].setShowAddNew(false);
 modJsList['tabReport'].setRemoteTable(true);
 
-modJsList['tabExports'] = new ReportAdapter('Report','Exports','{"type":"Exports"}','report_group');
+/*modJsList['tabExports'] = new ReportAdapter('Report','Exports','{"type":"Exports"}','report_group');
 modJsList['tabExports'].setShowAddNew(false);
-modJsList['tabExports'].setRemoteTable(true);
+modJsList['tabExports'].setRemoteTable(true);*/
 
 var modJs = modJsList['tabReport'];
 
