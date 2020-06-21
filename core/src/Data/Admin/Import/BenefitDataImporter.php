@@ -58,26 +58,38 @@ class BenefitDataImporter extends \Data\Admin\Api\AbstractDataImporter
             $employee = $this->getEmployee($employeeId);
 
             // Save job title allowance
-            $jobTitleAllowance = $this->saveEmployeeSalary($employee, $jobTitleComponent, $jobTitleAllowance);
-            $this->addCustomFieldValues($jobTitleAllowance->id, $date->format('Y-m-d'));
+            if (!empty($jobTitleAllowance)) {
+                $jobTitleAllowance = $this->saveEmployeeSalary($employee, $jobTitleComponent, $jobTitleAllowance);
+                $this->addCustomFieldValues($jobTitleAllowance->id, $date->format('Y-m-d'));
+            }
 
             // Save phone allowance
-            $phoneAllowance = $this->saveEmployeeSalary($employee, $phoneComponent, $phoneAllowance);
-            $this->addCustomFieldValues($phoneAllowance->id, $date->format('Y-m-d'));
+            if (!empty($phoneAllowance)) {
+                $phoneAllowance = $this->saveEmployeeSalary($employee, $phoneComponent, $phoneAllowance);
+                $this->addCustomFieldValues($phoneAllowance->id, $date->format('Y-m-d'));
+            }
 
             // Save parking allowance
-            $parkingAllowance = $this->saveEmployeeSalary($employee, $parkingComponent, $parkingAllowance);
-            $this->addCustomFieldValues($parkingAllowance->id, $date->format('Y-m-d'));
+            if (!empty($parkingAllowance)) {
+                $parkingAllowance = $this->saveEmployeeSalary($employee, $parkingComponent, $parkingAllowance);
+                $this->addCustomFieldValues($parkingAllowance->id, $date->format('Y-m-d'));
+            }
 
             // Save employee base salary
-            $employeeSalary = $this->saveEmployeeSalary($employee, $baseSalaryComponent, $baseSalary);
-            $this->addCustomFieldValues($employeeSalary->id, $date->format('Y-m-d'));
+            if (!empty($baseSalary)) {
+                $employeeSalary = $this->saveEmployeeSalary($employee, $baseSalaryComponent, $baseSalary);
+                $this->addCustomFieldValues($employeeSalary->id, $date->format('Y-m-d'));
+            }
 
             // Save bonus
-            $this->addEmployeeSalaryBonus($employee, $bonus, $date->format('Y-m-d H:i:s'));
+            if (!empty($bonus)) {
+                $this->addEmployeeSalaryBonus($employee, $bonus, $date->format('Y-m-d H:i:s'));
+            }
 
             // Save bonus
-            $this->addEmployeeSalaryOvertime($employee, $overtime, $date->format('Y-m-d H:i:s'));
+            if (!empty($overtime)) {
+                $this->addEmployeeSalaryOvertime($employee, $overtime, $date->format('Y-m-d H:i:s'));
+            }
         }
     }
 
