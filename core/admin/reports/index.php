@@ -39,9 +39,9 @@ modJsList['tabReport'] = new ReportAdapter('Report','Report','{"type":"Reports"}
 modJsList['tabReport'].setShowAddNew(false);
 modJsList['tabReport'].setRemoteTable(true);
 
-modJsList['tabExports'] = new ReportAdapter('Report','Exports','{"type":"Exports"}','report_group');
+/*modJsList['tabExports'] = new ReportAdapter('Report','Exports','{"type":"Exports"}','report_group');
 modJsList['tabExports'].setShowAddNew(false);
-modJsList['tabExports'].setRemoteTable(true);
+modJsList['tabExports'].setRemoteTable(true);*/
 
 var modJs = modJsList['tabReport'];
 
