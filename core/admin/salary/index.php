@@ -17,6 +17,9 @@ if ($user->user_level == 'Admin') {
     $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
             'EmployeeSalary', 'EmployeeSalary', 'Employee Salary Components', 'EmployeeSalaryAdapter', '', '', false, array("setRemoteTable" => "true"))
     );
+    $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
+            'NewEmployeeSalary', 'NewEmployeeSalary', 'New Employee Salary', 'NewEmployeeSalaryAdapter', '', '', false, array("setRemoteTable" => "false", "setShowAddNew" => false))
+    );
 }
 if ((isset($modulePermissions['perm']['Add Salary Deposit']) && $modulePermissions['perm']['Add Salary Deposit'] == "Yes") || ($user->user_level == 'Admin')) {
     $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(

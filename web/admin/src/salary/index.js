@@ -5,6 +5,7 @@ import {
   EmployeeSalaryDepositAdapter,
   EmployeeSalaryBonusAdapter,
   EmployeeSalaryOvertimeAdapter,
+  NewEmployeeSalaryAdapter,
 } from './lib';
 
 window.SalaryComponentTypeAdapter = SalaryComponentTypeAdapter;
@@ -13,3 +14,4 @@ window.EmployeeSalaryAdapter = EmployeeSalaryAdapter;
 window.EmployeeSalaryDepositAdapter = EmployeeSalaryDepositAdapter;
 window.EmployeeSalaryBonusAdapter = EmployeeSalaryBonusAdapter;
 window.EmployeeSalaryOvertimeAdapter = EmployeeSalaryOvertimeAdapter;
+window.NewEmployeeSalaryAdapter = NewEmployeeSalaryAdapter;
