@@ -9,7 +9,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
 	<ul class="nav nav-tabs" id="modTab" style="margin-bottom:0px;margin-left:5px;border-bottom: none;">
 		<li class="active"><a id="tabReport" href="#tabPageReport"><?=t('Reports')?></a></li>
-		<li class=""><a id="tabExports" href="#tabPageExports"><?=t('Exports')?></a></li>
+<!--		<li class=""><a id="tabExports" href="#tabPageExports">--><?//=t('Exports')?><!--</a></li>-->
 	</ul>
 
 	<div class="tab-content">
