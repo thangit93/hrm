@@ -458,7 +458,7 @@ class ReportOvertimeAdapter extends AdapterBase {
     if (html !== '') {
       html += '&nbsp;&nbsp;';
     }
-    html += `<button onclick="modJs.showFilters();return false;" class="btn btn-small btn-primary">${this.gt('Export Report')} <i class="fa fa-download"></i></button>`;
+    html += `<button class="btn btn-small btn-primary" onclick="modJs.exportAllData(1)">${this.gt('Export Report')} <i class="fa fa-download"></i></button>`;
 
     if (this.getFilters() != null) {
       if (html !== '') {
@@ -486,6 +486,39 @@ class ReportOvertimeAdapter extends AdapterBase {
     }
 
     return html;
+  }
+
+  exportAllData(save) {
+    let req = {};
+    req.ft = this.getFilter();
+    req.save = (save === undefined || save == null || save === false) ? 0 : 1;
+    const reqJson = JSON.stringify(req);
+
+    const callBackData = [];
+    callBackData.callBackData = [];
+    callBackData.callBackSuccess = 'exportAllDataSuccessCallBack';
+    callBackData.callBackFail = 'getAllDataFailCallBack';
+    this.showLoader();
+    this.customAction('getReportOvertime', 'admin=overtime', reqJson, callBackData);
+  }
+
+  exportAllDataSuccessCallBack(allData) {
+    this.hideLoader();
+
+    if(!allData['file']){
+      return;
+    }
+
+    const element = document.createElement('a');
+    element.setAttribute('href', allData['file']['url']);
+    element.setAttribute('download', allData['file']['name']);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 
   getHelpLink() {
