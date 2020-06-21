@@ -24,7 +24,7 @@ $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
 ));
 
 $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
-	'ReportOvertime','EmployeeOvertime','Report Overtime','OvertimeReportAdapter','','',false, [
+	'ReportOvertime','EmployeeOvertime','Report Overtime','ReportOvertimeAdapter','','',false, [
 	    'setRemoteTable' => 'false',
         'setShowAddNew' => 'false',
     ]
