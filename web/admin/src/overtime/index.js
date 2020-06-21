@@ -1,9 +1,9 @@
 import {
   OvertimeCategoryAdapter,
   EmployeeOvertimeAdminAdapter,
-  OvertimeReportAdapter,
+  ReportOvertimeAdapter,
 } from './lib';
 
 window.OvertimeCategoryAdapter = OvertimeCategoryAdapter;
 window.EmployeeOvertimeAdminAdapter = EmployeeOvertimeAdminAdapter;
-window.OvertimeReportAdapter = OvertimeReportAdapter;
+window.ReportOvertimeAdapter = ReportOvertimeAdapter;

@@ -740,10 +740,10 @@ class ReportLeaveAdapter extends AdapterBase {
 
     getFilters() {
         return [
-            ['start_date', {
+            ['date_start', {
                 label: 'Start Date', type: 'yearmonth'
             }],
-            ['end_date', {
+            ['date_end', {
                 label: 'End Date', type: 'yearmonth'
             }]
         ];
@@ -755,6 +755,114 @@ class ReportLeaveAdapter extends AdapterBase {
             "bFilter": false,
             "bInfo": false
         };
+    }
+
+    createTable(elementId) {
+        const that = this;
+
+        if (this.getRemoteTable()) {
+            this.createTableServer(elementId);
+            return;
+        }
+
+
+        const headers = this.getHeaders();
+
+        // add translations
+        for (const index in headers) {
+            headers[index].sTitle = this.gt(headers[index].sTitle);
+        }
+
+        const data = this.getTableData();
+
+        if (this.showActionButtons()) {
+            headers.push(this.getActionButtonHeader());
+        }
+
+
+        if (this.showActionButtons()) {
+            for (let i = 0; i < data.length; i++) {
+                data[i].push(this.getActionButtonsHtml(data[i][0], data[i]));
+            }
+        }
+
+        let html = '';
+        html = this.getTableTopButtonHtml() + this.getTableHTMLTemplate();
+
+        // Find current page
+        const activePage = $(`#${elementId} .dataTables_paginate .active a`).html();
+        let start = 0;
+        if (activePage !== undefined && activePage != null) {
+            start = parseInt(activePage, 10) * 15 - 15;
+        }
+
+        $(`#${elementId}`).html(html);
+
+        const dataTableParams = {
+            oLanguage: {
+                sLengthMenu: '_MENU_ records per page',
+            },
+            aaData: data,
+            aoColumns: headers,
+            bSort: that.isSortable(),
+            iDisplayLength: 15,
+            iDisplayStart: start,
+        };
+
+
+        const customTableParams = this.getCustomTableParams();
+
+        $.extend(dataTableParams, customTableParams);
+
+        $(`#${elementId} #grid`).dataTable(dataTableParams);
+
+        $('.dataTables_paginate ul').addClass('pagination');
+        $('.dataTables_length').hide();
+        $('.dataTables_filter input').addClass('form-control');
+        $('.dataTables_filter input').attr('placeholder', 'Search');
+        $('.dataTables_filter label').contents().filter(function () {
+            return (this.nodeType === 3);
+        }).remove();
+        $('.tableActionButton').tooltip();
+    }
+
+    getTableTopButtonHtml() {
+        let html = '';
+        if (this.getShowAddNew()) {
+            html = `<button onclick="modJs.renderForm();return false;" class="btn btn-small btn-primary">${this.gt(this.getAddNewLabel())} <i class="fa fa-plus"></i></button>`;
+        }
+
+        if (html !== '') {
+            html += '&nbsp;&nbsp;';
+        }
+        html += `<button onclick="modJs.showFilters();return false;" class="btn btn-small btn-primary">${this.gt('Export Report')} <i class="fa fa-download"></i></button>`;
+
+        if (this.getFilters() != null) {
+            if (html !== '') {
+                html += '&nbsp;&nbsp;';
+            }
+            html += `<button onclick="modJs.showFilters();return false;" class="btn btn-small btn-primary">${this.gt('Filter')} <i class="fa fa-filter"></i></button>`;
+            html += '&nbsp;&nbsp;';
+            if (this.filtersAlreadySet) {
+                html += '<button id="__id___resetFilters" onclick="modJs.resetFilters();return false;" class="btn btn-small btn-default">__filterString__ <i class="fa fa-times"></i></button>';
+            } else {
+                html += '<button id="__id___resetFilters" onclick="modJs.resetFilters();return false;" class="btn btn-small btn-default" style="display:none;">__filterString__ <i class="fa fa-times"></i></button>';
+            }
+        }
+
+        html = html.replace(/__id__/g, this.getTableName());
+
+        if (this.currentFilterString !== '' && this.currentFilterString != null) {
+            html = html.replace(/__filterString__/g, this.currentFilterString);
+        } else {
+            html = html.replace(/__filterString__/g, 'Reset Filters');
+        }
+
+        if (html !== '') {
+            html = `<div class="row"><div class="col-xs-12">${html}</div></div>`;
+        }
+
+        return html;
     }
 
     getHelpLink() {

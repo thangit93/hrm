@@ -19,48 +19,54 @@ class LeavesActionManager extends SubActionManager
     {
         //$employee = $this->baseService->getElement('Employee', $this->getCurrentProfileId(), null, true);
         $mEmployee = new Employee();
-        $employees = $mEmployee->Find("status='Active'");
 
         $leaveEntitlementArray = array();
 
-        $leaveType = new LeaveType();
-        $leaveTypes = $leaveType->Find("id=1");
-
+        $mLeaveType = new LeaveType();
+        $leaveType = $mLeaveType->Load("id=1");
         //Find Current leave period
 
         $currentLeavePeriodResp = $this->getCurrentLeavePeriod(date('Y-m-d'), date('Y-m-d'));
-        if ($currentLeavePeriodResp->getStatus() != IceResponse::SUCCESS) {
-            return new IceResponse(IceResponse::ERROR, $currentLeavePeriodResp->getData());
-        } elseif(isset($req->ft) && $req->ft->start_date != '') {
-            $currentLeavePeriod = new \stdClass();
-            $currentLeavePeriod->date_start = date("Y-m-01", strtotime($req->ft->start_date));
-            $currentLeavePeriod->date_end = date("Y-m-t", strtotime($req->ft->end_date));
+        if(!isset($req->ft->date_start) && !isset($req->ft->date_end)){
+            if ($currentLeavePeriodResp->getStatus() != IceResponse::SUCCESS) {
+                return new IceResponse(IceResponse::ERROR, $currentLeavePeriodResp->getData());
+            } else {
+                $currentLeavePeriod = $currentLeavePeriodResp->getData();
+            }
         } else {
-            $currentLeavePeriod = $currentLeavePeriodResp->getData();
+            $currentLeavePeriod = $req->ft;
         }
 
-        foreach ($leaveTypes as $leaveType) {
-            foreach ($employees as $employee){
-                //$rule = $this->getLeaveRule($employee, $leaveType->id);
-                $leaveMatrix = $this->getAvailableLeaveMatrixForEmployeeLeaveType($employee, $currentLeavePeriod, $leaveType->id);
+        $allApproveLeaves = $this->getAllApproveLeave($currentLeavePeriod, $leaveType);
+        $employeeList = [];
 
-                $time = strtotime($employee->joined_date);
+        foreach ($allApproveLeaves as $approve){
+            $employeeList[] = $approve->employee;
+        }
 
-                $joinDate = date('d/m/Y',$time);
+        $employees = $mEmployee->Find("status = ? and id in (?)", [
+            'Active',
+            implode(',', $employeeList)
+        ]);
 
-                $leaves = array();
-                $leaves['id'] = $leaveType->id;
-                $leaves['name'] = $employee->first_name . ' ' . $employee->last_name;
-                $leaves['joinedDate'] = $joinDate;
-                $leaves['totalLeaves'] = floatval($leaveMatrix[0]);
-                $leaves['approvedLeaves'] = floatval($leaveMatrix[1]);
-                $leaves['availableLeaves'] = floatval($leaveMatrix[0]) - $leaves['pendingLeaves'] - $leaves['approvedLeaves'];
-                $leaves['bonusLeaveDays'] = 0;
-                $leaves['previousBalanceDays'] = 0;
+        foreach ($employees as $employee){
+            $leaveMatrix = $this->getAvailableLeaveMatrixForEmployeeLeaveType($employee, $currentLeavePeriod, $leaveType);
 
-                $leaveEntitlementArray[] = $leaves;
-            }
+            $time = strtotime($employee->joined_date);
 
+            $joinDate = date('d/m/Y',$time);
+
+            $leaves = array();
+            $leaves['id'] = $leaveType->id;
+            $leaves['name'] = $employee->first_name . ' ' . $employee->last_name;
+            $leaves['joinedDate'] = $joinDate;
+            $leaves['totalLeaves'] = floatval($leaveMatrix[0]);
+            $leaves['approvedLeaves'] = floatval($leaveMatrix[1]);
+            $leaves['availableLeaves'] = floatval($leaveMatrix[0]) - $leaves['pendingLeaves'] - $leaves['approvedLeaves'];
+            $leaves['bonusLeaveDays'] = 0;
+            $leaves['previousBalanceDays'] = 0;
+
+            $leaveEntitlementArray[] = $leaves;
         }
 
         return new IceResponse(IceResponse::SUCCESS, $leaveEntitlementArray);
@@ -96,7 +102,6 @@ class LeavesActionManager extends SubActionManager
 
     private function getAvailableLeaveMatrixForEmployeeLeaveType($employee, $currentLeavePeriod, $leaveTypeId)
     {
-
         /**
          * [Total Available],[Pending],[Approved],[Rejected]
          */
@@ -105,11 +110,9 @@ class LeavesActionManager extends SubActionManager
         //$avalilable = $rule->default_per_year;
         $avalilableLeaves = $this->getAvailableLeaveCount($employee, $rule, $currentLeavePeriod, $leaveTypeId);
         $avalilable = $avalilableLeaves[0];
-        $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $currentLeavePeriod->id, $leaveTypeId, 'Approved'));
+        $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $currentLeavePeriod, $leaveTypeId, 'Approved'));
 
         return array($avalilable, $approved, $avalilableLeaves[1]);
-
-
     }
 
     private function countLeaveAmounts($leaves)
@@ -134,8 +137,15 @@ class LeavesActionManager extends SubActionManager
     private function getEmployeeLeaves($employeeId, $leavePeriod, $leaveType, $status)
     {
         $employeeLeave = new EmployeeLeave();
-        $employeeLeaves = $employeeLeave->Find("employee = ? and leave_period = ? and leave_type = ? and status = ?",
-            array($employeeId, $leavePeriod, $leaveType, $status));
+        $employeeLeaves = $employeeLeave->Find("employee = ? and date_start >= ? and date_end <= ? and leave_type = ? and status = ?",
+            array(
+                $employeeId,
+                date('Y-m-01', strtotime($leavePeriod->date_start)),
+                date('Y-m-t', strtotime($leavePeriod->date_end)),
+                $leaveType,
+                'Approved'
+            )
+        );
         if (!$employeeLeaves) {
             error_log($employeeLeave->ErrorMsg());
         }
@@ -193,7 +203,7 @@ class LeavesActionManager extends SubActionManager
                     }
                 }
 
-                $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod->id, $leaveTypeId, 'Approved'));
+                $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod, $leaveTypeId, 'Approved'));
 
                 $leavesCarriedForward = intval($avalilable) - intval($approved);
                 if ($leavesCarriedForward < 0) {
@@ -237,5 +247,21 @@ class LeavesActionManager extends SubActionManager
             return $rules[0];
         }
 
+    }
+
+    private function getAllApproveLeave($leavePeriod, $leaveTypeId) {
+        $employeeLeave = new EmployeeLeave();
+        $employeeLeaves = $employeeLeave->Find("date_start >= ? and date_end <= ? and leave_type = ? and status = ?",
+            array(
+                date('Y-m-01', strtotime($leavePeriod->date_start)),
+                date('Y-m-t', strtotime($leavePeriod->date_end)),
+                $leaveTypeId, 'Approved'
+            )
+        );
+        if (!$employeeLeaves) {
+            error_log($employeeLeave->ErrorMsg());
+        }
+
+        return $employeeLeaves;
     }
 }
