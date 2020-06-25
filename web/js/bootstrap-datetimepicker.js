@@ -54,6 +54,7 @@
       this.pickTime = options.pickTime;
       this.isInput = this.$element.is('input');
       this.component = false;
+      this.onRender = options.onRender;
       if (this.$element.find('.input-append') || this.$element.find('.input-prepend'))
           this.component = this.$element.find('.add-on');
       this.format = options.format;
@@ -396,7 +397,8 @@
           row = $('<tr>');
           html.push(row);
         }
-        clsName = '';
+        //clsName = '';
+        clsName = this.onRender(prevMonth);
         if (prevMonth.getUTCFullYear() < year ||
             (prevMonth.getUTCFullYear() == year &&
              prevMonth.getUTCMonth() < month)) {
@@ -1101,7 +1103,10 @@
     pickSeconds: true,
     startDate: -Infinity,
     endDate: Infinity,
-    collapse: true
+    collapse: true,
+    onRender: function(date) {
+      return '';
+    }
   };
   $.fn.datetimepicker.Constructor = DateTimePicker;
   var dpgId = 0;
