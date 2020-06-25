@@ -184,6 +184,7 @@ class Attendance extends BaseModel
 
         if ($inTimeObj && $outTimeObj) {
             $obj->real_hours = ($inTimeObj->diff($outTimeObj))->h;
+            $obj->note = AttendanceUtil::calculateWorkingDay($inTimeObj->format('Y-m-d H:i:s'), $outTimeObj->format('Y-m-d H:i:s'), $obj->employee);
         }
 
         return $obj;
