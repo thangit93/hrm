@@ -284,7 +284,7 @@ class AttendanceActionManager extends SubActionManager
         }
 
         if (!empty($attendance->in_time) && !empty($attendance->out_time)) {
-            $total = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time);
+            $total = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time, $attendance->employee);
         }
 
         $attendance->note = $total;
