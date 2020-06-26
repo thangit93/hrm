@@ -110,14 +110,14 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
       language: 'en',
       pickDate: false,
     });
-    var nowTemp = new Date();
-    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+    // var nowTemp = new Date();
+    // var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
     $tempDomObj.find('.datetimefield').datetimepicker({
       language: 'en',
-      useSeconds: false,
-      onRender: function(date) {
+      useSeconds: false
+      /*onRender: function(date) {
         return date.valueOf() < now.valueOf() ? ' disabled' : '';
-      }
+      }*/
     }).on('changeDate', function(ev) {
       let tagId = $(this).attr('id');
       if (tagId === 'start_time_datetime'){
