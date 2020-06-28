@@ -192,12 +192,12 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><li class="fa fa-times"/></button>
-					<h3 style="font-size: 17px;"><?php echo t('Change')?> <?php echo t('Status')?> <?= t($itemName)?></h3>
+					<h3 style="font-size: 17px;"><?php echo t('Change Status')?> <?= t($itemName)?></h3>
 				</div>
 				<div class="modal-body">
 					<form id="expenseStatusForm">
 						<div class="control-group">
-							<label class="control-label" for="expense_status"><?=t($itemName)?> <?php echo t('Status')?></label>
+							<label class="control-label" for="expense_status"><?php //t($itemName)?> <?php echo t('Handling Status')?></label>
 							<div class="controls">
 								<select type="text" id="<?=$itemNameLower?>_status" class="form-control" name="<?=$itemNameLower?>_status" value="">
 
@@ -205,7 +205,7 @@
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="control-label" for="expense_status"><?php echo t('Status Change Note')?></label>
+							<label class="control-label" for="expense_status"><?php echo t('Notes')?></label>
 							<div class="controls">
 								<textarea id="<?=$itemNameLower?>_reason" class="form-control" name="<?=$itemNameLower?>_reason" maxlength="500"></textarea>
 							</div>

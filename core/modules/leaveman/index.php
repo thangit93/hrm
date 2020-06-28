@@ -137,7 +137,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
             <div class="modal-body">
                 <form id="leaveStatusForm">
                     <div class="control-group">
-                        <label class="control-label" for="leave_status"><?= t('Leave Status')?></label>
+                        <label class="control-label" for="leave_status"><?= t('Handling Status')?></label>
                         <div class="controls">
                             <select class="form-control" type="text" id="leave_status" name="leave_status" value="">
                                 <option value="Approved"><?= t('Approved')?></option>
@@ -147,7 +147,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="leave_status"><?= t('Status Change Note')?></label>
+                        <label class="control-label" for="leave_status"><?= t('Notes')?></label>
                         <div class="controls">
                             <textarea id="leave_reason" class="form-control" name="leave_reason" maxlength="500"></textarea>
                         </div>
