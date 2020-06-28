@@ -119,22 +119,22 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><li class="fa fa-times"/></button>
-                <h3 style="font-size: 17px;">Change Leave Status</h3>
+                <h3 style="font-size: 17px;"><?php echo t('Change Leave Status')?></h3>
             </div>
             <div class="modal-body">
                 <form id="leaveStatusForm">
                     <div class="control-group">
-                        <label class="control-label" for="leave_status">Leave Status</label>
+                        <label class="control-label" for="leave_status"><?php echo t('Handling Status')?></label>
                         <div class="controls">
                             <select type="text" id="leave_status" class="form-control" name="leave_status" value="">
-                                <option value="Approved">Approved</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Rejected">Rejected</option>
+                                <option value="Approved"><?= t('Approved')?></option>
+                                <option value="Pending"><?= t('Pending')?></option>
+                                <option value="Rejected"><?= t('Rejected')?></option>
                             </select>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="leave_status">Status Change Note</label>
+                        <label class="control-label" for="leave_status"><?php echo t('Notes')?></label>
                         <div class="controls">
                             <textarea id="leave_reason" class="form-control" name="leave_reason" maxlength="500"></textarea>
                         </div>
@@ -142,8 +142,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="modJs.changeLeaveStatus();">Change Leave Status</button>
-                <button class="btn" onclick="modJs.closeLeaveStatus();">Not Now</button>
+                <button class="btn btn-primary" onclick="modJs.changeLeaveStatus();"><?php echo t('Change Leave Status')?></button>
+                <button class="btn" onclick="modJs.closeLeaveStatus();"><?php echo t('Not Now')?></button>
             </div>
         </div>
     </div>
