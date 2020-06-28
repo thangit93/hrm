@@ -326,7 +326,7 @@ msgid "View/Edit Profile"
 msgstr "Xem / Chỉnh sửa hồ sơ"
 
 msgid "Punch In"
-msgstr "Đột nhập"
+msgstr "Chấm công"
 
 msgid "or"
 msgstr "hoặc là"
@@ -335,7 +335,7 @@ msgid "Punch Out"
 msgstr "Đột kích"
 
 msgid "Record Attendance"
-msgstr "Tham dự kỷ lục"
+msgstr "Xem chấm công"
 
 msgid "Pending Leaves"
 msgstr "Nghỉ phép đang chờ"
@@ -1553,7 +1553,7 @@ msgid "Loans Taken"
 msgstr "Cho vay"
 
 msgid "Change Leave Status"
-msgstr "Thay đổi trạng thái nghỉ"
+msgstr "Duyệt nghỉ phép"
 
 msgid "Status Change Note"
 msgstr "Lưu ý thay đổi trạng thái"
@@ -2341,5 +2341,14 @@ msgstr "Bảng lương Mới Nhất"
 msgid "OvertimeRequest"
 msgstr "Làm Thêm Giờ"
 
+msgid "Overtime Request"
+msgstr "Làm Thêm"
+
 msgid "Change"
 msgstr "Thay Đổi"
+
+msgid "Change Status"
+msgstr "Duyệt"
+
+msgid "Handling Status"
+msgstr "Xử lý"
