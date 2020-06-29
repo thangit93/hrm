@@ -99,9 +99,11 @@ class AttendanceUtil
 
             if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
                 return 1;
+            } elseif ($dayOfWeek == 6) {
+                return 0.5;
             }
 
-            return 0.5;
+            return 0;
         }
 
         //start before 09:00 and left before 17:00

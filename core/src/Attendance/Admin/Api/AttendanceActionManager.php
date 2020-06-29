@@ -223,6 +223,12 @@ class AttendanceActionManager extends SubActionManager
                     ]);
                 }
 
+                if(AttendanceUtil::isFullWorkingDay($employee->id, $startDate)){
+                    $dataDay['total'] = AttendanceUtil::calculateWorkingDay($startDate->format('Y-m-d H:i:s'), $startDate->format('Y-m-d H:i:s'), $employee->id);
+                }else{
+                    $dataDay['total'] = 0;
+                }
+
                 $data[$employee->id][] = $dataDay;
                 $total += $dataDay['total'];
 
