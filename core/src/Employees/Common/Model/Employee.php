@@ -312,4 +312,11 @@ class Employee extends BaseModel
         $importer = new EmployeeDataImporter();
         $employee->employee_id = $importer->convert_vi_to_en("{$employee->first_name}{$employee->last_name}{$birthday->format('Y')}");
     }
+
+    public function getCompany($employee){
+        $company = new CompanyStructure();
+        $company->Load('id = ?', [$employee->department]);
+
+        return $company;
+    }
 }
