@@ -55,7 +55,7 @@ class AttendanceAdapter extends AdapterBase {
         label: 'Employee', type: 'select2', 'allow-null': true, 'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
       }],
       ['in_time', {
-        label: 'Start Date', type: 'yearmonth'
+        label: 'Month', type: 'yearmonth'
       }],
       /*['out_time', {
         label: 'End Date', type: 'date', 'allow-null': true, validation: 'none'
