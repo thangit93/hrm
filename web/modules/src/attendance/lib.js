@@ -69,11 +69,11 @@ class AttendanceAdapter extends AdapterBase {
   getFilters() {
     return [
       ['in_time', {
-        label: 'Start Date', type: 'date', 'allow-null': true, validation: 'none'
+        label: 'Month', type: 'yearmonth'
       }],
-      ['out_time', {
+      /*['out_time', {
         label: 'End Date', type: 'date', 'allow-null': true, validation: 'none'
-      }],
+      }],*/
     ];
   }
 
