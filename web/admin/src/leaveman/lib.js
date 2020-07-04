@@ -7,7 +7,8 @@ class LeaveTypeAdapter extends AdapterBase {
             "name",
             "leave_accrue",
             "carried_forward",
-            "default_per_year"
+            "default_per_year",
+            "date_reset"
         ];
     }
 
@@ -18,6 +19,7 @@ class LeaveTypeAdapter extends AdapterBase {
             {"sTitle": "Leave Accrue Enabled"},
             {"sTitle": "Leave Carried Forward"},
             {"sTitle": "Leaves Per Year"}
+            // {"sTitle": "Date Reset"}
         ];
     }
 
@@ -48,9 +50,10 @@ class LeaveTypeAdapter extends AdapterBase {
             ["carried_forward", {
                 "label": "Leave Carried Forward",
                 "type": "select",
-                "source": [["No", "No"], ["Yes", "Yes"]]
+                "source": [["0", "No"], ["1", "Yes"]]
             }],
-            ["default_per_year", {"label": "Leaves Per Leave Period", "type": "text", "validation": "number"}]
+            ["default_per_year", {"label": "Leaves Per Leave Period", "type": "text", "validation": "number"}],
+            ["date_reset", {"label": "Date Reset", "type": "date", "validation": "number"}]
         ];
     }
 
@@ -379,7 +382,8 @@ class HoliDayAdapter extends AdapterBase {
             "name",
             "dateh",
             "status",
-            // "country"
+            "country",
+            "is_every_year"
         ];
     }
 
@@ -388,8 +392,8 @@ class HoliDayAdapter extends AdapterBase {
             {"sTitle": "ID", "bVisible": false},
             {"sTitle": "Name"},
             {"sTitle": "Date"},
-            {"sTitle": "Status"},
-            // { "sTitle": "Country" }
+            {"sTitle": "Status"}
+            // { "sTitle": "Use every year" }
         ];
     }
 
@@ -397,7 +401,7 @@ class HoliDayAdapter extends AdapterBase {
         return [
             ["id", {"label": "ID", "type": "hidden", "validation": ""}],
             ["name", {"label": "Name", "type": "text", "validation": ""}],
-            ["dateh", {"label": "Date", "type": "date", "validation": ""}],
+            ["date", {"label": "Date", "type": "date", "validation": ""}],
             ["status", {
                 "label": "Status",
                 "type": "select",
@@ -409,7 +413,9 @@ class HoliDayAdapter extends AdapterBase {
                 "allow-null": true,
                 "null-label": "For All Countries",
                 "remote-source": ["Country", "id", "name"]
-            }]
+            }],
+            ["is_every_year", {"label": "Use every year", "type": "select",
+                "source": [["No", "No"], ["Yes", "Yes"]], "validation": "none"}],
         ];
     }
 
