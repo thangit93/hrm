@@ -50,11 +50,206 @@ class LeaveTypeAdapter extends AdapterBase {
             ["carried_forward", {
                 "label": "Leave Carried Forward",
                 "type": "select",
-                "source": [["0", "No"], ["1", "Yes"]]
+                "source": [["No", "No"], ["Yes", "Yes"]]
             }],
             ["default_per_year", {"label": "Leaves Per Leave Period", "type": "text", "validation": "number"}],
-            ["date_reset", {"label": "Date Reset", "type": "date", "validation": "number"}]
+            ["date_reset", {"label": "Date Reset", "type": "daymonth", "validation": "none"}]
         ];
+    }
+
+    renderForm(object) {
+        const signatureIds = [];
+        if (object == null || object === undefined) {
+            this.currentId = null;
+        }
+
+        this.preRenderForm(object);
+
+        let formHtml = this.templates.formTemplate;
+        let html = '';
+        const fields = this.getFormFields();
+
+        for (let i = 0; i < fields.length; i++) {
+            const metaField = this.getMetaFieldForRendering(fields[i][0]);
+            if (metaField === '' || metaField === undefined) {
+                html += this.renderFormField(fields[i]);
+            } else {
+                const metaVal = object[metaField];
+                if (metaVal !== '' && metaVal != null && metaVal !== undefined && metaVal.trim() !== '') {
+                    html += this.renderFormField(JSON.parse(metaVal));
+                } else {
+                    html += this.renderFormField(fields[i]);
+                }
+            }
+        }
+        formHtml = formHtml.replace(/_id_/g, `${this.getTableName()}_submit`);
+        formHtml = formHtml.replace(/_fields_/g, html);
+
+        let $tempDomObj;
+        const randomFormId = this.generateRandom(14);
+        if (!this.showFormOnPopup) {
+            $tempDomObj = $(`#${this.getTableName()}Form`);
+        } else {
+            $tempDomObj = $('<div class="reviewBlock popupForm" data-content="Form"></div>');
+            $tempDomObj.attr('id', randomFormId);
+        }
+
+        $tempDomObj.html(formHtml);
+
+        $tempDomObj.find('.datefield').datepicker({
+            viewMode: 2
+        });
+
+        $tempDomObj.find('.daymonthfield').datepicker({
+            viewMode: 1,
+            useYears: false
+        });
+
+        $tempDomObj.find('.timefield').datetimepicker({
+            language: 'en',
+            pickDate: false,
+        });
+        // var nowTemp = new Date();
+        // var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+        $tempDomObj.find('.datetimefield').datetimepicker({
+            language: 'en',
+            useSeconds: false
+            /*onRender: function(date) {
+              return date.valueOf() < now.valueOf() ? ' disabled' : '';
+            }*/
+        }).data('datepicker');
+
+        $tempDomObj.find('.colorpick').colorpicker();
+
+        tinymce.init({
+            selector: `#${$tempDomObj.attr('id')} .tinymce`,
+            height: '400',
+        });
+
+        $tempDomObj.find('.simplemde').each(function () {
+            const simplemde = new SimpleMDE({ element: $(this)[0] });
+            $(this).data('simplemde', simplemde);
+            // simplemde.value($(this).val());
+        });
+
+        // $tempDomObj.find('.select2Field').select2();
+        $tempDomObj.find('.select2Field').each(function () {
+            $(this).select2().select2('val', $(this).find('option:eq(0)').val());
+        });
+
+        $tempDomObj.find('.select2Multi').each(function () {
+            $(this).select2().on('change', function (e) {
+                const parentRow = $(this).parents('.row');
+                const height = parentRow.find('.select2-choices').height();
+                parentRow.height(parseInt(height, 10));
+            });
+        });
+
+
+        $tempDomObj.find('.signatureField').each(function () {
+            // $(this).data('signaturePad',new SignaturePad($(this)));
+            signatureIds.push($(this).attr('id'));
+        });
+
+        for (let i = 0; i < fields.length; i++) {
+            if (fields[i][1].type === 'datagroup') {
+                $tempDomObj.find(`#${fields[i][0]}`).data('field', fields[i]);
+            }
+        }
+
+        if (this.showSave === false) {
+            $tempDomObj.find('.saveBtn').remove();
+        } else {
+            $tempDomObj.find('.saveBtn').off();
+            $tempDomObj.find('.saveBtn').data('modJs', this);
+            $tempDomObj.find('.saveBtn').on('click', function () {
+                if ($(this).data('modJs').saveSuccessItemCallback != null && $(this).data('modJs').saveSuccessItemCallback !== undefined) {
+                    $(this).data('modJs').save($(this).data('modJs').retriveItemsAfterSave(), $(this).data('modJs').saveSuccessItemCallback);
+                } else {
+                    $(this).data('modJs').save();
+                }
+
+                return false;
+            });
+        }
+
+        if (this.showCancel === false) {
+            $tempDomObj.find('.cancelBtn').remove();
+        } else {
+            $tempDomObj.find('.cancelBtn').off();
+            $tempDomObj.find('.cancelBtn').data('modJs', this);
+            $tempDomObj.find('.cancelBtn').on('click', function () {
+                $(this).data('modJs').cancel();
+                return false;
+            });
+        }
+
+        // Input mask
+        $tempDomObj.find('[mask]').each(function () {
+            $(this).inputmask($(this).attr('mask'));
+        });
+
+        $tempDomObj.find('[datemask]').each(function () {
+            $(this).inputmask({
+                mask: 'y-1-2',
+                placeholder: 'YYYY-MM-DD',
+                leapday: '-02-29',
+                separator: '-',
+                alias: 'yyyy/mm/dd',
+            });
+        });
+
+        $tempDomObj.find('[datetimemask]').each(function () {
+            $(this).inputmask('datetime', {
+                mask: 'y-2-1 h:s',
+                placeholder: 'YYYY-MM-DD hh:mm',
+                leapday: '-02-29',
+                separator: '-',
+                alias: 'yyyy/mm/dd',
+            });
+
+        });
+
+        if (!this.showFormOnPopup) {
+            $(`#${this.getTableName()}Form`).show();
+            $(`#${this.getTableName()}`).hide();
+
+            for (let i = 0; i < signatureIds.length; i++) {
+                $(`#${signatureIds[i]}`)
+                    .data('signaturePad',
+                        new SignaturePad(document.getElementById(signatureIds[i])));
+            }
+
+            if (object !== undefined && object != null) {
+                this.fillForm(object);
+            } else {
+                this.setDefaultValues();
+            }
+
+            this.scrollToTop();
+        } else {
+            // var tHtml = $tempDomObj.wrap('<div>').parent().html();
+            // this.showMessage("Edit",tHtml,null,null,true);
+            this.showMessage('Edit', '', null, null, true);
+
+            $('#plainMessageModel .modal-body').html('');
+            $('#plainMessageModel .modal-body').append($tempDomObj);
+
+
+            for (let i = 0; i < signatureIds.length; i++) {
+                $(`#${signatureIds[i]}`)
+                    .data('signaturePad',
+                        new SignaturePad(document.getElementById(signatureIds[i])));
+            }
+
+            if (object !== undefined && object != null) {
+                this.fillForm(object, `#${randomFormId}`);
+            } else {
+                this.setDefaultValues(`#${randomFormId}`);
+            }
+        }
+
+        this.postRenderForm(object, $tempDomObj);
     }
 
     getHelpLink() {

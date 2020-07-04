@@ -47,6 +47,7 @@ $fieldTemplates['select2multi'] = file_get_contents(CLIENT_PATH.'/templates/fiel
 $fieldTemplates['date'] = file_get_contents(CLIENT_PATH.'/templates/fields/date.html');
 $fieldTemplates['datetime'] = file_get_contents(CLIENT_PATH.'/templates/fields/datetime.html');
 $fieldTemplates['time'] = file_get_contents(CLIENT_PATH.'/templates/fields/time.html');
+$fieldTemplates['daymonth'] = file_get_contents(CLIENT_PATH.'/templates/fields/daymonth.html');
 $fieldTemplates['fileupload'] = file_get_contents(CLIENT_PATH.'/templates/fields/fileupload.html');
 $fieldTemplates['label'] = file_get_contents(CLIENT_PATH.'/templates/fields/label.html');
 $fieldTemplates['placeholder'] = file_get_contents(CLIENT_PATH.'/templates/fields/placeholder.html');
