@@ -15,6 +15,11 @@ class DataImportFile extends BaseModel
         return array("get", "element", "save", "delete");
     }
 
+    public function getManagerAccess()
+    {
+        return array("get", "element", "save", "delete");
+    }
+
     public function getUserAccess()
     {
         return array("get", "element");
