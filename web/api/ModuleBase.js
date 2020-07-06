@@ -1438,6 +1438,16 @@ class ModuleBase {
       });
     });
 
+    $tempDomObj.find('[daymonthmask]').each(function () {
+      $(this).inputmask({
+        mask: 'y-1',
+        placeholder: 'MM-DD',
+        // leapday: '-02-29',
+        separator: '-',
+        alias: 'mm/dd',
+      });
+    });
+
     $tempDomObj.find('[datetimemask]').each(function () {
       $(this).inputmask('datetime', {
         mask: 'y-2-1 h:s:00',
@@ -2162,6 +2172,9 @@ class ModuleBase {
       t = t.replace(/_id_/g, field[0]);
       t = t.replace(/_label_/g, field[1].label);
     } else if (field[1].type === 'tinymce' || field[1].type === 'simplemde') {
+      t = t.replace(/_id_/g, field[0]);
+      t = t.replace(/_label_/g, field[1].label);
+    } else if (field[1].type === 'daymonth') {
       t = t.replace(/_id_/g, field[0]);
       t = t.replace(/_label_/g, field[1].label);
     }

@@ -327,7 +327,7 @@ class ReportOvertimeAdapter extends AdapterBase {
       {"sTitle": "Start Time"},
       {"sTitle": "End Time"},
       {"sTitle": "Total Time"},
-      {"sTitle": "Notes"},
+      {"sTitle": "Location"},
     ];
   }
 

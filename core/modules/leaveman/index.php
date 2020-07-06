@@ -155,8 +155,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="modJs.changeLeaveStatus();"><?= t('Change Leave Status')?></button>
-                <button class="btn" onclick="modJs.closeLeaveStatus();"><?= t('Not Now')?></button>
+                <button class="btn btn-primary" onclick="modJs.changeLeaveStatus();"><?= t('Ok')?></button>
+                <button class="btn" onclick="modJs.closeLeaveStatus();"><?= t('Exit')?></button>
             </div>
         </div>
     </div>
