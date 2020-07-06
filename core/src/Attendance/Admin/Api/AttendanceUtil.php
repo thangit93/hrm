@@ -68,15 +68,11 @@ class AttendanceUtil
 
         /** @var DateTime $timeStart */
         $timeStart = clone $checkIn;
-        $timeStart->setTime(9, 0, 0);
+        $timeStart->setTime(8, 0, 0);
 
         /** @var DateTime $timeEnd */
         $timeEnd = clone $checkOut;
         $timeEnd->setTime(17, 0, 0);
-
-        if ($employeeId == 919) {
-            $debug = true;
-        }
 
         if (!empty($employeeId) && self::isFullWorkingDay($employeeId, $checkIn)) {
             $checkIn = $timeStart;
@@ -99,9 +95,11 @@ class AttendanceUtil
 
             if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
                 return 1;
+            } elseif ($dayOfWeek == 6) {
+                return 0.5;
             }
 
-            return 0.5;
+            return 0;
         }
 
         //start before 09:00 and left before 17:00

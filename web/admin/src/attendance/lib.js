@@ -55,7 +55,7 @@ class AttendanceAdapter extends AdapterBase {
         label: 'Employee', type: 'select2', 'allow-null': true, 'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
       }],
       ['in_time', {
-        label: 'Start Date', type: 'yearmonth'
+        label: 'Month', type: 'yearmonth'
       }],
       /*['out_time', {
         label: 'End Date', type: 'date', 'allow-null': true, validation: 'none'
@@ -442,6 +442,7 @@ class AttendanceAdapter extends AdapterBase {
       tableHtml += '<td style="border-right: 2px solid #333">';
       tableHtml += row[0].name;
       tableHtml += '</td>';
+      let employeeId = row[0].employee_id;
       $.each(row, function (index, col) {
         let colClass = '';
 
@@ -450,7 +451,7 @@ class AttendanceAdapter extends AdapterBase {
         }
 
         if((index + 1 ) === row.length){
-          tableHtml += '<td>';
+          tableHtml += '<td id="total-month-' + employeeId + '">';
           tableHtml += col;
           tableHtml += '</td>';
           return;
@@ -506,6 +507,11 @@ class AttendanceAdapter extends AdapterBase {
           let data = res.data;
           $(el).attr('data-in', data.in).attr('data-out', data.out).html(value);
           $('body .box-body.table-responsive table').find(".total-" + data.employee_id + data.date).html(data.total)
+          let total = $('body .box-body.table-responsive table').find("#total-month-" + data.employee_id).text();
+          total = parseFloat(total);
+          total -= parseFloat(data.oldTotal);
+          total += parseFloat(data.total);
+          $('body .box-body.table-responsive table').find("#total-month-" + data.employee_id).html(total);
         }
       }, 'json').always(() => {
         that.hideLoader();

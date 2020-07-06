@@ -223,6 +223,10 @@ class AttendanceActionManager extends SubActionManager
                     ]);
                 }
 
+                if (AttendanceUtil::isFullWorkingDay($employee->id, $startDate)) {
+                    $dataDay['total'] = AttendanceUtil::calculateWorkingDay($startDate->format('Y-m-d H:i:s'), $startDate->format('Y-m-d H:i:s'), $employee->id);
+                }
+
                 $data[$employee->id][] = $dataDay;
                 $total += $dataDay['total'];
 
@@ -255,6 +259,8 @@ class AttendanceActionManager extends SubActionManager
             $attendance->employee = $employee_id;
         }
 
+        $oldTotal = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time, $attendance->employee);
+
         if ($fieldname == "in") {
             if (!empty($in)) {
                 $attendance->in_time = "{$date} {$in}:00";
@@ -280,6 +286,7 @@ class AttendanceActionManager extends SubActionManager
                 'out' => $out,
                 'date' => $date,
                 'total' => $total,
+                'oldTotal' => $oldTotal,
             ]);
         }
 
@@ -296,6 +303,7 @@ class AttendanceActionManager extends SubActionManager
             'out' => $out,
             'date' => $date,
             'total' => $total,
+            'oldTotal' => $oldTotal,
         ]);
     }
 }

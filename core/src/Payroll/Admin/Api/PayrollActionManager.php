@@ -33,6 +33,7 @@ use Utils\LogManager;
 use Utils\Math\EvalMath;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Utils\StringHelper;
 
 class PayrollActionManager extends SubActionManager
 {
@@ -483,7 +484,7 @@ class PayrollActionManager extends SubActionManager
                 $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 //Set header
-                $rowIndex = 4;
+                $rowIndex = 3;
                 $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Employee Number"));
                 $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
                 foreach ($columns as $colIndex => $column) {
@@ -535,7 +536,7 @@ class PayrollActionManager extends SubActionManager
                 $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 //Set header
-                $rowIndex = 3;
+                $rowIndex = 2;
                 $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
                 $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
                 $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Bank Account"));
@@ -552,19 +553,20 @@ class PayrollActionManager extends SubActionManager
                 foreach ($valueMap as $empId => $rowData) {
                     $employee = $employeesById[$empId];
                     $employee = $empModel->getBankAccount($employee);
+                    $company = $empModel->getCompany($employee);
 
                     if (empty($employee) || $employee->bank_name != 'ACB') {
                         continue;
                     }
 
                     $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
-                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
-                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->bank_account);
-                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $rowData[$column->id]->amount);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, StringHelper::convert_vi_to_en($employee->last_name . " " . $employee->middle_name . " " . $employee->first_name));
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, StringHelper::convert_vi_to_en($employee->bank_account));
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, StringHelper::convert_vi_to_en($rowData[$column->id]->amount));
                     $sheet->setCellValueByColumnAndRow(5, $rowIndex, "");
                     $sheet->setCellValueByColumnAndRow(6, $rowIndex, "");
-                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, $employee->employee_id);
-                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, $empModel->getJobTitle($employee)->job_title->name);
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, StringHelper::convert_vi_to_en($employee->employee_id));
+                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, StringHelper::convert_vi_to_en($empModel->getJobTitle($employee)->job_title->name));
                     $sheet->getStyle("D{$rowIndex}")->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
 
@@ -601,7 +603,7 @@ class PayrollActionManager extends SubActionManager
                 $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
                 //Set header
-                $rowIndex = 3;
+                $rowIndex = 2;
                 $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
                 $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Employee"));
                 $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Employee Number"));
@@ -622,23 +624,24 @@ class PayrollActionManager extends SubActionManager
                 foreach ($valueMap as $empId => $rowData) {
                     $employee = $employeesById[$empId];
                     $employee = $empModel->getBankAccount($employee);
+                    $company = $empModel->getCompany($employee);
 
                     if (empty($employee) || $employee->bank_name == 'ACB') {
                         continue;
                     }
 
                     $sheet->setCellValueByColumnAndRow(1, $rowIndex, $index);
-                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $employee->last_name . " " . $employee->middle_name . " " . $employee->first_name);
-                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $employee->employee_id);
-                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $empModel->getJobTitle($employee)->job_title->name);
-                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, $rowData[$column->id]->amount);
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, StringHelper::convert_vi_to_en($employee->last_name . " " . $employee->middle_name . " " . $employee->first_name));
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, StringHelper::convert_vi_to_en($employee->employee_id));
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, StringHelper::convert_vi_to_en($empModel->getJobTitle($employee)->job_title->name));
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, StringHelper::convert_vi_to_en($rowData[$column->id]->amount));
                     $sheet->setCellValueByColumnAndRow(6, $rowIndex, "");
-                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, $employee->bank_account);
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, StringHelper::convert_vi_to_en($employee->bank_account));
                     $sheet->setCellValueByColumnAndRow(8, $rowIndex, "");
                     $sheet->setCellValueByColumnAndRow(9, $rowIndex, "");
                     $sheet->setCellValueByColumnAndRow(10, $rowIndex, "");
                     $sheet->setCellValueByColumnAndRow(11, $rowIndex, "");
-                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, LanguageManager::tran("Payment on Behalf Content") . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m-Y'));
+                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, StringHelper::convert_vi_to_en(LanguageManager::tran(strtoupper($company->title) . " - Payment on Behalf Content") . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m-Y')));
                     $sheet->getStyle("E{$rowIndex}")->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
 

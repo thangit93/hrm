@@ -2379,3 +2379,12 @@ msgstr "Xem chi tiết"
 
 msgid "Exit"
 msgstr "Thoát"
+
+msgid "Y VIET - Payment on Behalf Content"
+msgstr "Cong ty Y Viet chuyen luong thang "
+
+msgid "SKB - Payment on Behalf Content"
+msgstr "Cong ty SKB chuyen luong thang "
+
+msgid "VMED - Payment on Behalf Content"
+msgstr "Cong ty VMED chuyen luong thang "
