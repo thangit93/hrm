@@ -213,8 +213,8 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary" onclick="modJs.changeStatus();"><?php echo t('Update')?></button>
-					<button class="btn" onclick="modJs.closeDialog();"><?php echo t('Not Now')?></button>
+					<button class="btn btn-primary" onclick="modJs.changeStatus();"><?php echo t('Ok')?></button>
+					<button class="btn" onclick="modJs.closeDialog();"><?php echo t('Exit')?></button>
 				</div>
 			</div>
 		</div>

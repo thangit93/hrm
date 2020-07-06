@@ -450,18 +450,26 @@ class LeavesActionManager extends SubActionManager
             $resp = $this->getCurrentLeavePeriod($dayInPreviousLeavePeriod, $dayInPreviousLeavePeriod);
             if ($resp->getStatus() == "SUCCESS") {
                 $prvLeavePeriod = $resp->getData();
-                $avalilable = $rule->default_per_year;
+                $available = $rule->default_per_year;
 
                 //If the employee joined in this leave period, his leaveman should be calculated proportionally
                 if ($employee->joined_date != "0000-00-00 00:00:00" && !empty($employee->joined_date)) {
                     if (strtotime($prvLeavePeriod->date_start) < strtotime($employee->joined_date)) {
-                        $avalilable = intval($avalilable * (strtotime($prvLeavePeriod->date_end) - strtotime($employee->joined_date)) / (strtotime($prvLeavePeriod->date_end) - strtotime($prvLeavePeriod->date_start)));
+                        $available = intval($available * (strtotime($prvLeavePeriod->date_end) - strtotime($employee->joined_date)) / (strtotime($prvLeavePeriod->date_end) - strtotime($prvLeavePeriod->date_start)));
                     }
                 }
 
                 $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod->id, $leaveTypeId, 'Approved'));
 
-                $leavesCarriedForward = intval($avalilable) - intval($approved);
+                if($available > 6){
+                    $available = 6;
+                }
+
+                if(date('m-d') > date('m-d', strtotime($rule->date_reset))){
+                    $available = 0;
+                }
+
+                $leavesCarriedForward = intval($available) - intval($approved);
                 if ($leavesCarriedForward < 0) {
                     $leavesCarriedForward = 0;
                 }
@@ -507,10 +515,9 @@ class LeavesActionManager extends SubActionManager
 
     public function getCurrentLeavePeriod($startDate, $endDate)
     {
-
         $leavePeriod = new LeavePeriod();
         $leavePeriod->Load("date_start <= ? and date_end >= ?", array($startDate, $endDate));
-        if (empty($leavePeriod->id)) {
+        if ($leavePeriod->id === null) {
             $leavePeriod1 = new LeavePeriod();
             $leavePeriod1->Load("date_start <= ? and date_end >= ?", array($startDate, $startDate));
 
@@ -520,9 +527,9 @@ class LeavesActionManager extends SubActionManager
             if (!empty($leavePeriod1->id) && !empty($leavePeriod2->id)) {
                 return new IceResponse(IceResponse::ERROR, "You are trying to apply leaveman in two leave periods. You may apply leaveman til $leavePeriod1->date_end. Rest you have to apply seperately");
             } else {
-                $leavePeriod->name = 'Year ' . date('Y');
-                $leavePeriod->date_start = date('Y-m-01');
-                $leavePeriod->date_end = date('Y-m-t');
+                $leavePeriod->name = 'Year ' . date('Y', strtotime($startDate));
+                $leavePeriod->date_start = date('Y-m-01', strtotime($startDate));
+                $leavePeriod->date_end = date('Y-m-t', strtotime($startDate));
                 $leavePeriod->status = 'Active';
                 $leavePeriod->save();
                 return new IceResponse(IceResponse::SUCCESS, $leavePeriod);
