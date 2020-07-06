@@ -2358,3 +2358,24 @@ msgstr "Ngày đặt lại"
 
 msgid "Use every year"
 msgstr "Sử dụng hàng năm"
+
+msgid "Total Days"
+msgstr "Tổng số ngày"
+
+msgid "Total Hours"
+msgstr "Tổng số giờ"
+
+msgid "Base salary / day"
+msgstr "Lương cơ bản / ngày"
+
+msgid "Salary get"
+msgstr "Lương nhận"
+
+msgid "Total"
+msgstr "Tổng"
+
+msgid "View info"
+msgstr "Xem chi tiết"
+
+msgid "Exit"
+msgstr "Thoát"
