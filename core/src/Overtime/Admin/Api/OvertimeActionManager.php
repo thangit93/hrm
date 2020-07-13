@@ -136,9 +136,6 @@ class OvertimeActionManager extends ApproveAdminActionManager
                 $sheetIdx = 0;
 
                 //Set data
-                echo '<pre>';
-                print_r($employee);
-                echo '<pre>';die;
                 foreach ($employee as $data) {
                     if ($sheetIdx > 0) {
                         $spreadsheet->createSheet();
