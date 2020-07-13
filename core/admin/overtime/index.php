@@ -23,12 +23,12 @@ $moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
 	'EmployeeOvertime','EmployeeOvertime','Overtime Requests','EmployeeOvertimeAdminAdapter','','',false,$options
 ));
 
-$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
+/*$moduleBuilder->addModuleOrGroup(new \Classes\ModuleBuilder\ModuleTab(
 	'ReportOvertime','EmployeeOvertime','Report Overtime','ReportOvertimeAdapter','','',false, [
 	    'setRemoteTable' => 'false',
         'setShowAddNew' => 'false',
     ]
-));
+));*/
 
 echo \Classes\UIManager::getInstance()->renderModule($moduleBuilder);
 
