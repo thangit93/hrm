@@ -114,6 +114,8 @@ class OvertimeActionManager extends ApproveAdminActionManager
                              join Employees e on eo.employee = e.id
                              join OvertimeCategories oc on eo.category = oc.id
                              join EmployeeSalary es on e.id = es.employee
+                             join SalaryComponent sc on es.component = sc.id
+                    where sc.componentType = 1                             
                     group by eo.id;";
             $result = $this->db->Execute($sql);
             $employee = [];
@@ -162,23 +164,22 @@ class OvertimeActionManager extends ApproveAdminActionManager
                     foreach ($data as $rowData) {
                         $startDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['start_time'])));
                         $endDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['end_time'])));
-                        $totalDays = $startDate->diff($endDate);
-                        $days = date('d', strtotime($rowData['start_time']));
-                        $daysWorking = 25;
+                        $totalDays = $startDate->diff($endDate)->days;
 
-                        if ($days == 31) {
-                            $daysWorking = 26;
-                        }
+                        $daysWorkingOfMonth = $this->getTotalWorkingDaysInMonth(date('Y-m-01', $rowData['start_time']),
+                            date('Y-m-t', $rowData['end_time']));
 
-                        $pricePerDay = $rowData['total_salary'] / $daysWorking;
-                        $pricePerHour = $pricePerDay / 8;
-                        $salary = $pricePerHour * $rowData['coefficient'] * $rowData['total_time'];
+                        $pricePerDay = $rowData['total_salary'] / $daysWorkingOfMonth;
+                        $pricePerHour = round($pricePerDay) / 8;
+                        $salary = (round($pricePerHour) * $rowData['total_time']) * $rowData['coefficient'];
                         if ($rowData['cat_type'] == 4) {
-                            $totalDays = ($totalDays == 0 ? 1 : $totalDays);
+                            $totalDays = ($totalDays->days == 0 ? 1 : $totalDays);
                             $salary = $totalDays * 500000;
+                            $pricePerDay = 500000;
                         } else if ($rowData['cat_type'] == 5) {
-                            $totalDays = ($totalDays == 0 ? 1 : $totalDays);
+                            $totalDays = ($totalDays->days == 0 ? 1 : $totalDays);
                             $salary = $totalDays * 120000;
+                            $pricePerDay = 120000;
                         }
 
                         $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['location']);
@@ -186,16 +187,16 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         $sheet->setCellValueByColumnAndRow(3, $rowIndex, date('d/m/Y', strtotime($rowData['end_time'])));
                         $sheet->setCellValueByColumnAndRow(4, $rowIndex, date('H:i', strtotime($rowData['start_time'])));
                         $sheet->setCellValueByColumnAndRow(5, $rowIndex, date('H:i', strtotime($rowData['end_time'])));
-                        $sheet->setCellValueByColumnAndRow(6, $rowIndex, $totalDays->days);
+                        $sheet->setCellValueByColumnAndRow(6, $rowIndex, $totalDays);
                         $sheet->setCellValueByColumnAndRow(7, $rowIndex, $rowData['total_time']);
                         $sheet->setCellValueByColumnAndRow(8, $rowIndex, $rowData['coefficient']);
-                        $sheet->setCellValueByColumnAndRow(9, $rowIndex, $pricePerDay);
-                        $sheet->setCellValueByColumnAndRow(10, $rowIndex, $salary);
+                        $sheet->setCellValueByColumnAndRow(9, $rowIndex, round($pricePerDay));
+                        $sheet->setCellValueByColumnAndRow(10, $rowIndex, round($salary));
                         $sheet->setCellValueByColumnAndRow(11, $rowIndex, $rowData['ot_type']);
 
                         $rowIndex++;
                     }
-                    $tempIdx = $rowIndex-1;
+                    $tempIdx = $rowIndex - 1;
                     $sheet->setCellValueByColumnAndRow(10, $rowIndex, "=sum(J2:J$tempIdx)");
                     $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Total"));
                     $sheet->mergeCells("A{$rowIndex}:I{$rowIndex}");
@@ -218,5 +219,26 @@ class OvertimeActionManager extends ApproveAdminActionManager
         }
 
         return new IceResponse(IceResponse::SUCCESS, $responseData);
+    }
+
+    protected function getTotalWorkingDaysInMonth($startDate, $endDate)
+    {
+        $startTime = \DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
+        $endTime = \DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
+        $totalDays = $endTime->diff($startTime)->days + 1;
+        LogManager::getInstance()->info("Total Days: " . $totalDays->days);
+        while ($startTime <= $endTime) {
+            $dayOfWeek = $startTime->format('w');
+
+            if ($dayOfWeek < 1) {
+                $totalDays -= 1;
+            } elseif ($dayOfWeek == 6) {
+                $totalDays -= 0.5;
+            }
+
+            $startTime->add(\DateInterval::createFromDateString('1 day'));
+        }
+
+        return $totalDays;
     }
 }
