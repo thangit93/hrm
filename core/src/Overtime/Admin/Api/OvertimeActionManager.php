@@ -136,6 +136,9 @@ class OvertimeActionManager extends ApproveAdminActionManager
                 $sheetIdx = 0;
 
                 //Set data
+                echo '<pre>';
+                print_r($employee);
+                echo '<pre>';die;
                 foreach ($employee as $data) {
                     if ($sheetIdx > 0) {
                         $spreadsheet->createSheet();
@@ -163,14 +166,21 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         $startDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['start_time'])));
                         $endDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['end_time'])));
                         $totalDays = $startDate->diff($endDate);
-                        $pricePerDay = round($rowData['total_salary'] / date('d', strtotime($rowData['start_time'])));
+                        $days = date('d', strtotime($rowData['start_time']));
+                        $daysWorking = 25;
+
+                        if ($days == 31) {
+                            $daysWorking = 26;
+                        }
+
+                        $pricePerDay = $rowData['total_salary'] / $daysWorking;
                         $pricePerHour = $pricePerDay / 8;
-                        $salary = $pricePerHour * $rowData['coefficient'];
+                        $salary = $pricePerHour * $rowData['coefficient'] * $rowData['total_time'];
                         if ($rowData['cat_type'] == 4) {
-                            $totalDays = ($totalDays == 0 ? 1 : $startDate->diff($endDate));
+                            $totalDays = ($totalDays == 0 ? 1 : $totalDays);
                             $salary = $totalDays * 500000;
                         } else if ($rowData['cat_type'] == 5) {
-                            $totalDays = ($totalDays == 0 ? 1 : $startDate->diff($endDate));
+                            $totalDays = ($totalDays == 0 ? 1 : $totalDays);
                             $salary = $totalDays * 120000;
                         }
 
@@ -188,7 +198,8 @@ class OvertimeActionManager extends ApproveAdminActionManager
 
                         $rowIndex++;
                     }
-                    $sheet->setCellValueByColumnAndRow(10, $rowIndex, "=sum(J2:J$rowIndex-1)");
+                    $tempIdx = $rowIndex-1;
+                    $sheet->setCellValueByColumnAndRow(10, $rowIndex, "=sum(J2:J$tempIdx)");
                     $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Total"));
                     $sheet->mergeCells("A{$rowIndex}:I{$rowIndex}");
                     $sheet->getStyle("A{$rowIndex}:I{$rowIndex}")->getFont()->setBold(true);
