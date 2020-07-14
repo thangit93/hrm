@@ -172,7 +172,7 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
         let diff_hrs = diff_ms / 3600000;
         $("#total_time").val(diff_hrs);
       }
-    }).data('datepicker');
+    }).data('datetimepicker');
 
     $tempDomObj.find('.colorpick').colorpicker();
 
@@ -256,8 +256,8 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
 
     $tempDomObj.find('[datetimemask]').each(function () {
       $(this).inputmask('datetime', {
-        mask: 'y-2-1 h:s',
-        placeholder: 'YYYY-MM-DD hh:mm',
+        mask: 'y-2-1 h:s:00',
+        placeholder: 'YYYY-MM-DD hh:mm:ss',
         leapday: '-02-29',
         separator: '-',
         alias: 'yyyy/mm/dd',
