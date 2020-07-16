@@ -2361,3 +2361,6 @@ msgstr "Cong ty SKB chuyen luong thang "
 
 msgid "VMED - Payment on Behalf Content"
 msgstr "Cong ty VMED chuyen luong thang "
+
+msgid "Total"
+msgstr "Tổng cộng"

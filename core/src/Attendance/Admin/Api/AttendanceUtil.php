@@ -68,7 +68,7 @@ class AttendanceUtil
 
         /** @var DateTime $timeStart */
         $timeStart = clone $checkIn;
-        $timeStart->setTime(8, 0, 0);
+        $timeStart->setTime(9, 0, 0);
 
         /** @var DateTime $timeEnd */
         $timeEnd = clone $checkOut;
