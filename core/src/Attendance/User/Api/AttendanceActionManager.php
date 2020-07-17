@@ -198,7 +198,9 @@ class AttendanceActionManager extends SubActionManager
     {
         $user = BaseService::getInstance()->getCurrentUser();
         $filterStr = $req->ft ?? null;
-        $employeeId = $user->id;
+        $employeeId = BaseService::getInstance()->getCurrentProfileId();
+        $employee = new Employee();
+        $employee->Load('id = ?', $employeeId);
         $month = null;
 
         if (!empty($filterStr)) {
@@ -227,7 +229,7 @@ class AttendanceActionManager extends SubActionManager
             $empQueryData[] = $employeeId;
         }
 
-        $employees = [$user];
+        $employees = [$employee];
 
         $data = [];
         $dataHeader = [];

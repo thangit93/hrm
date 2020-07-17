@@ -6,6 +6,7 @@ use Attendance\Admin\Api\AttendanceUtil;
 use Classes\BaseService;
 use Classes\LanguageManager;
 use DateTime;
+use Employees\Common\Model\Employee;
 use Leaves\Admin\Api\EmployeeLeaveUtil;
 use Payroll\Common\Model\Payroll;
 use Payroll\Common\Model\PayrollColumn;
@@ -22,17 +23,339 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
     {
         $data = $this->getDefaultData();
         $employeeId = BaseService::getInstance()->getCurrentProfileId();
+        $employee = new Employee();
+        $employee->Load('id = ?', [$employeeId]);
         $data['fields'] = array();
 
-        $payroll = new Payroll();
-        $payroll->Load("id = ?", array($request['payroll']));
+        $payroll = $this->getPayroll($request);
 
         if (empty($payroll->payslipTemplate)) {
             return null;
         }
 
-        $payslipTemplate = new PayslipTemplate();
-        $payslipTemplate->Load("id = ?", array($payroll->payslipTemplate));
+        $payslipTemplate = $this->getPayslipTemplate($payroll);
+
+        if (empty($payslipTemplate->id)) {
+            return null;
+        }
+
+        $salaryUtil = new SalaryUtil();
+        $attendanceUtil = new AttendanceUtil();
+        $salaryComponentModel = new SalaryComponent();
+        $separatorField = [
+            "type" => "Separators",
+            "payrollColumn" => "NULL",
+            "label" => "",
+            "text" => "",
+            "status" => "Show",
+            "id" => uniqid('data_')
+        ];
+
+        $data['fields'][] = [
+            "type" => "Company Logo",
+            "payrollColumn" => "NULL",
+            "label" => "",
+            "text" => "",
+            "status" => "Show",
+            "id" => "data_2"
+        ];
+        $data['fields'][] = [
+            "type" => "Company Name",
+            "payrollColumn" => "NULL",
+            "label" => "",
+            "text" => "",
+            "status" => "Show",
+            "id" => "data_3"
+        ];
+        $data['fields'][] = $separatorField;
+
+        $field = [
+            'id' => uniqid('data_'),
+            'type' => 'Payroll Column',
+            'status' => 'Show',
+            'text' => '',
+            'value' => $attendanceUtil->getTotalWorkingDaysInMonth($employeeId, $payroll->date_start, $payroll->date_end),
+            'label' => LanguageManager::tran("Số ngày công trong tháng"),
+        ];
+        $data['fields'][] = $field;
+        $data['fields'][] = $separatorField;
+
+        $field = [
+            'id' => uniqid('data_'),
+            'type' => 'Payroll Column',
+            'status' => 'Show',
+            'text' => '',
+            'value' => $attendanceUtil->getDaysWorked($employeeId, $payroll->date_start, $payroll->date_end),
+            'label' => LanguageManager::tran("Số ngày công thực tế"),
+        ];
+        $data['fields'][] = $field;
+        $data['fields'][] = $separatorField;
+
+        $salaryComponents = $salaryComponentModel->Find('1 = 1 ORDER BY id ASC');
+        $salaryComponentIds = [];
+        $payrollColumn = new PayrollColumn();
+        $payrollData = new PayrollData();
+
+        foreach ($salaryComponents as $salaryComponent) {
+            $salaryComponentIds[] = $salaryComponent->id;
+            $payrollColumn->Load('salary_components = ?', [
+                "[\"{$salaryComponent->id}\"]"
+            ]);
+
+            if (empty($payrollColumn->id)) {
+                continue;
+            }
+
+            $payrollData->Load('payroll_item = ? and employee = ?', [$payrollColumn->id, $employeeId]);
+
+            if (empty($payrollData->id)) {
+                continue;
+            }
+
+            if ($payrollColumn->calculation_hook == 'SalaryUtil_getRealSalary') {
+                $salaries = SalaryUtil::getEmployeeSalaries($employeeId, $payroll->date_start, $payroll->date_end, [$salaryComponent->id]);
+            } else {
+                $salaries = SalaryUtil::getEmployeeSalaries($employeeId, $payroll->date_start, $payroll->date_end, [$salaryComponent->id], true);
+                $salaries = [$salaries];
+            }
+            $payrollStartDate = DateTime::createFromFormat('Y-m-d', $payroll->date_start);
+
+            foreach ($salaries as $index => $salary) {
+                $salaryStartDate = DateTime::createFromFormat('Y-m-d', $salary->start_date);
+                $startDate = $salaryStartDate;
+
+                if ($salaryStartDate < $payrollStartDate) {
+                    $startDate = $payrollStartDate;
+                }
+
+                if ($startDate->format('Y-m-d') == $salaries[$index + 1]->start_date) {
+                    unset($salaries[$index]);
+                }
+            }
+
+            if (count($salaries) > 2) {
+                for ($i = 1; $i < count($salaries); $i++) {
+                    if ($salaries[$i]->amount == $salaries[$i - 1]->amount) {
+                        unset($salaries[$i]);
+                    } elseif ($salaries[$i]->start_date == $salaries[$i - 1]->start_date) {
+                        unset($salaries[$i - 1]);
+                    }
+                }
+            } elseif (count($salaries) > 1) {
+                if ($salaries[1]->amount == $salaries[0]->amount) {
+                    unset($salaries[1]);
+                } elseif ($salaries[1]->start_date == $salaries[0]->start_date) {
+                    unset($salaries[0]);
+                }
+            }
+
+            if (count($salaries) > 1) {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => ' ',
+                    'label' => LanguageManager::tran($salaryComponent->name),
+                ];
+                $data['fields'][] = $field;
+
+                foreach ($salaries as $index => $salary) {
+                    $salaryStartDate = DateTime::createFromFormat('Y-m-d', $salary->start_date);
+                    $startDate = $salaryStartDate;
+
+                    if ($salaryStartDate < $payrollStartDate) {
+                        $startDate = $payrollStartDate;
+                    }
+
+                    $field = [
+                        'id' => uniqid('data_'),
+                        'type' => 'Payroll Column',
+                        'status' => 'Show',
+                        'text' => '',
+                        'value' => number_format($salary->amount) . ' đ',
+                        'label' => LanguageManager::tran("From Date") . " " . $startDate->format('d/m/Y'),
+                    ];
+
+                    $data['fields'][] = $field;
+                }
+            } else {
+                $salary = array_shift($salaries);
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($salary->amount) . ' đ',
+                    'label' => LanguageManager::tran($salaryComponent->name),
+                ];
+                $data['fields'][] = $field;
+            }
+            $data['fields'][] = $separatorField;
+
+            $unit = in_array($payrollColumn->calculation_hook, [
+                'AttendanceUtil_getTotalWorkingDaysInMonth',
+                'AttendanceUtil_getDaysWorked',
+                'OvertimePayrollUtils_getApprovedTimeInRequests',
+                'EmployeeLeaveUtil_getEmployeeLeave',
+            ]) ? '' : ' đ';
+
+            if ($payrollColumn->calculation_hook == 'SalaryUtil_getRealSalary') {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($payrollData->amount) . $unit,
+                    'label' => LanguageManager::tran('Total Amount') . " " . $salaryComponent->name,
+                ];
+                $data['fields'][] = $field;
+                $data['fields'][] = $separatorField;
+            }
+        }
+
+        //Calculate salary deposit
+        $payrollColumn->Load('calculation_hook = ?', ['SalaryUtil_getSalaryDeposit']);
+
+        if (!empty($payrollColumn)) {
+            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+
+            if (!empty($payrollData)) {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($payrollData->amount) . $unit,
+                    'label' => LanguageManager::tran('Tổng tiền lương đã ứng'),
+                ];
+                $data['fields'][] = $field;
+                $data['fields'][] = $separatorField;
+            }
+        }
+
+        //Calculate salary bonus
+        $payrollColumn = new PayrollColumn();
+        $payrollColumn->Load('calculation_hook = ?', ['SalaryUtil_getSalaryBonus']);
+
+        if (!empty($payrollColumn)) {
+            $payrollData = new PayrollData();
+            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+
+            if (!empty($payrollData)) {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($payrollData->amount) . $unit,
+                    'label' => LanguageManager::tran('Tiền thưởng'),
+                ];
+                $data['fields'][] = $field;
+                $data['fields'][] = $separatorField;
+            }
+        }
+
+        //Calculate salary overtime
+        $payrollColumn = new PayrollColumn();
+        $payrollColumn->Load('calculation_hook = ?', ['SalaryUtil_getSalaryOvertime']);
+
+        if (!empty($payrollColumn)) {
+            $payrollData = new PayrollData();
+            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+
+            if (!empty($payrollData)) {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($payrollData->amount) . $unit,
+                    'label' => LanguageManager::tran('Tiền làm thêm giờ'),
+                ];
+                $data['fields'][] = $field;
+                $data['fields'][] = $separatorField;
+            }
+        }
+
+        //Calculate 13rd salary
+        $payrollColumn = new PayrollColumn();
+        $payrollColumn->Load('name LIKE ?', ['Lương tháng 13']);
+
+        if (!empty($payrollColumn)) {
+            $payrollData = new PayrollData();
+            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+
+            if (!empty($payrollData) && $payrollData->amount > 0) {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($payrollData->amount) . $unit,
+                    'label' => LanguageManager::tran('Lương tháng 13'),
+                ];
+                $data['fields'][] = $field;
+                $data['fields'][] = $separatorField;
+            }
+        }
+
+        //Calculate net salary
+        $payrollColumn = new PayrollColumn();
+        $payrollColumn->Load('name LIKE ?', ['Lương thực lãnh%']);
+
+        if (!empty($payrollColumn)) {
+            $payrollData = new PayrollData();
+            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+
+            if (!empty($payrollData)) {
+                $field = [
+                    'id' => uniqid('data_'),
+                    'type' => 'Payroll Column',
+                    'status' => 'Show',
+                    'text' => '',
+                    'value' => number_format($payrollData->amount) . $unit,
+                    'label' => LanguageManager::tran('Lương thực lãnh'),
+                ];
+                $data['fields'][] = $field;
+                $data['fields'][] = $separatorField;
+            }
+        }
+
+        $field = [
+            'id' => uniqid('data_'),
+            'type' => 'Text',
+            'status' => 'Show',
+//            'text' => '',
+            'value' => ' ',
+            'text' => 'Vui lòng không chia sẽ mức lương, thưởng với các bạn khác. Mọi thắc mắc về lương xin vui lòng liên hệ Chân - 0986852411',
+        ];
+        $data['fields'][] = $field;
+
+        $payroll->date_start = DateTime::createFromFormat('Y-m-d', $payroll->date_start)->format('d/m/Y');
+        $payroll->date_end = DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('d/m/Y');
+        $data['employeeName'] = $employee->first_name . ' ' . $employee->last_name;
+        $data['payroll'] = $payroll;
+        $data['PeriodText'] = LanguageManager::tran('Period Salary');
+        $data['EmployeeText'] = LanguageManager::tran('Employee');
+        $data['EmployeeIdText'] = LanguageManager::tran('Employee Number');
+        $data['employeeId'] = $employee->employee_id;
+        return $data;
+    }
+
+    public function getData_bk($report, $request)
+    {
+        $data = $this->getDefaultData();
+        $employeeId = BaseService::getInstance()->getCurrentProfileId();
+        $data['fields'] = array();
+
+        $payroll = $this->getPayroll($request);
+
+        if (empty($payroll->payslipTemplate)) {
+            return null;
+        }
+
+        $payslipTemplate = $this->getPayslipTemplate($payroll);
 
         if (empty($payslipTemplate->id)) {
             return null;
@@ -198,7 +521,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
                                 ];
                             }
                             $data['fields'][] = $separatorField;
-                        }  elseif ($payrollColumn->calculation_hook == 'SalaryUtil_getSalaryBonus') {
+                        } elseif ($payrollColumn->calculation_hook == 'SalaryUtil_getSalaryBonus') {
                             $bonusSalaries = $salaryUtil->getSalaryBonus($employeeId, $payroll->date_start, $payroll->date_end, true);
 
                             $data['fields'][] = [
@@ -244,5 +567,135 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
     public function getTemplate()
     {
         return "payslip.html";
+    }
+
+    /**
+     * @param $request
+     * @return Payroll
+     */
+    private function getPayroll($request)
+    {
+        $payroll = new Payroll();
+        $payroll->Load("id = ?", array($request['payroll']));
+
+        return $payroll;
+    }
+
+    /**
+     * @param Payroll $payroll
+     * @return PayslipTemplate
+     */
+    private function getPayslipTemplate(Payroll $payroll): PayslipTemplate
+    {
+        $payslipTemplate = new PayslipTemplate();
+        $payslipTemplate->Load("id = ?", array($payroll->payslipTemplate));
+        return $payslipTemplate;
+    }
+
+    /**
+     * @param $request
+     * @param $employeeId
+     * @return bool|array
+     */
+    private function getPayrollData($request, $employeeId)
+    {
+        $payrollData = new PayrollData();
+        return $payrollData->Find(
+            "payroll = ? and employee = ? ORDER BY id ASC",
+            array(
+                $request['payroll'],
+                $employeeId
+            )
+        );
+    }
+
+    private function getRealSalary($payrollColumn, SalaryUtil $salaryUtil, $employeeId, $payroll)
+    {
+        $salaryComponent = new SalaryComponent();
+        $salaryComponents = $salaryUtil->parseSalaryComponent($payrollColumn->salary_components);
+        $salaryComponent->Load('id = ?', ['id' => $salaryComponents[0]]);
+        $empSalaries = SalaryUtil::getEmployeeSalaries($employeeId, $payroll->date_start, $payroll->date_end, $salaryComponent);
+
+        $empBaseSalaryRows = [];
+        $additionalFields = [];
+
+        /*$empBaseSalaryRows[] = [
+            'id' => uniqid('data_'),
+            'type' => 'Payroll Column',
+            'status' => 'Show',
+            'value' => ' ',
+            'label' => LanguageManager::tran($salaryComponent->name)
+        ];
+
+        $additionalFields[] = [
+            'id' => uniqid('data_'),
+            'type' => 'Payroll Column',
+            'status' => 'Show',
+            'value' => ' ',
+            'label' => LanguageManager::tran($salaryComponent->name . ' ngày')
+        ];*/
+
+        foreach ($empSalaries as $index => $empSalary) {
+            /*$empBaseSalaryRow = [
+                'id' => uniqid('data_'),
+                'type' => 'Payroll Column',
+                'status' => 'Show',
+                'text' => '',
+                'value' => number_format($empSalary->amount) . ' đ',
+                'label' => (count($empSalaries) > 1) ? (LanguageManager::tran('From Date') . " ") : ' ',
+            ];*/
+
+            $startDate = $payroll->date_start;
+            if ($index < (count($empSalaries) - 1)) {
+                $endDate = DateTime::createFromFormat('Y-m-d', $empSalaries[$index + 1]->start_date)
+                    ->sub(\DateInterval::createFromDateString('1 day'));
+            } else {
+                $endDate = DateTime::createFromFormat('Y-m-d', $payroll->date_end);
+            }
+
+            /*if ((count($empSalaries) > 1)) {
+                if (empty($empSalary->start_date)) {
+                    $empBaseSalaryRow['label'] .= DateTime::createFromFormat('Y-m-d', $payroll->date_start)->format('d/m/Y');
+                } else {
+                    $startDate = $empSalary->start_date;
+                    $empBaseSalaryRow['label'] .= DateTime::createFromFormat('Y-m-d', $empSalary->start_date)->format('d/m/Y');
+                }
+            }*/
+
+//            $empBaseSalaryRows[] = $empBaseSalaryRow;
+
+            //
+            /*$realSalary = $salaryUtil->getRealSalary($employeeId, $startDate, $endDate->format('Y-m-d'), $payrollColumn->salary_components, true);
+            $baseSalary = $salaryUtil->getBaseSalary($employeeId, $startDate, $endDate->format('Y-m-d'), $payrollColumn->salary_components);
+            $fromDate = DateTime::createFromFormat('Y-m-d', $startDate)->format('d/m/Y');
+            $toDate = $endDate->format('d/m/Y');
+            $total = 0;
+            $totalWorkingDays = AttendanceUtil::getTotalWorkingDaysInMonth($employeeId, $payroll->date_start, $payroll->date_end);
+
+            foreach ($realSalary as $dateRealSalary) {
+                $total += $dateRealSalary->baseSalary;
+            }
+
+            $additionalFields[] = [
+                'id' => uniqid('data_'),
+                'type' => 'Payroll Column',
+                'status' => 'Show',
+                'text' => '',
+                'value' => number_format((int)$baseSalary / (float)$totalWorkingDays) . ' đ',
+                'label' => LanguageManager::tran('From Date') . " {$fromDate} - " . LanguageManager::tran('To Date') . " {$toDate}",
+            ];*/
+        }
+
+        /*foreach ($empBaseSalaryRows as $row) {
+            $data['fields'][] = $row;
+        }
+
+        $data['fields'][] = $separatorField;
+
+        foreach ($additionalFields as $row) {
+            $data['fields'][] = $row;
+        }
+
+        $data['fields'][] = $separatorField;*/
     }
 }
