@@ -2391,3 +2391,15 @@ msgstr "Cong ty VMED chuyen luong thang "
 
 msgid "Days Forward"
 msgstr "Số ngày được chuyển tiếp"
+
+msgid "Total"
+msgstr "Tổng cộng"
+
+msgid "Total Amount"
+msgstr "Tổng"
+
+msgid "Period Salary"
+msgstr "Ngày Tính Lương"
+
+msgid "Employee Id"
+msgstr "Ngày Tính Lương"
