@@ -34,7 +34,6 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
         <li ><a id="tabHoliDay" href="#tabPageHoliDay"><?=t('Holidays')?></a></li>
         <li ><a id="tabLeaveRule" href="#tabPageLeaveRule"><?=t('Leave Rules')?></a></li>
         <li ><a id="tabEmployeeLeave" href="#tabPageEmployeeLeave"><?=t('Employee Leaves')?></a></li>
-        <li ><a id="tabReportLeave" href="#tabPageReportLeave"><?=t('Report Leaves')?></a></li>
     </ul>
 
     <div class="tab-content">
@@ -86,11 +85,6 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
             </div>
         </div>
-        <div class="tab-pane" id="tabPageReportLeave">
-            <div id="ReportLeave" class="reviewBlock" data-content="List" style="padding-left:5px;">
-
-            </div>
-        </div>
     </div>
 
 </div>
@@ -107,8 +101,6 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
     modJsList['tabEmployeeLeave'] = new EmployeeLeaveAdapter('EmployeeLeave','EmployeeLeave','','date_start desc');
     modJsList['tabEmployeeLeave'].setShowAddNew(false);
     modJsList['tabEmployeeLeave'].setRemoteTable(true);
-    modJsList['tabReportLeave'] = new ReportLeaveAdapter('EmployeeLeave','ReportLeave');
-    modJsList['tabReportLeave'].setShowAddNew(false);
     // modJsList['tabReportLeave'].setRemoteTable(true);
     var modJs = modJsList['tabLeaveType'];
 
@@ -142,8 +134,8 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="modJs.changeLeaveStatus();"><?php echo t('Change Leave Status')?></button>
-                <button class="btn" onclick="modJs.closeLeaveStatus();"><?php echo t('Not Now')?></button>
+                <button class="btn btn-primary" onclick="modJs.changeLeaveStatus();"><?php echo t('Ok')?></button>
+                <button class="btn" onclick="modJs.closeLeaveStatus();"><?php echo t('Exit')?></button>
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@ use Classes\Approval\ApproveAdminActionManager;
 use Classes\IceResponse;
 use Classes\LanguageManager;
 use Employees\Common\Model\Employee;
+use Leaves\Common\Model\LeaveType;
 use Overtime\Common\Model\EmployeeOvertime;
 use Overtime\Common\Model\OvertimeCategory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -21,6 +22,15 @@ use Utils\LogManager;
 
 class OvertimeActionManager extends ApproveAdminActionManager
 {
+    protected $db;
+
+    public function __construct()
+    {
+        if ($this->db == null) {
+            $this->db = NewADOConnection('mysqli');
+            $this->db->Connect(APP_HOST, APP_USERNAME, APP_PASSWORD, APP_DB);
+        }
+    }
 
     public function getModelClass()
     {
@@ -70,57 +80,129 @@ class OvertimeActionManager extends ApproveAdminActionManager
             $overtimes = $mEmployeeOvertime->Find('status = \'Approved\'');
         } else {
             $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
-                .'and date_format(start_time, \'%Y-%m\') >= \''.$filters->date_start.'\' and date_format(start_time, \'%Y-%m\') <= \''.$filters->date_start.'\'');
+                . 'and date_format(start_time, \'%Y-%m\') >= \'' . $filters->date_start . '\' and date_format(start_time, \'%Y-%m\') <= \'' . $filters->date_start . '\'');
         }
         $responseData = [];
-        $mEmployee = new Employee();
-//        $mCategory = new OvertimeCategory();
-        foreach ($overtimes as $overtime) {
-            $employee = $mEmployee->Find('id = ?', [$overtime->employee]);
-            $responseData[] = [
-                'id' => $overtime->id,
-                'startTime' => date('d/m/Y H:i:s', strtotime($overtime->start_time)),
-                'endTime' => date('d/m/Y H:i:s', strtotime($overtime->end_time)),
-                'name' => $employee[0]->first_name . ' ' . $employee[0]->last_name,
-                'totalTime' => $overtime->total_time,
-                'notes' => $overtime->notes,
-            ];
+        if (empty($req->save)) {
+            $mEmployee = new Employee();
+            foreach ($overtimes as $overtime) {
+                $employee = $mEmployee->Find('id = ?', [$overtime->employee]);
+                $responseData[] = [
+                    'id' => $overtime->id,
+                    'startTime' => date('d/m/Y H:i:s', strtotime($overtime->start_time)),
+                    'endTime' => date('d/m/Y H:i:s', strtotime($overtime->end_time)),
+                    'name' => $employee[0]->first_name . ' ' . $employee[0]->last_name,
+                    'totalTime' => $overtime->total_time,
+                    'notes' => $overtime->notes,
+                ];
+            }
         }
 
-        if(!empty($req->save) && $req->save != 0){
+        if (!empty($req->save) && $req->save != 0) {
+
+            $sql = "select e.id                                   as employee_id,
+                           eo.notes                               as location,
+                           eo.start_time,
+                           eo.end_time,
+                           eo.total_time,
+                           oc.coefficient,
+                           oc.name                                as ot_type,
+                           es.amount                              as total_salary,
+                           oc.type                                as cat_type,                           
+                           concat(e.first_name, ' ', e.last_name) as name
+                    from EmployeeOvertime eo
+                             join Employees e on eo.employee = e.id
+                             join OvertimeCategories oc on eo.category = oc.id
+                             join EmployeeSalary es on e.id = es.employee
+                             join SalaryComponent sc on es.component = sc.id
+                    where sc.componentType = 1                             
+                    group by eo.id;";
+            $result = $this->db->Execute($sql);
+            $employee = [];
+            while ($r = $result->fetchRow()) {
+                unset($r[0]);
+                unset($r[1]);
+                unset($r[2]);
+                unset($r[3]);
+                unset($r[4]);
+                unset($r[5]);
+                unset($r[6]);
+                unset($r[7]);
+                unset($r[8]);
+                $employee[$r['employee_id']][] = $r;
+            }
+
             try {
                 $spreadsheet = new Spreadsheet();
-                $sheet = $spreadsheet->getActiveSheet();
-                $numOfColumns = 8;
-                $alphas = range('A', 'Z');
-                $endColumnName = $alphas[$numOfColumns - 1];
-
-                //Set title
-                $rowIndex = 1;
-                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Report Overtime") . ' ' . date('d/m/Y'));
-                $sheet->mergeCells("A{$rowIndex}:{$endColumnName}{$rowIndex}");
-                $sheet->getStyle("A{$rowIndex}:{$endColumnName}{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                //Set header
-                $rowIndex = 3;
-                $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("STT"));
-                $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Name"));
-                $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Start Time"));
-                $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("End Time"));
-                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Total Time"));
-                $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("Notes"));
+                //$sheet = $spreadsheet->getActiveSheet();
+                $sheetIdx = 0;
 
                 //Set data
-                $rowIndex = 4;
-                foreach ($responseData as $rowData) {
-                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['id']);
-                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, $rowData['name']);
-                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, $rowData['startTime']);
-                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, $rowData['endTime']);
-                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, $rowData['totalTime']);
-                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, $rowData['notes']);
+                foreach ($employee as $data) {
+                    if ($sheetIdx > 0) {
+                        $spreadsheet->createSheet();
+                    }
+                    $sheet = $spreadsheet->getSheet($sheetIdx);
 
-                    $rowIndex++;
+                    //Set header
+                    $rowIndex = 1;
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Location"));
+                    $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Date Start"));
+                    $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Date End"));
+                    $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("Start Time"));
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("End Time"));
+                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("Total Days"));
+                    $sheet->setCellValueByColumnAndRow(7, $rowIndex, LanguageManager::tran("Total Hours"));
+                    $sheet->setCellValueByColumnAndRow(8, $rowIndex, LanguageManager::tran("Coefficient"));
+                    $sheet->setCellValueByColumnAndRow(9, $rowIndex, LanguageManager::tran("Base salary / day"));
+                    $sheet->setCellValueByColumnAndRow(10, $rowIndex, LanguageManager::tran("Salary get"));
+                    $sheet->setCellValueByColumnAndRow(11, $rowIndex, LanguageManager::tran("Category"));
+                    $sheet->setTitle($data[0]['name']);
+                    $sheet->getStyle('A1:K1')->getFont()->setBold(true);
+
+                    $rowIndex = 2;
+                    foreach ($data as $rowData) {
+                        $startDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['start_time'])));
+                        $endDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['end_time'])));
+                        $totalDays = $startDate->diff($endDate)->days;
+
+                        $daysWorkingOfMonth = $this->getTotalWorkingDaysInMonth(date('Y-m-01', $rowData['start_time']),
+                            date('Y-m-t', $rowData['end_time']));
+
+                        $pricePerDay = $rowData['total_salary'] / $daysWorkingOfMonth;
+                        $pricePerHour = round($pricePerDay) / 8;
+                        $salary = (round($pricePerHour) * $rowData['total_time']) * $rowData['coefficient'];
+                        if ($rowData['cat_type'] == 4) {
+                            $totalDays = ($totalDays->days == 0 ? 1 : $totalDays);
+                            $salary = $totalDays * 500000;
+                            $pricePerDay = 500000;
+                        } else if ($rowData['cat_type'] == 5) {
+                            $totalDays = ($totalDays->days == 0 ? 1 : $totalDays);
+                            $salary = $totalDays * 120000;
+                            $pricePerDay = 120000;
+                        }
+
+                        $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['location']);
+                        $sheet->setCellValueByColumnAndRow(2, $rowIndex, date('d/m/Y', strtotime($rowData['start_time'])));
+                        $sheet->setCellValueByColumnAndRow(3, $rowIndex, date('d/m/Y', strtotime($rowData['end_time'])));
+                        $sheet->setCellValueByColumnAndRow(4, $rowIndex, date('H:i', strtotime($rowData['start_time'])));
+                        $sheet->setCellValueByColumnAndRow(5, $rowIndex, date('H:i', strtotime($rowData['end_time'])));
+                        $sheet->setCellValueByColumnAndRow(6, $rowIndex, $totalDays);
+                        $sheet->setCellValueByColumnAndRow(7, $rowIndex, $rowData['total_time']);
+                        $sheet->setCellValueByColumnAndRow(8, $rowIndex, $rowData['coefficient']);
+                        $sheet->setCellValueByColumnAndRow(9, $rowIndex, round($pricePerDay));
+                        $sheet->setCellValueByColumnAndRow(10, $rowIndex, round($salary));
+                        $sheet->setCellValueByColumnAndRow(11, $rowIndex, $rowData['ot_type']);
+
+                        $rowIndex++;
+                    }
+                    $tempIdx = $rowIndex - 1;
+                    $sheet->setCellValueByColumnAndRow(10, $rowIndex, "=sum(J2:J$tempIdx)");
+                    $sheet->setCellValueByColumnAndRow(1, $rowIndex, LanguageManager::tran("Total"));
+                    $sheet->mergeCells("A{$rowIndex}:I{$rowIndex}");
+                    $sheet->getStyle("A{$rowIndex}:I{$rowIndex}")->getFont()->setBold(true);
+                    $sheet->getStyle("A{$rowIndex}:I{$rowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                    $sheetIdx++;
                 }
             } catch (Exception $e) {
                 LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
@@ -137,5 +219,26 @@ class OvertimeActionManager extends ApproveAdminActionManager
         }
 
         return new IceResponse(IceResponse::SUCCESS, $responseData);
+    }
+
+    protected function getTotalWorkingDaysInMonth($startDate, $endDate)
+    {
+        $startTime = \DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
+        $endTime = \DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
+        $totalDays = $endTime->diff($startTime)->days + 1;
+        LogManager::getInstance()->info("Total Days: " . $totalDays->days);
+        while ($startTime <= $endTime) {
+            $dayOfWeek = $startTime->format('w');
+
+            if ($dayOfWeek < 1) {
+                $totalDays -= 1;
+            } elseif ($dayOfWeek == 6) {
+                $totalDays -= 0.5;
+            }
+
+            $startTime->add(\DateInterval::createFromDateString('1 day'));
+        }
+
+        return $totalDays;
     }
 }

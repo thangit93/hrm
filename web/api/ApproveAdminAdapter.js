@@ -106,7 +106,6 @@ class ApproveAdminAdapter extends LogViewAdapter {
   }
 
   getStatusOptionsData(currentStatus) {
-    console.log(currentStatus)
     const data = {};
     if (currentStatus == 'Approved') {
 
