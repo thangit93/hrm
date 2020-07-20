@@ -8,13 +8,17 @@
 
 namespace Attendance\User\Api;
 
+use Attendance\Admin\Api\AttendanceUtil;
 use Attendance\Common\Model\Attendance;
 use AttendanceSheets\Common\Model\EmployeeAttendanceSheet;
 use Classes\BaseService;
 use Classes\IceConstants;
 use Classes\IceResponse;
+use Classes\LanguageManager;
 use Classes\SettingsManager;
 use Classes\SubActionManager;
+use DateTime;
+use Employees\Common\Model\Employee;
 use TimeSheets\Common\Model\EmployeeTimeSheet;
 use Utils\LogManager;
 use Utils\NetworkUtils;
@@ -35,7 +39,7 @@ class AttendanceActionManager extends SubActionManager
         $attendance->Load(
             "employee = ? and DATE_FORMAT( in_time,  '%Y-%m-%d' ) = ? and (out_time is NULL 
             or out_time = '0000-00-00 00:00:00')",
-            array($employee->id,$date)
+            array($employee->id, $date)
         );
 
         if ($attendance->employee == $employee->id) {
@@ -93,7 +97,7 @@ class AttendanceActionManager extends SubActionManager
         $attendance = new Attendance();
         $attendanceList = $attendance->Find(
             "employee = ? and DATE_FORMAT( in_time,  '%Y-%m-%d' ) = ?",
-            array($employee->id,$date)
+            array($employee->id, $date)
         );
 
         foreach ($attendanceList as $attendance) {
@@ -117,7 +121,7 @@ class AttendanceActionManager extends SubActionManager
                     //--1--0---0--1--
                     return new IceResponse(
                         IceResponse::ERROR,
-                        "Time entry is overlapping with an existing one ".$attendance->id
+                        "Time entry is overlapping with an existing one " . $attendance->id
                     );
                 }
             } else {
@@ -134,7 +138,7 @@ class AttendanceActionManager extends SubActionManager
             $openPunch->note = $req->note;
             $openPunch->image_out = $req->image;
             $openPunch->out_ip = NetworkUtils::getClientIp();
-            $this->baseService->audit(IceConstants::AUDIT_ACTION, "Punch Out \ time:".$openPunch->out_time);
+            $this->baseService->audit(IceConstants::AUDIT_ACTION, "Punch Out \ time:" . $openPunch->out_time);
         } else {
             $openPunch->in_time = $dateTime;
             //$openPunch->out_time = '0000-00-00 00:00:00';
@@ -142,7 +146,7 @@ class AttendanceActionManager extends SubActionManager
             $openPunch->image_in = $req->image;
             $openPunch->employee = $employee->id;
             $openPunch->in_ip = NetworkUtils::getClientIp();
-            $this->baseService->audit(IceConstants::AUDIT_ACTION, "Punch In \ time:".$openPunch->in_time);
+            $this->baseService->audit(IceConstants::AUDIT_ACTION, "Punch In \ time:" . $openPunch->in_time);
         }
         $ok = $openPunch->Save();
 
@@ -183,10 +187,126 @@ class AttendanceActionManager extends SubActionManager
         $newTimeSheet->status = "Pending";
         $ok = $newTimeSheet->Save();
         if (!$ok) {
-            LogManager::getInstance()->info("Error creating time sheet : ".$newTimeSheet->ErrorMsg());
+            LogManager::getInstance()->info("Error creating time sheet : " . $newTimeSheet->ErrorMsg());
             return new IceResponse(IceResponse::ERROR, "Error creating Attendance Sheet");
         }
 
         return new IceResponse(IceResponse::SUCCESS, "");
+    }
+
+    public function getUserAttendanceReport($req)
+    {
+        $user = BaseService::getInstance()->getCurrentUser();
+        $filterStr = $req->ft ?? null;
+        $employeeId = BaseService::getInstance()->getCurrentProfileId();
+        $employee = new Employee();
+        $employee->Load('id = ?', $employeeId);
+        $month = null;
+
+        if (!empty($filterStr)) {
+            $filter = json_decode($filterStr, true);
+            $employeeId = !empty($filter['employee']) ? $filter['employee'] : null;
+            $month = !empty($filter['in_time']) ? $filter['in_time'] : null;
+        }
+
+        if (empty($month)) {
+            $month = new \DateTime();
+        } else {
+            $month = \DateTime::createFromFormat('Y-m', "{$month}");
+        }
+
+        $endDate = clone $month;
+        $endDate->setDate($endDate->format('Y'), $endDate->format('m'), 25);
+
+        $empModel = new Employee();
+        $empQuery = '1 = 1 AND status = "Active"';
+        $empQueryData = [];
+
+        $attModel = new Attendance();
+
+        if (!empty($employeeId)) {
+            $empQuery .= " AND id = ?";
+            $empQueryData[] = $employeeId;
+        }
+
+        $employees = [$employee];
+
+        $data = [];
+        $dataHeader = [];
+        $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
+        $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+        while ($startDate <= $endDate) {
+            $dataHeader[] = $startDate->format('Y-m-d');
+            $startDate->add(\DateInterval::createFromDateString('1 day'));
+        }
+
+        $dataHeader[] = LanguageManager::tran('Total');
+
+        foreach ($employees as $employee) {
+            $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
+            $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+            $total = 0;
+
+            while ($startDate <= $endDate) {
+                $query = "((DATE_FORMAT(in_time, '%Y-%m-%d') = \"{$startDate->format("Y-m-d")}\") OR (DATE_FORMAT(out_time, '%Y-%m-%d') = \"{$startDate->format("Y-m-d")}\")) AND employee = \"{$employee->id}\"";
+                /** @var array $atts */
+                $atts = $attModel->Find($query);
+
+                $att = array_shift($atts);
+                $employeeDob = "";
+
+                if ($employee->birthday) {
+                    $employeeDob = DateTime::createFromFormat("Y-m-d", $employee->birthday)->format('Y');
+                }
+
+                $dataDay = [];
+                $dataDay['employee_id'] = $employee->id;
+                $dataDay['name'] = "{$employee->first_name} {$employee->last_name} {$employeeDob}";
+                $dataDay['date'] = $startDate->format('d/m/Y');
+                $dataDay['total'] = 0;
+
+                if (!empty($att)) {
+                    $checkInTime = "";
+                    $checkOutTime = "";
+
+                    if (!empty($att->in_time)) {
+                        $checkIn = \DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
+                        $checkInTime = $checkIn->format('H:i');
+                    }
+
+                    if ($att->out_time) {
+                        $checkOut = \DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
+                        $checkOutTime = $checkOut->format('H:i');
+                    }
+
+                    $dataDay['in'] = $checkInTime;
+                    $dataDay['out'] = $checkOutTime;
+
+                    if (!empty($att->in_time) && !empty($att->out_time)) {
+                        $dataDay['total'] = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employee->id);
+                    }
+
+                } else {
+                    $dataDay = array_merge($dataDay, [
+                        'in' => '',
+                        'out' => '',
+                    ]);
+                }
+
+                if (AttendanceUtil::isFullWorkingDay($employee->id, $startDate)) {
+                    $dataDay['total'] = AttendanceUtil::calculateWorkingDay($startDate->format('Y-m-d H:i:s'), $startDate->format('Y-m-d H:i:s'), $employee->id);
+                }
+
+                $data[$employee->id][] = $dataDay;
+                $total += $dataDay['total'];
+
+                $startDate->add(\DateInterval::createFromDateString('1 day'));
+            }
+        }
+
+        $data = $data[$employee->id];
+        $data = array_reverse($data);
+
+        return new IceResponse(IceResponse::SUCCESS, $data);
     }
 }
