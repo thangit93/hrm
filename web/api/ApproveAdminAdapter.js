@@ -110,8 +110,8 @@ class ApproveAdminAdapter extends LogViewAdapter {
     if (currentStatus == 'Approved') {
 
     } else if (currentStatus == 'Pending') {
-      data.Approved = 'Approved';
-      data.Rejected = 'Rejected';
+      data.Approved = this.gt('Approved');
+      data.Rejected = this.gt('Rejected');
     } else if (currentStatus == 'Rejected') {
 
     } else if (currentStatus == 'Cancelled') {
@@ -120,7 +120,7 @@ class ApproveAdminAdapter extends LogViewAdapter {
 
     } else {
       data['Cancellation Requested'] = 'Cancellation Requested';
-      data.Cancelled = 'Cancelled';
+      data.Cancelled = this.gt('Cancelled');
     }
 
     return data;
