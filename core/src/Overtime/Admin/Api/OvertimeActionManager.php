@@ -100,6 +100,13 @@ class OvertimeActionManager extends ApproveAdminActionManager
 
         if (!empty($req->save) && $req->save != 0) {
 
+            echo '<pre>';
+            print_r($this->user->user_level);
+            echo '<pre>';die;
+            if ($this->user->user_level !== 'Admin') {
+                return new IceResponse(IceResponse::ERROR, []);
+            }
+
             $sql = "select e.id                                   as employee_id,
                            eo.notes                               as location,
                            eo.start_time,
@@ -115,7 +122,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                              join OvertimeCategories oc on eo.category = oc.id
                              join EmployeeSalary es on e.id = es.employee
                              join SalaryComponent sc on es.component = sc.id
-                    where sc.componentType = 1                             
+                    where sc.componentType = 1 and eo.status = \"Approved\"
                     group by eo.id;";
             $result = $this->db->Execute($sql);
             $employee = [];

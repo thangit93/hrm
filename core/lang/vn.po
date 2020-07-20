@@ -2403,3 +2403,21 @@ msgstr "Ngày Tính Lương"
 
 msgid "Employee Id"
 msgstr "Ngày Tính Lương"
+
+msgid "Error Applying Leave"
+msgstr "Lỗi xin nghỉ phép"
+
+msgid "You are trying to apply"
+msgstr "Bạn đang cố gắng áp dụng"
+
+msgid "But you are only allowed to apply for"
+msgstr "Nhưng bạn chỉ được phép đăng ký"
+
+msgid "You are not allowed to assign this type of leave as admin"
+msgstr "Bạn không được phép chỉ định loại nghỉ phép này với tư cách quản trị viên"
+
+msgid "You are not allowed to apply for this type of leave"
+msgstr "Bạn không được phép nộp đơn xin nghỉ phép"
+
+msgid "leaves"
+msgstr "ngày phép"

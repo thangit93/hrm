@@ -137,7 +137,9 @@ class EmployeeLeaveAdapter extends AdapterBase {
         var availableLeaves = parseFloat(this.leaveInfo['availableLeaves']);
 
         if (numberOfLeaves > availableLeaves && this.currentLeaveRule.apply_beyond_current == "No") {
-            this.showMessage("Error Applying Leave", "You are trying to apply " + numberOfLeaves + " leaveman. But you are only allowed to apply for " + availableLeaves + " leaveman.");
+            this.showMessage(this.gt("Error Applying Leave"), this.gt("You are trying to apply") + " " + numberOfLeaves
+                + " " + this.gt("leaves") + ". " + this.gt("But you are only allowed to apply for")
+                + " " + availableLeaves + " " + this.gt("leaves") + ".");
             return;
         }
 
@@ -167,7 +169,8 @@ class EmployeeLeaveAdapter extends AdapterBase {
     }
 
     getLeaveDaysFailCallBack(callBackData, serverData) {
-        this.showMessage("Error Occured while Applying Leave", callBackData)
+        let message = this.gt("Error Occured while Applying Leave");
+        this.showMessage(message, callBackData)
     }
 
     addSuccessCallBack(callbackData) {
@@ -176,7 +179,8 @@ class EmployeeLeaveAdapter extends AdapterBase {
     }
 
     addFailCallBack(callBackData) {
-        this.showMessage("Error Occured while Applying Leave", callBackData);
+        let message = this.gt("Error Occured while Applying Leave");
+        this.showMessage(message, callBackData);
     }
 
     updateLeaveDate() {
