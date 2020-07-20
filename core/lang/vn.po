@@ -2388,3 +2388,15 @@ msgstr "Cong ty SKB chuyen luong thang "
 
 msgid "VMED - Payment on Behalf Content"
 msgstr "Cong ty VMED chuyen luong thang "
+
+msgid "Total"
+msgstr "Tổng cộng"
+
+msgid "Total Amount"
+msgstr "Tổng"
+
+msgid "Period Salary"
+msgstr "Ngày Tính Lương"
+
+msgid "Employee Id"
+msgstr "Ngày Tính Lương"
