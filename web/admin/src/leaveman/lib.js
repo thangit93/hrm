@@ -53,7 +53,8 @@ class LeaveTypeAdapter extends AdapterBase {
                 "source": [["No", "No"], ["Yes", "Yes"]]
             }],
             ["default_per_year", {"label": "Leaves Per Leave Period", "type": "text", "validation": "number"}],
-            ["date_reset", {"label": "Date Reset", "type": "date", "validation": "none"}]
+            ["date_reset", {"label": "Date Reset", "type": "date", "validation": "none"}],
+            ["days_forward", {"label": "Days Forward", "type": "text", "validation": "number"}]
         ];
     }
 
