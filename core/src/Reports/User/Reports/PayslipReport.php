@@ -93,10 +93,10 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         $salaryComponents = $salaryComponentModel->Find('1 = 1 ORDER BY id ASC');
         $salaryComponentIds = [];
-        $payrollColumn = new PayrollColumn();
-        $payrollData = new PayrollData();
 
         foreach ($salaryComponents as $salaryComponent) {
+            $payrollColumn = new PayrollColumn();
+            $payrollData = new PayrollData();
             $salaryComponentIds[] = $salaryComponent->id;
             $payrollColumn->Load('salary_components = ?', [
                 "[\"{$salaryComponent->id}\"]"
@@ -215,9 +215,11 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
         }
 
         //Calculate salary deposit
+        $payrollColumn = new PayrollColumn();
         $payrollColumn->Load('calculation_hook = ?', ['SalaryUtil_getSalaryDeposit']);
 
         if (!empty($payrollColumn)) {
+            $payrollData = new PayrollData();
             $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
 
             if (!empty($payrollData)) {
