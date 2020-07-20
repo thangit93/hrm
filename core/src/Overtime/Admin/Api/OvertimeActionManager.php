@@ -100,9 +100,6 @@ class OvertimeActionManager extends ApproveAdminActionManager
 
         if (!empty($req->save) && $req->save != 0) {
 
-            echo '<pre>';
-            print_r($this->user->user_level);
-            echo '<pre>';die;
             if ($this->user->user_level !== 'Admin') {
                 return new IceResponse(IceResponse::ERROR, []);
             }
