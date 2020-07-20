@@ -6,6 +6,7 @@ namespace Leaves\User\Api;
 
 use Classes\IceConstants;
 use Classes\IceResponse;
+use Classes\LanguageManager;
 use Classes\SubActionManager;
 use Employees\Common\Model\Employee;
 use Leaves\Common\Model\EmployeeLeave;
@@ -33,11 +34,11 @@ class LeavesActionManager extends SubActionManager
         if ($this->user->user_level == 'Admin' && $this->getCurrentProfileId() != $this->user->employee) {
             //Admin is updating information for an employee
             if ($rule->supervisor_leave_assign == "No") {
-                return new IceResponse(IceResponse::ERROR, "You are not allowed to assign this type of leaveman as admin");
+                return new IceResponse(IceResponse::ERROR, LanguageManager::tran("You are not allowed to assign this type of leave as admin"));
             }
         } else {
             if ($rule->employee_can_apply == "No") {
-                return new IceResponse(IceResponse::ERROR, "You are not allowed to apply for this type of leaveman");
+                return new IceResponse(IceResponse::ERROR, LanguageManager::tran("You are not allowed to apply for this type of leave"));
             }
         }
 
@@ -83,7 +84,7 @@ class LeavesActionManager extends SubActionManager
 
         if (!$ok) {
             error_log($employeeLeave->ErrorMsg());
-            return new IceResponse(IceResponse::ERROR, "Error occured while applying leave.");
+            return new IceResponse(IceResponse::ERROR, LanguageManager::tran("Error occured while applying leave."));
         }
 
         $days = json_decode($req->days);
@@ -156,11 +157,11 @@ class LeavesActionManager extends SubActionManager
         if ($this->user->user_level == 'Admin' && $this->getCurrentProfileId() != $this->user->employee) {
             //Admin is updating information for an employee
             if ($rule->supervisor_leave_assign == "No") {
-                return new IceResponse(IceResponse::ERROR, "You are not allowed to assign this type of leaveman as admin");
+                return new IceResponse(IceResponse::ERROR, LanguageManager::tran("You are not allowed to assign this type of leave as admin"));
             }
         } else {
             if ($rule->employee_can_apply == "No") {
-                return new IceResponse(IceResponse::ERROR, "You are not allowed to apply for this type of leaveman");
+                return new IceResponse(IceResponse::ERROR, LanguageManager::tran("You are not allowed to apply for this type of leave"));
             }
         }
 

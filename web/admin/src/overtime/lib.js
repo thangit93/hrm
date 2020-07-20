@@ -460,7 +460,9 @@ class ReportOvertimeAdapter extends AdapterBase {
     if (html !== '') {
       html += '&nbsp;&nbsp;';
     }
-    html += `<button class="btn btn-small btn-primary" onclick="modJs.exportAllData(1)">${this.gt('Export Report')} <i class="fa fa-download"></i></button>`;
+    if (this.user.user_level === 'Admin') {
+      html += `<button class="btn btn-small btn-primary" onclick="modJs.exportAllData(1)">${this.gt('Export Report')} <i class="fa fa-download"></i></button>`;
+    }
 
     if (this.getFilters() != null) {
       if (html !== '') {
