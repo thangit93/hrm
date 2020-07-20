@@ -461,8 +461,8 @@ class LeavesActionManager extends SubActionManager
 
                 $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod->id, $leaveTypeId, 'Approved'));
 
-                if($available > 6){
-                    $available = 6;
+                if($available > $rule->days_forward){
+                    $available = $rule->days_forward;
                 }
 
                 if(date('m-d') > date('m-d', strtotime($rule->date_reset))){

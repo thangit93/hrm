@@ -165,9 +165,9 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         $startDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['start_time'])));
                         $endDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['end_time'])));
                         $totalDays = $startDate->diff($endDate)->days;
-
-                        $daysWorkingOfMonth = $this->getTotalWorkingDaysInMonth(date('Y-m-01', $rowData['start_time']),
-                            date('Y-m-t', $rowData['end_time']));
+                        $dateStartMonth = date('Y-m-26', strtotime("-1 months", strtotime($rowData['start_time'])));
+                        $dateEndMonth = date('Y-m-25', strtotime($rowData['end_time']));
+                        $daysWorkingOfMonth = $this->getTotalWorkingDaysInMonth($dateStartMonth, $dateEndMonth);
 
                         $pricePerDay = $rowData['total_salary'] / $daysWorkingOfMonth;
                         $pricePerHour = round($pricePerDay) / 8;

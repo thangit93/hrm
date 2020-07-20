@@ -2389,6 +2389,9 @@ msgstr "Cong ty SKB chuyen luong thang "
 msgid "VMED - Payment on Behalf Content"
 msgstr "Cong ty VMED chuyen luong thang "
 
+msgid "Days Forward"
+msgstr "Số ngày được chuyển tiếp"
+
 msgid "Total"
 msgstr "Tổng cộng"
 
