@@ -497,7 +497,7 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
     }
 
     changeLeaveStatusSuccessCallBack(callBackData) {
-        this.showMessage("Successful", "Leave status changed successfully");
+        this.showMessage(this.gt("Successful"), this.gt("Leave status changed successfully"));
         this.get([]);
     }
 
