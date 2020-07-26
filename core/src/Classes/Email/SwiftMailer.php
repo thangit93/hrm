@@ -52,6 +52,7 @@ class SwiftMailer extends EmailSender
             $mail->setCc($ccList);
             $mail->setBcc($bccList);
             $mail->setBody($body);
+            $mail->setContentType('text/html');
 
             $mailer = new \Swift_Mailer($transport);
             return $mailer->send($mail);
