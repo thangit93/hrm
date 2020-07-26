@@ -4,7 +4,9 @@
 namespace Leaves\User\Api;
 
 
+use Classes\LanguageManager;
 use Employees\Common\Model\Employee;
+use Users\Common\Model\User;
 
 class LeavesEmailSender
 {
@@ -44,6 +46,18 @@ class LeavesEmailSender
         return $sup;
     }
 
+    public function getUserById($id)
+    {
+        $user = new User();
+        $user->load('employee = ?', array($id));
+        if($user->employee != $id){
+            error_log("User not found");
+            return null;
+        }
+
+        return $user;
+    }
+
     public function sendLeaveApplicationEmail($employee){
 
         $sup = $this->getEmployeeSupervisor($employee);
@@ -67,7 +81,7 @@ class LeavesEmailSender
 
         if(!empty($emailTo)){
             if(!empty($this->emailSender)){
-                $this->emailSender->sendEmail("Leave Application Received",$emailTo,$email,$params);
+                $this->emailSender->sendEmail(LanguageManager::tran("Leave Application Received"),$emailTo,$email,$params);
             }
         }else{
             error_log("[sendLeaveApplicationEmail] email is empty");
@@ -92,7 +106,7 @@ class LeavesEmailSender
 
         if(!empty($emailTo)){
             if(!empty($this->emailSender)){
-                $this->emailSender->sendEmail("Leave Application Submitted",$emailTo,$email,$params);
+                $this->emailSender->sendEmail(LanguageManager::tran("Leave Application Submitted"),$emailTo,$email,$params);
             }
         }else{
             error_log("[sendLeaveApplicationSubmittedEmail] email is empty");
@@ -105,13 +119,13 @@ class LeavesEmailSender
 
         $params = array();
         $params['name'] = $emp->first_name." ".$emp->last_name;
-        $params['startdate'] = $leave->date_start;
-        $params['enddate'] = $leave->date_end;
-        $params['status'] = $leave->status;
+        $params['startdate'] = date('d/m/Y', strtotime($leave->date_start));
+        $params['enddate'] = date('d/m/Y', strtotime($leave->date_end));
+        $params['status'] = LanguageManager::tran($leave->status);
 
         $email = $this->subActionManager->getEmailTemplate('leaveStatusChanged.html');
 
-        $user = $this->subActionManager->getCurrentProfileId($emp->id);
+        $user = $this->getUserById($emp->id);
 
         $emailTo = null;
         if(!empty($user)){
@@ -120,7 +134,8 @@ class LeavesEmailSender
 
         if(!empty($emailTo)){
             if(!empty($this->emailSender)){
-                $this->emailSender->sendEmail("Leave Application ".$leave->status,$emailTo,$email,$params);
+                $this->emailSender->sendEmail(LanguageManager::tran('Leave Application') . " "
+                    . LanguageManager::tran($leave->status),$emailTo,$email,$params);
             }
         }else{
             error_log("[sendLeaveStatusChangedEmail] email is empty");

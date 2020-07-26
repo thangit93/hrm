@@ -2421,3 +2421,18 @@ msgstr "Bạn không được phép nộp đơn xin nghỉ phép"
 
 msgid "leaves"
 msgstr "ngày phép"
+
+msgid "Successful"
+msgstr "Thành công"
+
+msgid "Leave status changed successfully"
+msgstr "Thay đổi trạng thái nghỉ phép thành công."
+
+msgid "Leave Application"
+msgstr "Đơn xin nghỉ phép"
+
+msgid "Leave Application Submitted"
+msgstr "Đơn xin nghỉ phép đã được gửi"
+
+msgid "Leave Application Received"
+msgstr "Đã nhận được đơn xin nghỉ phép"
