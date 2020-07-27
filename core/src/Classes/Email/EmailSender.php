@@ -9,6 +9,7 @@
 namespace Classes\Email;
 
 use Classes\Crypt\AesCtr;
+use Classes\LanguageManager;
 use Classes\UIManager;
 use Employees\Common\Model\Employee;
 use Model\IceEmail;
@@ -49,7 +50,7 @@ abstract class EmailSender
 
             if ($delayed) {
                 $this->sendEmailDelayed(
-                    'IceHrm Notification from '.$notification->type,
+                    LanguageManager::tran('IceHrm Notification from ').LanguageManager::tran($notification->type),
                     $user->email,
                     $emailBody,
                     array(),
@@ -58,7 +59,7 @@ abstract class EmailSender
                 );
             } else {
                 $this->sendEmail(
-                    'IceHrm Notification from '.$notification->type,
+                    LanguageManager::tran('IceHrm Notification from ').LanguageManager::tran($notification->type),
                     $user->email,
                     $emailBody,
                     array(),

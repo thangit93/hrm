@@ -54,7 +54,8 @@ class ApproveAdminAdapter extends LogViewAdapter {
   }
 
   changeStatusSuccessCallBack(callBackData) {
-    this.showMessage('Successful', `${this.itemName} Request status changed successfully`);
+    let message = `${this.itemName} Request status changed successfully`;
+    this.showMessage(this.gt('Successful'), this.gt(message));
     this.get([]);
   }
 
