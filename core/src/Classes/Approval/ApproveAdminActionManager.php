@@ -5,6 +5,7 @@ namespace Classes\Approval;
 use Classes\BaseService;
 use Classes\IceConstants;
 use Classes\IceResponse;
+use Classes\LanguageManager;
 use Classes\StatusChangeLogManager;
 use Model\BaseModel;
 use Utils\LogManager;
@@ -132,7 +133,9 @@ abstract class ApproveAdminActionManager extends ApproveCommonActionManager
             $employee = $this->baseService->getElement('Employee', $currentEmpId, null, true);
 
             $notificationMsg
-                = "Your $itemName has been $obj->status by ".$employee->first_name." ".$employee->last_name;
+                = LanguageManager::tran("Your $itemName has been")
+                . '<b>'.LanguageManager::tran($obj->status).'</b>'
+                ." " . LanguageManager::tran("by")." ".$employee->first_name." ".$employee->last_name;
             if (!empty($req->reason)) {
                 $notificationMsg.=" (Note:".$req->reason.")";
             }
