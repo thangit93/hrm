@@ -33,11 +33,16 @@ class SwiftMailer extends EmailSender
             $username = $this->settings->getSetting("Email: SMTP User");
             $password = $this->settings->getSetting("Email: SMTP Password");
             $port = $this->settings->getSetting("Email: SMTP Port");
+            $security = null;
 
             if (empty($port)) {
                 $port = '25';
+            } else if (!empty($port) && $port == 465) {
+                $security = 'ssl';
+            } else if (!empty($port) && $port = 587) {
+                $security = 'tls';
             }
-            $transport = new \Swift_SmtpTransport($host, $port);
+            $transport = new \Swift_SmtpTransport($host, $port, $security);
             $mail = new \Swift_Message();
 
             if ($this->settings->getSetting("Email: SMTP Authentication Required") === "1") {
@@ -53,6 +58,12 @@ class SwiftMailer extends EmailSender
             $mail->setBcc($bccList);
             $mail->setBody($body);
             $mail->setContentType('text/html');
+
+            // Ha Tran custom ssl stream options for SwiftMailer
+            $options['ssl']['allow_self_signed'] = TRUE;
+            $options['ssl']['verify_peer'] = FALSE;
+            $options['ssl']['verify_peer_name'] = FALSE;
+            $transport->setStreamOptions($options);
 
             $mailer = new \Swift_Mailer($transport);
             return $mailer->send($mail);
