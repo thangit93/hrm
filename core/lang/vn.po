@@ -2436,3 +2436,18 @@ msgstr "Đơn xin nghỉ phép đã được gửi"
 
 msgid "Leave Application Received"
 msgstr "Đã nhận được đơn xin nghỉ phép"
+
+msgid "Your Overtime Request has been"
+msgstr "Yêu cầu làm thêm giờ của bạn đã thay đổi trạng sang "
+
+msgid "by"
+msgstr "bởi"
+
+msgid "OvertimeRequest Request status changed successfully"
+msgstr "Thay đổi trang thái làm thêm giờ thành công."
+
+msgid "IceHrm Notification from "
+msgstr "Thông báo từ "
+
+msgid "Overtime Management"
+msgstr "Quản lý làm thêm giờ"
