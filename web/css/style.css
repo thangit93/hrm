@@ -903,3 +903,7 @@ table.dataTable{
     border: 1px solid #ddd !important;
     text-align: center !important;
 }
+
+#PayrollDataButtons button{
+    margin-bottom: 10px;
+}
