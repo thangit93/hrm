@@ -521,7 +521,24 @@ class PayrollActionManager extends SubActionManager
             }
         }
 
-        if ($export == "2") {
+        switch ($export) {
+            case 2:
+            case 3:
+                $exportCompany = 'Y VIET';
+                break;
+            case 4:
+            case 5:
+                $exportCompany = 'VMED';
+                break;
+            case 6:
+            case 7:
+                $exportCompany = 'SKB';
+                break;
+            default:
+                $exportCompany = null;
+        }
+
+        if (in_array($export, ['2', '4', '6'])) {
             try {
                 $spreadsheet = new Spreadsheet();
                 $sheet = $spreadsheet->getActiveSheet();
@@ -553,9 +570,9 @@ class PayrollActionManager extends SubActionManager
                 foreach ($valueMap as $empId => $rowData) {
                     $employee = $employeesById[$empId];
                     $employee = $empModel->getBankAccount($employee);
-                    $company = $empModel->getCompany($employee);
+                    $company = strtoupper($empModel->getCompany($employee));
 
-                    if (empty($employee) || $employee->bank_name != 'ACB') {
+                    if (empty($employee) || $employee->bank_name != 'ACB' || (!empty($exportCompany) && $company != $exportCompany)) {
                         continue;
                     }
 
@@ -588,7 +605,7 @@ class PayrollActionManager extends SubActionManager
             }
         }
 
-        if ($export == "3") {
+        if (in_array($export, ['3', '5', '7'])) {
             try {
                 $spreadsheet = new Spreadsheet();
                 $sheet = $spreadsheet->getActiveSheet();
@@ -626,7 +643,7 @@ class PayrollActionManager extends SubActionManager
                     $employee = $empModel->getBankAccount($employee);
                     $company = $empModel->getCompany($employee);
 
-                    if (empty($employee) || $employee->bank_name == 'ACB') {
+                    if (empty($employee) || $employee->bank_name == 'ACB' || (!empty($exportCompany) && $company != $exportCompany)) {
                         continue;
                     }
 
@@ -641,7 +658,7 @@ class PayrollActionManager extends SubActionManager
                     $sheet->setCellValueByColumnAndRow(9, $rowIndex, "");
                     $sheet->setCellValueByColumnAndRow(10, $rowIndex, "");
                     $sheet->setCellValueByColumnAndRow(11, $rowIndex, "");
-                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, StringHelper::convert_vi_to_en(LanguageManager::tran(strtoupper($company->title) . " - Payment on Behalf Content") . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m-Y')));
+                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, StringHelper::convert_vi_to_en(LanguageManager::tran(strtoupper($company) . " - Payment on Behalf Content") . DateTime::createFromFormat('Y-m-d', $payroll->date_end)->format('m-Y')));
                     $sheet->getStyle("E{$rowIndex}")->getNumberFormat()
                         ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED3);
 
