@@ -68,7 +68,7 @@ class LeavesEmailSender
         $params = array();
         $params['supervisor'] = $sup->first_name." ".$sup->last_name;
         $params['name'] = $employee->first_name." ".$employee->last_name;
-        $params['url'] = CLIENT_BASE_URL;
+        $params['url'] = CLIENT_BASE_URL . '?g=modules&n=leaveman&m=module_Leave#tabPageSubEmployeeLeaveAll';
 
         $email = $this->subActionManager->getEmailTemplate('leaveApplied.html');
 
@@ -77,6 +77,10 @@ class LeavesEmailSender
         $emailTo = null;
         if(!empty($user)){
             $emailTo = $user->email;
+        }
+
+        if($sup->private_email != null) {
+            $emailTo = $sup->private_email;
         }
 
         if(!empty($emailTo)){
@@ -126,6 +130,7 @@ class LeavesEmailSender
         $params['startdate'] = date('d/m/Y', strtotime($leave->date_start));
         $params['enddate'] = date('d/m/Y', strtotime($leave->date_end));
         $params['status'] = LanguageManager::tran($leave->status);
+        $params['url'] = CLIENT_BASE_URL . "?g=modules&n=leaveman&m=module_Leave";
 
         $email = $this->subActionManager->getEmailTemplate('leaveStatusChanged.html');
 
