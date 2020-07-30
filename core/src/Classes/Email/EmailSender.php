@@ -39,6 +39,11 @@ abstract class EmailSender
                 $name = $employee->first_name;
             }
 
+            $toEmail = $user->email;
+            if($employee->private_email != null){
+                $toEmail = $employee->private_email;
+            }
+
             $action = json_decode($notification->action);
 
             $emailBody = file_get_contents(APP_BASE_PATH.'/templates/email/notificationEmail.html');
@@ -51,7 +56,7 @@ abstract class EmailSender
             if ($delayed) {
                 $this->sendEmailDelayed(
                     LanguageManager::tran('IceHrm Notification from ').LanguageManager::tran($notification->type),
-                    $user->email,
+                    $toEmail,
                     $emailBody,
                     array(),
                     array(),
@@ -60,7 +65,7 @@ abstract class EmailSender
             } else {
                 $this->sendEmail(
                     LanguageManager::tran('IceHrm Notification from ').LanguageManager::tran($notification->type),
-                    $user->email,
+                    $toEmail,
                     $emailBody,
                     array(),
                     array(),
