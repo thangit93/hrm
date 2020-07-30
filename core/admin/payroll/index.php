@@ -43,8 +43,15 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 <button class="cancelBtnTable btn" style="margin-right:5px;"><i class="fa fa-times-circle-o"></i> <?php echo t('Cancel') ?></button>
                 <button class="saveBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-save"></i> <?php echo t('Save') ?></button>
                 <button class="downloadBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') ?></button>
-                <button class="downloadBtnTable2 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') . " ACB" ?></button>
-                <button class="downloadBtnTable3 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') ?></button>
+<!--              YViet-->
+                <button class="downloadBtnTable2 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') . " ACB" ?> - YViet</button>
+                <button class="downloadBtnTable3 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') ?> - YViet</button>
+<!--              VMED-->
+                <button class="downloadBtnTable4 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') . " ACB" ?> - VMED</button>
+                <button class="downloadBtnTable5 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') ?> - VMED</button>
+<!--              SKB-->
+                <button class="downloadBtnTable6 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') . " ACB - SKB" ?></button>
+                <button class="downloadBtnTable7 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') ?> - SKB</button>
                 <button class="completeBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> <?php echo t('Finalize') ?></button>
             </div>
         </div>
@@ -144,6 +151,22 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
     $(".downloadBtnTable3").off().on('click',function(){
         modJsList['tabPayrollData'].exportAllData(3);
+    });
+
+    $(".downloadBtnTable4").off().on('click',function(){
+        modJsList['tabPayrollData'].exportAllData(4);
+    });
+
+    $(".downloadBtnTable5").off().on('click',function(){
+        modJsList['tabPayrollData'].exportAllData(5);
+    });
+
+    $(".downloadBtnTable6").off().on('click',function(){
+        modJsList['tabPayrollData'].exportAllData(6);
+    });
+
+    $(".downloadBtnTable7").off().on('click',function(){
+        modJsList['tabPayrollData'].exportAllData(7);
     });
 
     $(".cancelBtnTable").off().on('click',function(){

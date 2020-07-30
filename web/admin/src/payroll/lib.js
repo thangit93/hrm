@@ -291,6 +291,18 @@ class PayrollDataAdapter extends TableEditAdapter {
         } else if (type === 'exportAllData3') {
             req.payrollId = this.payrollId;
             req.export = "3";
+        } else if (type === 'exportAllData4') {
+            req.payrollId = this.payrollId;
+            req.export = "4";
+        } else if (type === 'exportAllData5') {
+            req.payrollId = this.payrollId;
+            req.export = "5";
+        } else if (type === 'exportAllData6') {
+            req.payrollId = this.payrollId;
+            req.export = "6";
+        } else if (type === 'exportAllData7') {
+            req.payrollId = this.payrollId;
+            req.export = "7";
         }
 
         return req;

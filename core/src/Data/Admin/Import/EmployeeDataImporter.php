@@ -42,14 +42,20 @@ class EmployeeDataImporter extends AbstractDataImporter
         $object->first_name = $firstName;
         $object->last_name = $lastName;
         $object->middle_name = $middleName;
-        $object->custom1 = $hash;
         $object->custom2 = $object->bank_account;
         $object->nationality = $this->getNationality()->id;
         $object->country = 'VN';
         $birthday = new DateTime();
 
         if (array_key_exists($hash, $this->supervisors)) {
+            $oldObject = $object;
+            $oldObject = json_decode(json_encode($oldObject), true);
             $object = $this->supervisors[$hash];
+            foreach ($oldObject as $key => $val) {
+                if (!empty($val) && empty($object->{$key})) {
+                    $object->{$key} = $val;
+                }
+            }
         }
 
         if (empty($object->status)) {
@@ -69,12 +75,15 @@ class EmployeeDataImporter extends AbstractDataImporter
             if ($column->name == 'job_title') {
                 $jobTitleObject = $this->addJobTitle($value);
                 $object->job_title = $jobTitleObject->id;
+            } elseif ($column->name == 'email' && !empty($value)) {
+                $object->work_email = $value;
             } elseif ($column->name == 'supervisor' && !empty($value)) {
                 $supervisor = $this->addSupervisor($value);
                 $object->supervisor = $supervisor->id;
-            } elseif ($column->name == 'department') {
-                $department = $this->addCompany($value);
+            } elseif ($column->name == 'company') {
+                $department = $this->addCompany('Y Viet');
                 $object->department = $department->id;
+                $object->custom10 = $value;
             } elseif ($column->name == 'indirect_supervisors') {
                 $value = explode('&', $value);
                 $indirectSupervisors = [];
@@ -114,7 +123,7 @@ class EmployeeDataImporter extends AbstractDataImporter
     public function fixAfterSave($object)
     {
         if (!empty($object) && !empty($object->first_name) && !empty($object->last_name) && !empty($object->birthday)) {
-            $this->createUser($object->first_name, $object->last_name, $object->birthday, $object);
+            $this->createUser($object->first_name, $object->last_name, $object->birthday, $object, $object->work_email);
         }
 
         if (!empty($object)) {
@@ -221,7 +230,6 @@ class EmployeeDataImporter extends AbstractDataImporter
         $object->middle_name = $middleName;
         $object->birthday = '2020-02-20';
         $object->joined_date = '2020-02-20';
-        $object->custom1 = $hash;
         $object->status = 'Active';
         $object->Save();
 
@@ -315,11 +323,11 @@ class EmployeeDataImporter extends AbstractDataImporter
         return $birthday;
     }
 
-    public function createUser($firstName, $lastName, $birthday, $employee)
+    public function createUser($firstName, $lastName, $birthday, $employee, $email = null)
     {
         $birthday = $this->getBirthDay($birthday);
         $username = $this->getUsername($firstName, $lastName, $birthday->format('Y'));
-        $email = $this->getEmail($username);
+        $email = empty($email) ? $this->getEmail($username) : $email;
         $password = $this->getPassword($birthday);
 
         $user = new User();

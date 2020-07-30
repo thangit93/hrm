@@ -313,10 +313,17 @@ class Employee extends BaseModel
         $employee->employee_id = $importer->convert_vi_to_en("{$employee->first_name}{$employee->last_name}{$birthday->format('Y')}");
     }
 
-    public function getCompany($employee){
-        $company = new CompanyStructure();
-        $company->Load('id = ?', [$employee->department]);
+    public function getCompany($obj)
+    {
+        $customFieldManager = new CustomFieldManager();
+        /** @var array $customFields */
+        $customFields = $customFieldManager->getCustomField('Employee', $obj->id, 'company');
+        $customField = array_shift($customFields);
 
-        return $company;
+        if (!empty($customField->value) && $customField->value != "NULL") {
+            return $customField->value;
+        }
+
+        return null;
     }
 }
