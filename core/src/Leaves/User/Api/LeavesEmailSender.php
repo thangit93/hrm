@@ -104,6 +104,10 @@ class LeavesEmailSender
             $emailTo = $user->email;
         }
 
+        if($employee->private_email != null) {
+            $emailTo = $employee->private_email;
+        }
+
         if(!empty($emailTo)){
             if(!empty($this->emailSender)){
                 $this->emailSender->sendEmail(LanguageManager::tran("Leave Application Submitted"),$emailTo,$email,$params);
@@ -130,6 +134,10 @@ class LeavesEmailSender
         $emailTo = null;
         if(!empty($user)){
             $emailTo = $user->email;
+        }
+
+        if ($emp->private_email != null) {
+            $emailTo = $emp->private_email;
         }
 
         if(!empty($emailTo)){
