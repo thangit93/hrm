@@ -163,8 +163,9 @@ class AttendanceActionManager extends SubActionManager
 
         $data = [];
         $dataHeader = [];
-        $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
-        $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+        $currentMonth = (int) $endDate->format('m');
+        $startDate = (clone $endDate);
+        $startDate->setDate($startDate->format('Y'), $currentMonth - 1, 26);
         while ($startDate <= $endDate) {
             $dataHeader[] = $startDate->format('Y-m-d');
             $startDate->add(\DateInterval::createFromDateString('1 day'));
@@ -173,8 +174,8 @@ class AttendanceActionManager extends SubActionManager
         $dataHeader[] = LanguageManager::tran('Total');
 
         foreach ($employees as $employee) {
-            $startDate = (clone $month)->sub(\DateInterval::createFromDateString('1 month'));
-            $startDate->setDate($startDate->format('Y'), $startDate->format('m'), 26);
+            $startDate = (clone $endDate);
+            $startDate->setDate($startDate->format('Y'), $currentMonth - 1, 26);
             $total = 0;
 
             while ($startDate <= $endDate) {
