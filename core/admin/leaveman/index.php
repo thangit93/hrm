@@ -120,7 +120,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                         <div class="controls">
                             <select type="text" id="leave_status" class="form-control" name="leave_status" value="">
                                 <option value="Approved"><?= t('Approved')?></option>
-                                <option value="Pending"><?= t('Pending')?></option>
+<!--                                <option value="Pending">--><?//= t('Pending')?><!--</option>-->
                                 <option value="Rejected"><?= t('Rejected')?></option>
                             </select>
                         </div>
