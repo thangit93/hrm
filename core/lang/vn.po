@@ -1838,7 +1838,7 @@ msgid "Pending"
 msgstr "Đang chờ xử lý"
 
 msgid "Approved"
-msgstr "Tán thành"
+msgstr "Duyệt"
 
 msgid "Rejected"
 msgstr "Từ chối"
