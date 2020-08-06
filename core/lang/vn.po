@@ -1838,7 +1838,7 @@ msgid "Pending"
 msgstr "Đang chờ xử lý"
 
 msgid "Approved"
-msgstr "Tán thành"
+msgstr "Duyệt"
 
 msgid "Rejected"
 msgstr "Từ chối"
@@ -2451,3 +2451,6 @@ msgstr "Thông báo từ "
 
 msgid "Overtime Management"
 msgstr "Quản lý làm thêm giờ"
+
+msgid "Overtime Request status changed successfully"
+msgstr "Thay đổi trạng thái yêu cầu làm thêm giờ thành công."

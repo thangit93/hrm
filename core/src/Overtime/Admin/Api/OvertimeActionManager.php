@@ -166,24 +166,31 @@ class OvertimeActionManager extends ApproveAdminActionManager
 
                     $rowIndex = 2;
                     foreach ($data as $rowData) {
-                        $startDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['start_time'])));
-                        $endDate = new \DateTime(date('Y-m-d H:i:s', strtotime($rowData['end_time'])));
-                        $totalDays = $startDate->diff($endDate)->days;
-                        $dateStartMonth = date('Y-m-26', strtotime("-1 months", strtotime($rowData['start_time'])));
-                        $dateEndMonth = date('Y-m-25', strtotime($rowData['end_time']));
+                        $totalDays = $rowData['total_time'] / 24;
+                        if (date('d', strtotime($rowData['start_time'])) > 26) {
+                            $dateStartMonth = date('Y-m-26', strtotime($rowData['start_time']));
+                            $dateEndMonth = date('Y-m-25', strtotime("+1 months", strtotime($rowData['end_time'])));
+                        } else {
+                            $dateStartMonth = date('Y-m-26', strtotime("-1 months", strtotime($rowData['start_time'])));
+                            $dateEndMonth = date('Y-m-25', strtotime($rowData['end_time']));
+                        }
                         $daysWorkingOfMonth = $this->getTotalWorkingDaysInMonth($dateStartMonth, $dateEndMonth);
 
                         $pricePerDay = $rowData['total_salary'] / $daysWorkingOfMonth;
                         $pricePerHour = round($pricePerDay) / 8;
                         $salary = (round($pricePerHour) * $rowData['total_time']) * $rowData['coefficient'];
                         if ($rowData['cat_type'] == 4) {
-                            $totalDays = ($totalDays->days == 0 ? 1 : $totalDays);
-                            $salary = $totalDays * 500000;
+                            $totalDays = ($totalDays > 0 && $totalDays < 1 ? 1 : $totalDays);
                             $pricePerDay = 500000;
+                            $salary = $totalDays * $pricePerDay;
                         } else if ($rowData['cat_type'] == 5) {
-                            $totalDays = ($totalDays->days == 0 ? 1 : $totalDays);
-                            $salary = $totalDays * 120000;
+                            $totalDays = ($totalDays > 0 && $totalDays < 1  ? 1 : $totalDays);
                             $pricePerDay = 120000;
+                            if ($rowData['total_time'] < 24) {
+                                $salary = $pricePerDay;
+                            } elseif ($rowData['total_time'] > 24){
+                                $salary = ($pricePerDay / 24) * $rowData['total_time'];
+                            }
                         }
 
                         $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['location']);
