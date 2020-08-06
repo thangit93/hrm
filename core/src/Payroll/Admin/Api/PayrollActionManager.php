@@ -641,7 +641,7 @@ class PayrollActionManager extends SubActionManager
                 foreach ($valueMap as $empId => $rowData) {
                     $employee = $employeesById[$empId];
                     $employee = $empModel->getBankAccount($employee);
-                    $company = $empModel->getCompany($employee);
+                    $company = strtoupper($empModel->getCompany($employee));
 
                     if (empty($employee) || $employee->bank_name == 'ACB' || (!empty($exportCompany) && $company != $exportCompany)) {
                         continue;
