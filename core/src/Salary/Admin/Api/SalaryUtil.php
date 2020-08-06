@@ -9,6 +9,7 @@ use Classes\CustomFieldManager;
 use DateTime;
 use Employees\Common\Model\Employee;
 use Exception;
+use Leaves\Admin\Api\EmployeeLeaveUtil;
 use Leaves\Common\Model\EmployeeLeave;
 use Leaves\Common\Model\EmployeeLeaveDay;
 use Leaves\Common\Model\LeaveType;
@@ -175,7 +176,7 @@ class SalaryUtil
 
                 $atSum = 0;
 
-                if (!empty($atts) && empty($employeeLeaveDays)) {
+                if (!empty($atts)) {
                     $att = array_shift($atts);
                     $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
                     $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
