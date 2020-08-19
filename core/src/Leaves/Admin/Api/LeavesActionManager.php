@@ -53,10 +53,7 @@ class LeavesActionManager extends SubActionManager
             $employeeList[] = $approve->employee;
         }
 
-        $employees = $mEmployee->Find("status = ? and id in (?)", [
-            'Active',
-            implode(',', $employeeList)
-        ]);
+        $employees = $mEmployee->Find("status = 'Active' and id in (".implode(',', $employeeList).")");
 
         foreach ($employees as $employee){
             $leaveMatrix = $this->getAvailableLeaveMatrixForEmployeeLeaveType($employee, $currentLeavePeriod, $leaveType);
