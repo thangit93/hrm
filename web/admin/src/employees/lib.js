@@ -627,6 +627,12 @@ class EmployeeAdapter extends SubProfileEnabledAdapterBase {
     return headers;
   }
 
+  renderForm(object) {
+    const form = super.renderForm(object);
+    $('#field_department').addClass('hidden');
+    return form;
+  }
+
   getFormFields() {
     const newFields = [];
     let tempField; let
