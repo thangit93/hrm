@@ -133,18 +133,31 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
                 }
             }
 
+            $salaries = array_values($salaries);
+
             if (count($salaries) > 2) {
+                $unusedIds = [];
                 for ($i = 1; $i < count($salaries); $i++) {
                     if ($salaries[$i]->amount == $salaries[$i - 1]->amount) {
-                        unset($salaries[$i]);
+                        $unusedIds[] = $i;
                     } elseif ($salaries[$i]->start_date == $salaries[$i - 1]->start_date) {
-                        unset($salaries[$i - 1]);
+                        $unusedIds[] = $i - 1;
                     }
                 }
+                foreach ($unusedIds as $id) {
+                    unset($salaries[$id]);
+                }
             } elseif (count($salaries) > 1) {
+                $first = $salaries[0];
+                $second = $salaries[1];
+
+                $firstDate = DateTime::createFromFormat('Y-m-d', $first->start_date);
+                $secondDate = DateTime::createFromFormat('Y-m-d', $second->start_date);
+
                 if ($salaries[1]->amount == $salaries[0]->amount) {
                     unset($salaries[1]);
-                } elseif ($salaries[1]->start_date == $salaries[0]->start_date) {
+                } elseif ($salaries[1]->start_date == $salaries[0]->start_date ||
+                    ($secondDate == $payrollStartDate && $firstDate < $payrollStartDate)) {
                     unset($salaries[0]);
                 }
             }
