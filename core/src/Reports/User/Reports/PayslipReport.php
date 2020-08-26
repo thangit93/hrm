@@ -106,7 +106,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
                 continue;
             }
 
-            $payrollData->Load('payroll_item = ? and employee = ?', [$payrollColumn->id, $employeeId]);
+            $payrollData->Load('payroll_item = ? and employee = ? and payroll = ?', [$payrollColumn->id, $employeeId, $payroll->id]);
 
             if (empty($payrollData->id)) {
                 continue;
@@ -220,7 +220,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         if (!empty($payrollColumn)) {
             $payrollData = new PayrollData();
-            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+            $payrollData->Load('payroll_item = ? AND employee = ? and payroll = ?', [$payrollColumn->id, $employeeId, $payroll->id]);
 
             if (!empty($payrollData)) {
                 $field = [
@@ -242,7 +242,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         if (!empty($payrollColumn)) {
             $payrollData = new PayrollData();
-            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+            $payrollData->Load('payroll_item = ? AND employee = ? and payroll = ?', [$payrollColumn->id, $employeeId, $payroll->id]);
 
             if (!empty($payrollData)) {
                 $field = [
@@ -264,7 +264,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         if (!empty($payrollColumn)) {
             $payrollData = new PayrollData();
-            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+            $payrollData->Load('payroll_item = ? AND employee = ? and payroll = ?', [$payrollColumn->id, $employeeId, $payroll->id]);
 
             if (!empty($payrollData)) {
                 $field = [
@@ -286,7 +286,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         if (!empty($payrollColumn)) {
             $payrollData = new PayrollData();
-            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+            $payrollData->Load('payroll_item = ? AND employee = ? and payroll = ?', [$payrollColumn->id, $employeeId, $payroll->id]);
 
             if (!empty($payrollData) && $payrollData->amount > 0) {
                 $field = [
@@ -308,7 +308,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
 
         if (!empty($payrollColumn)) {
             $payrollData = new PayrollData();
-            $payrollData->Load('payroll_item = ? AND employee = ?', [$payrollColumn->id, $employeeId]);
+            $payrollData->Load('payroll_item = ? AND employee = ? and payroll = ?', [$payrollColumn->id, $employeeId, $payroll->id]);
 
             if (!empty($payrollData)) {
                 $field = [
