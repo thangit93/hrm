@@ -76,8 +76,10 @@ class OvertimeActionManager extends ApproveAdminActionManager
     {
         $filters = $req->ft;
         $mEmployeeOvertime = new EmployeeOvertime();
+        $currentDate = date('Y-m');
         if (empty($filters)) {
-            $overtimes = $mEmployeeOvertime->Find('status = \'Approved\'');
+            $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
+                . 'and date_format(start_time, \'%Y-%m\') >= \'' . $currentDate . '\'');
         } else {
             $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
                 . 'and date_format(start_time, \'%Y-%m\') >= \'' . $filters->date_start . '\' and date_format(start_time, \'%Y-%m\') <= \'' . $filters->date_start . '\'');
@@ -104,6 +106,12 @@ class OvertimeActionManager extends ApproveAdminActionManager
                 return new IceResponse(IceResponse::ERROR, []);
             }
 
+            if (empty($filters)) {
+                $dateFilter = 'and date_format(start_time, \'%Y-%m\') >= \'' . $currentDate . '\'';
+            } else {
+                $dateFilter = 'and date_format(start_time, \'%Y-%m\') >= \'' . $filters->date_start . '\'';
+            }
+
             $sql = "select e.id                                   as employee_id,
                            eo.notes                               as location,
                            eo.start_time,
@@ -120,7 +128,11 @@ class OvertimeActionManager extends ApproveAdminActionManager
                              join EmployeeSalary es on e.id = es.employee
                              join SalaryComponent sc on es.component = sc.id
                     where sc.componentType = 1 and eo.status = \"Approved\"
+                    $dateFilter
                     group by eo.id;";
+            echo '<pre>';
+            print_r($sql);
+            echo '<pre>';die;
             $result = $this->db->Execute($sql);
             $employee = [];
             while ($r = $result->fetchRow()) {
