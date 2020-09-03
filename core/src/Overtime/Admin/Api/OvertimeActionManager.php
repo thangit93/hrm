@@ -130,9 +130,6 @@ class OvertimeActionManager extends ApproveAdminActionManager
                     where sc.componentType = 1 and eo.status = \"Approved\"
                     $dateFilter
                     group by eo.id;";
-            echo '<pre>';
-            print_r($sql);
-            echo '<pre>';die;
             $result = $this->db->Execute($sql);
             $employee = [];
             while ($r = $result->fetchRow()) {
