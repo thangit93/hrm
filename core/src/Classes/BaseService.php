@@ -929,6 +929,9 @@ class BaseService
         }
 
         foreach ($list as $obj) {
+            if($table == "Employee" && $obj->status == "Terminated"){
+                continue;
+            }
             $obj = $this->cleanUpAdoDB($obj);
             if (count($values) == 1) {
                 if ($value == 'birthday') {
