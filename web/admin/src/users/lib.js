@@ -58,7 +58,7 @@ class UserAdapter extends AdapterBase {
                 label: 'Employee',
                 type: 'select2',
                 'allow-null': true,
-                'remote-source': ['Employee', 'id', 'first_name+last_name'],
+                'remote-source': ['Employee', 'id', 'first_name+last_name+birthday'],
             }],
             ['user_level', {
                 label: 'User Level',
