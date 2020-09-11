@@ -591,10 +591,15 @@ class SubEmployeeLeaveAdapter extends AdapterBase {
 
     getActionButtonsHtml(id, data) {
         var html = "";
-        html = '<div style="width:80px;"><img class="tableActionButton" src="_BASE_images/info.png" style="cursor:pointer;" rel="tooltip" title="Show Leave Days" onclick="modJs.getLeaveDaysReadonly(_id_);return false;"></img><img class="tableActionButton" src="_BASE_images/run.png" style="cursor:pointer;margin-left:15px;" rel="tooltip" title="Change Leave Status" onclick="modJs.openLeaveStatus(_id_,\'_status_\');return false;"></img></div>';
+        html = '<div style="width:80px;">' +
+            '<img class="tableActionButton" src="_BASE_images/info.png" style="cursor:pointer;" ' +
+            'rel="tooltip" title="Show Leave Days" onclick="modJs.getLeaveDaysReadonly(_id_);return false;"></img>' +
+            '<img class="tableActionButton" src="_BASE_images/run.png" style="cursor:pointer;margin-left:15px;" ' +
+            'rel="tooltip" title="Change Leave Status" onclick="modJs.openLeaveStatus(_id_,\'_status_\');return false;">' +
+            '</img></div>';
 
         html = html.replace(/_id_/g, id);
-        html = html.replace(/_status_/g, data[5]);
+        html = html.replace(/_status_/g, data[6]);
         html = html.replace(/_BASE_/g, this.baseUrl);
 
         return html;
