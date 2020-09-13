@@ -308,6 +308,31 @@ class PayrollDataAdapter extends TableEditAdapter {
         return req;
     }
 
+    sendPayslip() {
+        let req = {};
+        req.rowTable = this.rowTable;
+        req.columnTable = this.columnTable;
+        req.valueTable = this.valueTable;
+        req.payrollId = this.payrollId;
+        const reqJson = JSON.stringify(req);
+
+        const callBackData = [];
+        callBackData.callBackData = [];
+        callBackData.callBackSuccess = 'sendPayslipSuccessCallBack';
+        callBackData.callBackFail = 'sendPayslipFailedCallBack';
+        this.showLoader();
+        this.customAction('sendPayslip', this.modulePath, reqJson, callBackData);
+    }
+
+    sendPayslipSuccessCallBack() {
+        this.hideLoader();
+    }
+
+    sendPayslipFailedCallBack(callbackData, serverData) {
+        this.hideLoader();
+        this.showMessage(this.gt('Error'), this.gt(callbackData));
+    }
+
     modifyCSVHeader(header) {
         header.unshift('');
         return header;

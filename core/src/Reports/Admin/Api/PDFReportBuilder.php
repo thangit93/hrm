@@ -51,7 +51,8 @@ class PDFReportBuilder extends ReportBuilder
 
     public function createReportFile($report, $data)
     {
-        $fileFirstPart = "Report_".str_replace(" ", "_", $report->name)."-".date("Y-m-d_H-i-s");
+//        $fileFirstPart = "Report_".str_replace(" ", "_", $report->name)."-".date("Y-m-d_H-i-s");
+        $fileFirstPart = "Report_" . str_replace(" ", "_", $report->name) . uniqid("-" . date("Y-m-d_H-i-s"));
         $fileName = $fileFirstPart.".html";
 
         $fileFullName = CLIENT_BASE_PATH.'data/'.$fileName;
