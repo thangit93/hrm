@@ -19,10 +19,10 @@ use Salary\Common\Model\SalaryComponent;
 
 class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterface
 {
-    public function getData($report, $request)
+    public function getData($report, $request, $employeeId = null)
     {
         $data = $this->getDefaultData();
-        $employeeId = BaseService::getInstance()->getCurrentProfileId();
+        $employeeId = empty($employeeId) ? BaseService::getInstance()->getCurrentProfileId() : $employeeId;
         $employee = new Employee();
         $employee->Load('id = ?', [$employeeId]);
         $data['fields'] = array();

@@ -13,6 +13,7 @@ require dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/lib/composer/v
 use Classes\BaseService;
 use Classes\IceResponse;
 use Classes\LanguageManager;
+use Classes\ReportHandler;
 use Classes\SubActionManager;
 use Company\Common\Model\CompanyStructure;
 use DateTime;
@@ -729,5 +730,69 @@ class PayrollActionManager extends SubActionManager
         }
 
         return new IceResponse(IceResponse::SUCCESS, true);
+    }
+
+    public function sendPayslip($req)
+    {
+        $payroll = new Payroll();
+        $payroll->Load("id = ?", array($req->payrollId));
+
+        if (empty($payroll->id) || $payroll->status != 'Completed') {
+            return new IceResponse(IceResponse::ERROR, "Payroll has not been finished yet!");
+        }
+
+        $request = [];
+        $request['payroll'] = $req->payrollId;
+        $request['id'] = 7;
+        $request['t'] = 'UserReport';
+        $request['a'] = 'add';
+
+        $reportMgrClass = BaseService::getInstance()->getFullQualifiedModelClassName($request['t']);
+        /* @var \Model\Report $report */
+        $report = new $reportMgrClass();
+        $report->Load("id = ?", array($request['id']));
+
+        $className = '\\Reports\\User\\Reports\\PayslipReport';
+        $cls = new $className();
+
+        //Get Child company structures
+        $cssResp = CompanyStructure::getAllChildCompanyStructures($payroll->department);
+        error_log(json_encode($cssResp));
+        $css = $cssResp->getData();
+        $cssIds = array();
+        foreach ($css as $c) {
+            $cssIds[] = $c->id;
+        }
+
+        $baseEmp = new Employee();
+        $baseEmpList = $baseEmp->Find(
+            "department in (" . implode(",", $cssIds) . ") and status = ?",
+            array('Active')
+        );
+        $empIds = array();
+        foreach ($baseEmpList as $baseEmp) {
+            $empIds[] = $baseEmp->id;
+        }
+
+        $emp = new PayrollEmployee();
+        $emps = $emp->Find(
+            "pay_frequency = ? and deduction_group = ? and employee in (" . implode(",", $empIds) . ")",
+            array($payroll->pay_period, $payroll->deduction_group)
+        );
+
+        foreach ($emps as $emp) {
+            $data = $cls->getData($report, $request, $emp->employee);
+
+            if (!empty($data)) {
+                $file = ReportHandler::generateReportFile($cls, $report, $data);
+
+                if (!empty($this->emailSender) && $file) {
+                    $leavesEmailSender = new PayslipEmailSender($this->emailSender, $this);
+                    $leavesEmailSender->sendPayslipEmail($emp->employee, $file[1], $payroll);
+                }
+            }
+        }
+
+        return new IceResponse(IceResponse::SUCCESS, $req);
     }
 }

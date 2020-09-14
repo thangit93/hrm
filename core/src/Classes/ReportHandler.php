@@ -93,6 +93,16 @@ class ReportHandler
         return array($saveResp[0],array($saveResp[1],$headers,$data));
     }
 
+    public static function generateReportFile($reportBuilder, $report, $data){
+        $reportCreationData = $reportBuilder->createReportFile($report, $data);
+
+        $saveResp = $reportBuilder->saveFile($reportCreationData[0], $reportCreationData[1], $reportCreationData[2]);
+
+        $headers = array_shift($data);
+
+        return array($saveResp[0],array($saveResp[1],$headers,$data));
+    }
+
     private function buildQueryOmmit($names, $params)
     {
         $parameters = array();
