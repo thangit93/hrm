@@ -308,6 +308,11 @@ class BaseService
             LogManager::getInstance()->debug("Filter Query Data:" . json_encode($queryData));
         }
 
+        if (method_exists($obj, 'getAdditionalConditions')) {
+            $response = $obj->getAdditionalConditions();
+            $query .= $response;
+        }
+
         if (!empty($searchTerm) && !empty($searchColumns)) {
             $searchColumnList = json_decode($searchColumns);
             $searchColumnList = array_diff($searchColumnList, $obj->getVirtualFields());

@@ -2454,3 +2454,12 @@ msgstr "Quản lý làm thêm giờ"
 
 msgid "Overtime Request status changed successfully"
 msgstr "Thay đổi trạng thái yêu cầu làm thêm giờ thành công."
+
+msgid "Send Payslip"
+msgstr "Gửi Payslip"
+
+msgid "No data found"
+msgstr "Không tìm thấy dữ liệu"
+
+msgid "Payroll has not been finished yet!"
+msgstr "Bảng lương chưa được hoàn tất!"
