@@ -32,4 +32,8 @@ class UserReport extends BaseModel
     }
 
     public $table = 'UserReports';
+
+    public function getAdditionalConditions(){
+        return " AND enabled = 1 ";
+    }
 }
