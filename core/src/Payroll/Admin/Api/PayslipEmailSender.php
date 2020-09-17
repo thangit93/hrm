@@ -41,7 +41,7 @@ class PayslipEmailSender
         $emailTo = null;
         $params = [
             'receiver_name' => "{$employee->first_name} {$employee->last_name}",
-            'link' => CLIENT_BASE_URL . "service.php?file={$payslip[0]}&a=download",
+            'link' => CLIENT_BASE_URL . "service.php?file={$payslip[0]}&a=download&source=payslip",
             'payroll_name' => $payroll->name,
             'date_start' => $payroll->date_start,
             'date_end' => $payroll->date_end,
