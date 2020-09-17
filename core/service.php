@@ -12,7 +12,7 @@ include("server.includes.inc.php");
 
 $userLevelArray = ['Admin', 'Manager', 'Employee', 'Other', 'Anonymous'];
 
-if($_REQUEST['a'] != "rsp" && $_REQUEST['a'] != "rpc"){
+if($_REQUEST['a'] != "rsp" && $_REQUEST['a'] != "rpc" && $_REQUEST['source'] != 'payslip'){
 	if(empty($user) || empty($user->email) ||  empty($user->id) || !in_array($user->user_level, $userLevelArray)){
 		$ret['status'] = "ERROR";
 		echo json_encode($ret);
