@@ -2463,3 +2463,9 @@ msgstr "Không tìm thấy dữ liệu"
 
 msgid "Payroll has not been finished yet!"
 msgstr "Bảng lương chưa được hoàn tất!"
+
+msgid "Payslip has been sent successfully!"
+msgstr "Bảng lương đã được gửi thành công!"
+
+msgid "Success"
+msgstr "Thành công"
