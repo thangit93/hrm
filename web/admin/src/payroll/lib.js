@@ -326,6 +326,7 @@ class PayrollDataAdapter extends TableEditAdapter {
 
     sendPayslipSuccessCallBack() {
         this.hideLoader();
+        this.showMessage(this.gt('Success'), this.gt("Payslip has been sent successfully!"));
     }
 
     sendPayslipFailedCallBack(callbackData, serverData) {
