@@ -38,13 +38,17 @@ class PayslipEmailSender
             return false;
         }
 
+        $fileName = $payslip[0];
+        $content = file_get_contents(CLIENT_BASE_PATH . 'data/' . $fileName);
+
         $emailTo = null;
         $params = [
-            'receiver_name' => "{$employee->first_name} {$employee->last_name}",
-            'link' => CLIENT_BASE_URL . "service.php?file={$payslip[0]}&a=download&source=payslip",
-            'payroll_name' => $payroll->name,
-            'date_start' => $payroll->date_start,
-            'date_end' => $payroll->date_end,
+//            'receiver_name' => "{$employee->first_name} {$employee->last_name}",
+//            'link' => CLIENT_BASE_URL . "service.php?file={$payslip[0]}&a=download&source=payslip",
+//            'payroll_name' => $payroll->name,
+//            'date_start' => $payroll->date_start,
+//            'date_end' => $payroll->date_end,
+            'content' => $content
         ];
 
         if ($employee->private_email != null) {
@@ -55,7 +59,7 @@ class PayslipEmailSender
 
         if (!empty($emailTo)) {
             if (!empty($this->emailSender)) {
-                $this->emailSender->sendEmail(LanguageManager::tran("Payslip") . " {$payroll->name}", $emailTo, $email, $params);
+                $this->emailSender->sendEmail($payroll->name, $emailTo, $email, $params);
             }
         }
     }
