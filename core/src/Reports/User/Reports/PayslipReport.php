@@ -343,7 +343,7 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
             'status' => 'Show',
 //            'text' => '',
             'value' => ' ',
-            'text' => 'Vui lòng không chia sẽ mức lương, thưởng với các bạn khác. Mọi thắc mắc về lương xin vui lòng liên hệ Chân - 0986852411',
+            'text' => 'Vui lòng không chia sẻ mức lương, thưởng với các bạn khác. Mọi thắc mắc về lương xin vui lòng liên hệ Chân - 0986852411',
         ];
         $data['fields'][] = $field;
 
