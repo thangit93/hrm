@@ -104,7 +104,8 @@ class LeavesActionManager extends SubActionManager
         }
 
         $this->baseService->audit(IceConstants::AUDIT_ACTION, "Leave applied \ start:" . $employeeLeave->date_start . "\ end:" . $employeeLeave->date_end);
-        $notificationMsg = $employee->first_name . " " . $employee->last_name . " applied for a leave. Visit leave module to approve or reject";
+        $notificationMsg = $employee->first_name . " " . $employee->last_name . " "
+            . LanguageManager::tran('applied for a leave. Visit leave module to approve or reject');
 
         $this->baseService->notificationManager->addNotification($employee->supervisor, $notificationMsg, '{"type":"url","url":"g=modules&n=leaveman&m=module_Leaves#tabSubEmployeeLeaveAll"}', IceConstants::NOTIFICATION_LEAVE);
         return new IceResponse(IceResponse::SUCCESS, $employeeLeave);

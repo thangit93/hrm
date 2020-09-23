@@ -45,13 +45,15 @@ class NotificationManager {
     if (unreadCount > 0) {
       t = t.replace('#_count_#', unreadCount);
       if (unreadCount > 1) {
-        t = t.replace('#_header_#', `You have ${unreadCount} new notifications`);
+        t = t.replace('#_header_#', modJs.gt(`You have %unreadCount% new notifications`)
+            .replace('%unreadCount%', unreadCount));
       } else {
-        t = t.replace('#_header_#', `You have ${unreadCount} new notification`);
+        t = t.replace('#_header_#', modJs.gt(`You have %unreadCount% new notifications`)
+            .replace('%unreadCount%', unreadCount));
       }
     } else {
       t = t.replace('#_count_#', '');
-      t = t.replace('#_header_#', 'You have no new notifications');
+      t = t.replace('#_header_#', modJs.gt('You have no new notifications'));
     }
 
     let notificationStr = '';
@@ -93,9 +95,20 @@ class NotificationManager {
       t = t.replace('#_url_#', '');
     }
 
-    t = t.replace('#_time_#', notification.time);
-    t = t.replace('#_fromName_#', notification.type);
-    t = t.replace('#_message_#', this.getLineBreakString(notification.message, 27));
+    t = t.replace('#_time_#', modJs.dt(notification.time));
+    t = t.replace('#_fromName_#', modJs.gt(notification.type));
+
+    let translateMessage = notification.message;
+    translateMessage = translateMessage.replace('A new OvertimeRequest has been added by ',
+        modJs.gt('A new OvertimeRequest has been added by '));
+    translateMessage = translateMessage.replace('. Please visit Overtime Management module to review it',
+        modJs.gt('. Please visit Overtime Management module to review it'));
+    translateMessage = translateMessage.replace('. You are getting this notification since you are an administrator and the user do not have any supervisor assigned.',
+        modJs.gt('. You are getting this notification since you are an administrator and the user do not have any supervisor assigned.'));
+    translateMessage = translateMessage.replace('applied for a leave. Visit leave module to approve or reject',
+        modJs.gt('applied for a leave. Visit leave module to approve or reject'));
+
+    t = t.replace('#_message_#', this.getLineBreakString(translateMessage, 27));
     return t;
   }
 
