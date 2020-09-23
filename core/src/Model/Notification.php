@@ -21,4 +21,8 @@ class Notification extends BaseModel
     {
         return array();
     }
+
+    public function postProcessGetData($obj) {
+        die('debug');
+    }
 }
