@@ -4,6 +4,7 @@ namespace Model;
 use Classes\Approval\ApprovalStatus;
 use Classes\BaseService;
 use Classes\IceResponse;
+use Classes\LanguageManager;
 use Classes\SettingsManager;
 use Employees\Common\Model\EmployeeApproval;
 use Travel\Common\Model\EmployeeTravelRecord;
@@ -41,10 +42,10 @@ abstract class ApproveModel extends BaseModel
             $employee = BaseService::getInstance()->getElement('Employee', $currentEmpId, null, true);
 
             if (!empty($employee->supervisor)) {
-                $notificationMsg = "A new "
-                    .$this->notificationUnitName." has been added by "
+                $notificationMsg = LanguageManager::tran("A new "
+                    .$this->notificationUnitName." has been added by ")
                     . $employee->first_name . " " . $employee->last_name
-                    . ". Please visit ".$this->notificationModuleName." module to review it";
+                    . LanguageManager::tran(". Please visit ".$this->notificationModuleName." module to review it");
 
                 BaseService::getInstance()->notificationManager->addNotification(
                     $employee->supervisor,

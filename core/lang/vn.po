@@ -2469,3 +2469,33 @@ msgstr "Bảng lương đã được gửi thành công!"
 
 msgid "Success"
 msgstr "Thành công"
+
+msgid "You have no new notifications"
+msgstr "Bạn không có thông báo mới nào"
+
+msgid "You have %unreadCount% new notifications"
+msgstr "Bạn có %unreadCount% thông báo mới"
+
+msgid "Your OvertimeRequest is auto approved since you are an administrator and do not have any supervisor assigned"
+msgstr "Yêu cầu xin nghỉ phép của bạn sẽ tự động được duyệt khi bạn là quản trị viên và không có quản lý nào."
+
+msgid "A new OvertimeRequest has been added by "
+msgstr "Có yêu cầu làm thêm giờ mới bởi "
+
+msgid ". Please visit Overtime Management module to review it"
+msgstr ". Vui lòng kiểm tra trong module quản lý làm thêm giờ"
+
+msgid ". You are getting this notification since you are an administrator and the user do not have any supervisor assigned."
+msgstr ". Bạn nhận được thông báo này khi bạn là quãn trị viên và tài khoản của bạn không có người quản lý cấp trên."
+
+msgid "An OvertimeRequest request has been updated by "
+msgstr "Có yêu cầu làm thêm giờ được cập nhật bởi "
+
+msgid "Travel Module"
+msgstr "Quản Lý Nghỉ Phép"
+
+msgid "Leave Module"
+msgstr "Quản Lý Nghỉ Phép"
+
+msgid "applied for a leave. Visit leave module to approve or reject"
+msgstr "nộp 1 yêu cầu xin nghỉ phép. Truy cập module quản lý nghỉ phép để duyệt phép."
