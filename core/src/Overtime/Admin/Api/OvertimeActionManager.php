@@ -89,12 +89,14 @@ class OvertimeActionManager extends ApproveAdminActionManager
             $mEmployee = new Employee();
             foreach ($overtimes as $overtime) {
                 $employee = $mEmployee->Find('id = ?', [$overtime->employee]);
+                $totalTime = number_format((strtotime($overtime->end_time) - strtotime($overtime->start_time)) / 3600, 2);
                 $responseData[] = [
                     'id' => $overtime->id,
                     'startTime' => date('d/m/Y H:i:s', strtotime($overtime->start_time)),
                     'endTime' => date('d/m/Y H:i:s', strtotime($overtime->end_time)),
                     'name' => $employee[0]->first_name . ' ' . $employee[0]->last_name,
-                    'totalTime' => $overtime->total_time,
+//                    'totalTime' => $overtime->total_time,
+                    'totalTime' => $totalTime,
                     'notes' => $overtime->notes,
                 ];
             }
@@ -116,7 +118,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                            eo.notes                               as location,
                            eo.start_time,
                            eo.end_time,
-                           eo.total_time,
+                           FORMAT(TIMESTAMPDIFF(SECOND , eo.start_time , eo.end_time) / 3600, 2) as total_time
                            oc.coefficient,
                            oc.name                                as ot_type,
                            es.amount                              as total_salary,
