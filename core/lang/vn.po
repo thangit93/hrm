@@ -1814,10 +1814,10 @@ msgid "Data"
 msgstr "Dữ liệu"
 
 msgid "Processed"
-msgstr "Xử lý"
+msgstr "Đã xử lý"
 
 msgid "Not Processed"
-msgstr "Không được xử lý"
+msgstr "Chưa xử lý"
 
 msgid "Elementary Proficiency"
 msgstr "Trình độ tiểu học"
@@ -2469,6 +2469,30 @@ msgstr "Bảng lương đã được gửi thành công!"
 
 msgid "Success"
 msgstr "Thành công"
+
+msgid "Employee Data Import"
+msgstr "Nhập Dữ Liệu Nhân Viên"
+
+msgid "EmployeeDataImporter"
+msgstr "Nhập Dữ Liệu Nhân Viên"
+
+msgid "Attendance Data Import"
+msgstr "Nhập Dữ Liệu Bảng Chấm Công"
+
+msgid "AttendanceDataImporter"
+msgstr "Nhập Dữ Liệu Bảng Chấm Công"
+
+msgid "Payroll Data Import"
+msgstr "Nhập Dữ Liệu Bảng Lương"
+
+msgid "PayrollDataImporter"
+msgstr "Nhập Dữ Liệu Bảng Lương"
+
+msgid "BenefitDataImporter"
+msgstr "Nhập Dữ Liệu Tiền Thưởng"
+
+msgid "Data Import Definition"
+msgstr "Loại Dữ Liệu Nhập"
 
 msgid "You have no new notifications"
 msgstr "Bạn không có thông báo mới nào"
