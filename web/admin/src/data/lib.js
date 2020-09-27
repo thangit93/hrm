@@ -19,6 +19,37 @@ class DataImportAdapter extends AdapterBase {
     ];
   }
 
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 1);
+          },
+          aTargets: [1],
+        },
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 2);
+          },
+          aTargets: [2],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 1 || id === 2) {
+      return this.gt(cell);
+    }
+    return cell;
+  }
+
   getHeaders() {
     return [
       { sTitle: 'ID', bVisible: false },
@@ -95,6 +126,37 @@ class DataImportFileAdapter extends AdapterBase {
       'data_import_definition',
       'status',
     ];
+  }
+
+  getCustomTableParams() {
+    const that = this;
+    return {
+      aoColumnDefs: [
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 2);
+          },
+          aTargets: [2],
+        },
+        {
+          fnRender(data, cell) {
+            return that.preProcessRemoteTableData(data, cell, 3);
+          },
+          aTargets: [3],
+        },
+        {
+          fnRender: that.getActionButtons,
+          aTargets: [that.getDataMapping().length],
+        },
+      ],
+    };
+  }
+
+  preProcessRemoteTableData(data, cell, id) {
+    if (id === 2 || id === 3) {
+      return this.gt(cell);
+    }
+    return cell;
   }
 
   getHeaders() {
