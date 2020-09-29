@@ -118,7 +118,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                            eo.notes                               as location,
                            eo.start_time,
                            eo.end_time,
-                           FORMAT(TIMESTAMPDIFF(SECOND , eo.start_time , eo.end_time) / 3600, 2) as total_time
+                           FORMAT(TIMESTAMPDIFF(SECOND , eo.start_time , eo.end_time) / 3600, 2) as total_time,
                            oc.coefficient,
                            oc.name                                as ot_type,
                            es.amount                              as total_salary,
