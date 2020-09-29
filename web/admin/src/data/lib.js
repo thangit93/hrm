@@ -144,10 +144,10 @@ class DataImportFileAdapter extends AdapterBase {
           },
           aTargets: [3],
         },
-        {
+        /*{
           fnRender: that.getActionButtons,
           aTargets: [that.getDataMapping().length],
-        },
+        },*/
       ],
     };
   }
