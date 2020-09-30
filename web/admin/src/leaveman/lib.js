@@ -402,7 +402,7 @@ class HoliDayAdapter extends AdapterBase {
         return [
             ["id", {"label": "ID", "type": "hidden", "validation": ""}],
             ["name", {"label": "Name", "type": "text", "validation": ""}],
-            ["date", {"label": "Date", "type": "date", "validation": ""}],
+            ["dateh", {"label": "Date", "type": "date", "validation": ""}],
             ["status", {
                 "label": "Status",
                 "type": "select",

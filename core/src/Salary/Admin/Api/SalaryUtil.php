@@ -168,8 +168,9 @@ class SalaryUtil
                 /** @var array $atts */
                 $atts = AttendanceUtil::getAttendancesData($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
                 $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+                $holidays = EmployeeLeaveUtil::getHolidays($startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
 
-                if (empty($atts) && empty($employeeLeaveDays)) {
+                if (empty($atts) && empty($employeeLeaveDays) && empty($holidays)) {
                     $startDateObj->add(\DateInterval::createFromDateString('1 day'));
                     continue;
                 }
@@ -194,6 +195,12 @@ class SalaryUtil
                                 $atSum = 0.5;
                             }
                         }
+                    }
+                }
+
+                if (!empty($holidays)) {
+                    foreach ($holidays as $holiday) {
+                        $atSum = ($holiday->status == "Full Day") ? 1 : 0.5;
                     }
                 }
             } else {

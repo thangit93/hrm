@@ -7,12 +7,14 @@ namespace Leaves\Admin\Api;
 use Leaves\Common\Model\EmployeeLeave;
 use Leaves\Common\Model\EmployeeLeaveDay;
 use Leaves\Common\Model\LeaveType;
+use Model\HoliDay;
 
 class EmployeeLeaveUtil
 {
     public function calculateEmployeeLeave($employeeId, $startDate, $endDate)
     {
         $total = 0;
+        $total += EmployeeLeaveUtil::getHolidayAtSum($startDate, $endDate);
         $leaves = $this->getEmployeeLeave($employeeId, $startDate, $endDate);
 
         if (empty($leaves)) {
@@ -81,5 +83,48 @@ class EmployeeLeaveUtil
         /** @var array $obj */
         $obj = $model->Find('id = ?', [$id]);
         return array_shift($obj);
+    }
+
+    public static function getHolidayAtSum($startDate, $endDate, $countryId = null)
+    {
+        $hd = new HoliDay();
+        $total = 0;
+        $query = "dateh >= ? and dateh <= ?";
+        $queryData = [$startDate, $endDate];
+
+        if (empty($countryId)) {
+            $query .= " and country IS NULL";
+        } else {
+            $query .= " and country = ?";
+            $queryData[] = $countryId;
+        }
+
+        $holidays = $hd->Find($query, $queryData);
+
+        foreach ($holidays as $holiday) {
+            if ($holiday->status == "Full Day") {
+                $total += 1;
+            } else {
+                $total += 0.5;
+            }
+        }
+
+        return $total;
+    }
+
+    public static function getHolidays($startDate, $endDate, $countryId = null)
+    {
+        $hd = new HoliDay();
+        $query = "dateh >= ? and dateh <= ?";
+        $queryData = [$startDate, $endDate];
+
+        if (empty($countryId)) {
+            $query .= " and country IS NULL";
+        } else {
+            $query .= " and country = ?";
+            $queryData[] = $countryId;
+        }
+
+        return $hd->Find($query, $queryData);
     }
 }

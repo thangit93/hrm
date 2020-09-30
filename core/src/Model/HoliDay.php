@@ -9,11 +9,29 @@ use Classes\FileService;
 
 class HoliDay extends BaseModel
 {
-    public $table = 'Holidays';
+    public $table = 'HoliDays';
 
     public function getAdminAccess()
     {
         return array("get","element","save","delete");
+    }
+
+    public function executePreSaveActions($obj)
+    {
+        $obj = parent::executePreSaveActions($obj);
+
+        $obj->dateh = $obj->date;
+
+        return $obj;
+    }
+
+    public function executePreUpdateActions($obj)
+    {
+        $obj = parent::executePreUpdateActions($obj);
+
+        $obj->dateh = $obj->date;
+
+        return $obj;
     }
 
     public function postProcessGetData($obj)
