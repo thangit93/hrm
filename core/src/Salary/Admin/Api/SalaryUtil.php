@@ -26,6 +26,33 @@ use Salary\Common\Model\EmployeeSalaryOvertime;
 class SalaryUtil
 {
     /**
+     * @param string $date
+     * @param $atSum
+     * @return float|int
+     */
+    public static function maxAt(string $date, $atSum)
+    {
+        $date = DateTime::createFromFormat('Y-m-d', $date);
+        $dayOfWeek = $date->format('w');
+
+        if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
+            if ($atSum > 1) {
+                return 1;
+            }
+
+            return $atSum;
+        } elseif ($dayOfWeek == 6) {
+            if ($atSum > 0.5) {
+                return 0.5;
+            }
+
+            return $atSum;
+        }
+
+        return 0;
+    }
+
+    /**
      * @param $employeeId
      * @param null $from
      * @param null $to
@@ -154,7 +181,9 @@ class SalaryUtil
         $totalRealSalary = 0;
         $totalAtSum = 0;
         $data = [];
-
+        if($employeeId == 427 AND in_array("1", $salaryComponents)){
+            $debug = true;
+        }
         while ($startDateObj <= $endDateObj) {
             $dayOfWeek = $startDateObj->format('w');
 
@@ -203,17 +232,13 @@ class SalaryUtil
                         $atSum = ($holiday->status == "Full Day") ? 1 : 0.5;
                     }
                 }
+
+                $atSum = self::maxAt($startDateObj->format('Y-m-d'), $atSum);
             } else {
                 $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 09:00:00");
                 $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $startDateObj->format('Y-m-d') . " 17:00:00");
 
-                if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
-                    $atSum = 1;
-                } elseif ($dayOfWeek == 6) {
-                    $atSum = 0.5;
-                } else {
-                    $atSum = 0;
-                }
+                $atSum = self::maxAt($startDateObj->format('Y-m-d'), 1);
             }
 
             $totalAtSum += $atSum;
@@ -240,6 +265,8 @@ class SalaryUtil
         if ($responseArray) {
             return $data;
         }
+
+//        $dataJson = json_encode($data);
 
         return round($totalRealSalary);
     }

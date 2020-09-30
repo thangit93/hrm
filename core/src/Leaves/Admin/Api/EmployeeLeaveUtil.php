@@ -4,14 +4,89 @@
 namespace Leaves\Admin\Api;
 
 
+use Attendance\Admin\Api\AttendanceUtil;
+use DateInterval;
+use DateTime;
 use Leaves\Common\Model\EmployeeLeave;
 use Leaves\Common\Model\EmployeeLeaveDay;
 use Leaves\Common\Model\LeaveType;
 use Model\HoliDay;
+use Salary\Admin\Api\SalaryUtil;
 
 class EmployeeLeaveUtil
 {
     public function calculateEmployeeLeave($employeeId, $startDate, $endDate)
+    {
+        $startDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
+        $endDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
+        $total = 0;
+
+        while ($startDateObj <= $endDateObj) {
+            $dayOfWeek = $startDateObj->format('w');
+            $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            $holidays = EmployeeLeaveUtil::getHolidays($startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+
+            if (empty($employeeLeaveDays) && empty($holidays)) {
+                $startDateObj->add(DateInterval::createFromDateString('1 day'));
+                continue;
+            }
+
+            $atSum = 0;
+
+            if (!empty($employeeLeaveDays)) {
+                foreach ($employeeLeaveDays as $employeeLeaveDay) {
+                    foreach ($employeeLeaveDay as $day) {
+                        $atSum += $day->period;
+
+                        if ($dayOfWeek < 6 && $dayOfWeek >= 1 && $atSum > 1) {
+                            $atSum = 1;
+                        } elseif ($dayOfWeek == 6 && $atSum > 0.5) {
+                            $atSum = 0.5;
+                        }
+                    }
+                }
+            }
+
+            if (!empty($holidays)) {
+                foreach ($holidays as $holiday) {
+                    $atSum = ($holiday->status == "Full Day") ? 1 : 0.5;
+                }
+            }
+
+            $atSum = SalaryUtil::maxAt($startDateObj->format('Y-m-d'), $atSum);
+
+            $atts = AttendanceUtil::getAttendancesData($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            if (!empty($atts)) {
+                $att = array_shift($atts);
+                $at = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
+                $atSum2 = $at + $atSum;
+                if ($dayOfWeek < 6 && $dayOfWeek >= 1 && $atSum2 > 1) {
+                    $atSum = 1 - $at;
+                } elseif ($dayOfWeek == 6 && $atSum2 > 0.5) {
+                    $atSum = 0.5 - $at;
+                }
+            }
+
+            $atSum = ($atSum < 0) ? 0 : $atSum;
+
+            $total += $atSum;
+
+            $startDateObj->add(\DateInterval::createFromDateString('1 day'));
+        }
+
+        $attUtil = new AttendanceUtil();
+        $totalWorkingDaysInMonth = $attUtil->getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
+        $totalWorkedDaysInMonth = $attUtil->getDaysWorked($employeeId, $startDate, $endDate);
+        $totalWorkedDaysAndLeave = $total + $totalWorkedDaysInMonth;
+
+        if ($totalWorkedDaysAndLeave > $totalWorkingDaysInMonth) {
+            $total = $totalWorkingDaysInMonth - $totalWorkedDaysInMonth;
+        }
+
+        return $total;
+    }
+
+    public function calculateEmployeeLeave2($employeeId, $startDate, $endDate)
     {
         $total = 0;
         $total += EmployeeLeaveUtil::getHolidayAtSum($startDate, $endDate);
@@ -23,8 +98,19 @@ class EmployeeLeaveUtil
 
         foreach ($leaves as $leave) {
             foreach ($leave as $day) {
-                $total += $day->period;
+                if (empty(EmployeeLeaveUtil::getHolidayAtSum($day->leave_date, $day->leave_date))) {
+                    $total += $day->period;
+                }
             }
+        }
+
+        $attUtil = new AttendanceUtil();
+        $totalWorkingDaysInMonth = $attUtil->getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
+        $totalWorkedDaysInMonth = $attUtil->getDaysWorked($employeeId, $startDate, $endDate);
+        $totalWorkedDaysAndLeave = $total + $totalWorkedDaysInMonth;
+
+        if ($totalWorkedDaysAndLeave > $totalWorkingDaysInMonth) {
+            $total = $totalWorkingDaysInMonth - $totalWorkedDaysInMonth;
         }
 
         return $total;
@@ -34,10 +120,8 @@ class EmployeeLeaveUtil
     {
         $employeeLeavesModel = new EmployeeLeave();
         /** @var array $employeeLeaves */
-        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and ((date_start >= ? and date_start <= ?) or (date_end >= ? and date_end <= ?))', [
+        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ?', [
             $employeeId,
-            $startDate,
-            $endDate,
             $startDate,
             $endDate,
         ]);
@@ -60,17 +144,27 @@ class EmployeeLeaveUtil
     public function getLeaveDays($employeeLeaveId, $startDate, $endDate)
     {
         $model = new EmployeeLeaveDay();
-        $dates = $model->Find('employee_leave = ? and (leave_date >= ? or leave_date <= ?)', [
+        $dates = $model->Find('employee_leave = ? and leave_date = ?', [
             $employeeLeaveId,
             $startDate,
-            $endDate
         ]);
+        $existedDates = [];
 
-        foreach ($dates as $date) {
+        foreach ($dates as $index => $date) {
             if ($date->leave_type == 'Full Day') {
-                $date->period = 1;
+                $existedDates[$date->leave_date] = empty($existedDates[$date->leave_date]) ? 0 : $existedDates[$date->leave_date];
+
+                $period = 1 - $existedDates[$date->leave_date];
+
+                $date->period = ($period > 0) ? $period : 0;
+                $existedDates[$date->leave_date] += $period;
             } else {
-                $date->period = 0.5;
+                $existedDates[$date->leave_date] = empty($existedDates[$date->leave_date]) ? 0 : $existedDates[$date->leave_date];
+
+                $period = 0.5 - $existedDates[$date->leave_date];
+
+                $date->period = ($period > 0) ? $period : 0;
+                $existedDates[$date->leave_date] += $period;
             }
         }
 
