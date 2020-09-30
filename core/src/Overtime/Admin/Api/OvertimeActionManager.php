@@ -76,14 +76,17 @@ class OvertimeActionManager extends ApproveAdminActionManager
     {
         $filters = $req->ft;
         $mEmployeeOvertime = new EmployeeOvertime();
-        $currentDate = date('Y-m');
-        if (empty($filters)) {
-            $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
-                . 'and date_format(start_time, \'%Y-%m\') >= \'' . $currentDate . '\'');
-        } else {
-            $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
-                . 'and date_format(start_time, \'%Y-%m\') >= \'' . $filters->date_start . '\' and date_format(start_time, \'%Y-%m\') <= \'' . $filters->date_start . '\'');
+        $currentDate = new \DateTime();
+        if (!empty($filters)) {
+            $currentDate = \DateTime::createFromFormat('Y-m', "{$filters->date_start}");
         }
+
+        $startDate = (clone $currentDate)->setDate($currentDate->format('Y'), $currentDate->format('m') - 1, 26);
+        $endDate = (clone $currentDate)->setDate($currentDate->format('Y'), $currentDate->format('m'), 25);
+
+        $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
+            . 'and date_format(start_time, \'%Y-%m-%d\') >= \'' . $startDate->format('Y-m-d') . '\' and date_format(start_time, \'%Y-%m-%d\') <= \'' . $endDate->format('Y-m-d') . '\'');
+
         $responseData = [];
         if (empty($req->save)) {
             $mEmployee = new Employee();
@@ -109,9 +112,9 @@ class OvertimeActionManager extends ApproveAdminActionManager
             }
 
             if (empty($filters)) {
-                $dateFilter = 'and date_format(start_time, \'%Y-%m\') >= \'' . $currentDate . '\'';
+                $dateFilter = 'and date_format(start_time, \'%Y-%m-%d\') >= \'' . $startDate->format('Y-m-d') . '\' and date_format(start_time, \'%Y-%m-%d\') <= \'' . $endDate->format('Y-m-d') . '\'';
             } else {
-                $dateFilter = 'and date_format(start_time, \'%Y-%m\') >= \'' . $filters->date_start . '\'';
+                $dateFilter = 'and date_format(start_time, \'%Y-%m-%d\') >= \'' . $startDate->format('Y-m-d') . '\' and date_format(start_time, \'%Y-%m-%d\') <= \'' . $endDate->format('Y-m-d') . '\'';
             }
 
             $sql = "select e.id                                   as employee_id,
