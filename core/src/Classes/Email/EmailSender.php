@@ -138,7 +138,7 @@ abstract class EmailSender
         );
 
         $user = new User();
-        $user->Load("username = ?", array('admin'));
+//        $user->Load("username = ?", array('admin'));
 
         if (empty($user->id)) {
             $users = $user->Find("user_level = ?", array('Admin'));
