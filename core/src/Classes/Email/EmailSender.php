@@ -151,7 +151,7 @@ abstract class EmailSender
             $emailBody = str_replace("#_".$k."_#", $v, $emailBody);
         }
 
-        return $this->sendMail($subject, $emailBody, $toEmail, $fromEmail, $user->email, $ccList, $bccList, APP_NAME);
+        return $this->sendMail($subject, $emailBody, $toEmail, $fromEmail, $fromEmail, $ccList, $bccList, APP_NAME);
     }
 
     public function sendEmailWithoutWrap($subject, $toEmail, $template, $params, $ccList = array(), $bccList = array())
