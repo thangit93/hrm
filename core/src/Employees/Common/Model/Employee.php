@@ -60,7 +60,7 @@ class Employee extends BaseModel
 
     public function getManagerAccess()
     {
-        return array("get", "element", "save");
+        return array("get", "element", "save", "delete");
     }
 
     public function getUserAccess()
