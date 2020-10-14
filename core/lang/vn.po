@@ -2523,3 +2523,6 @@ msgstr "Quản Lý Nghỉ Phép"
 
 msgid "applied for a leave. Visit leave module to approve or reject"
 msgstr "nộp 1 yêu cầu xin nghỉ phép. Truy cập module quản lý nghỉ phép để duyệt phép."
+
+msgid "Working Type"
+msgstr "Loại Ngày Công"

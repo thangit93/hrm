@@ -19,6 +19,7 @@ use Classes\SettingsManager;
 use Classes\SubActionManager;
 use DateTime;
 use Employees\Common\Model\Employee;
+use Leaves\Admin\Api\EmployeeLeaveUtil;
 use TimeSheets\Common\Model\EmployeeTimeSheet;
 use Utils\LogManager;
 use Utils\NetworkUtils;
@@ -233,7 +234,7 @@ class AttendanceActionManager extends SubActionManager
 
         $data = [];
         $dataHeader = [];
-        $currentMonth = (int) $endDate->format('m');
+        $currentMonth = (int)$endDate->format('m');
         $startDate = (clone $endDate);
         $startDate->setDate($startDate->format('Y'), $currentMonth - 1, 26);
         while ($startDate <= $endDate) {
@@ -260,11 +261,14 @@ class AttendanceActionManager extends SubActionManager
                     $employeeDob = DateTime::createFromFormat("Y-m-d", $employee->birthday)->format('Y');
                 }
 
+                $dayOfWeek = $startDate->format('w');
                 $dataDay = [];
                 $dataDay['employee_id'] = $employee->id;
                 $dataDay['name'] = "{$employee->first_name} {$employee->last_name} {$employeeDob}";
                 $dataDay['date'] = $startDate->format('d/m/Y');
                 $dataDay['total'] = 0;
+                $codeM = '';
+                $codeA = '';
 
                 if (!empty($att)) {
                     $checkInTime = "";
@@ -273,11 +277,17 @@ class AttendanceActionManager extends SubActionManager
                     if (!empty($att->in_time)) {
                         $checkIn = \DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
                         $checkInTime = $checkIn->format('H:i');
+                        $codeM = 'CC';
+                    } else {
+                        $codeM = 'KCGV';
                     }
 
                     if ($att->out_time) {
                         $checkOut = \DateTime::createFromFormat('Y-m-d H:i:s', $att->out_time);
                         $checkOutTime = $checkOut->format('H:i');
+                        $codeA = 'CC';
+                    } else {
+                        $codeA = 'KCGR';
                     }
 
                     $dataDay['in'] = $checkInTime;
@@ -285,6 +295,8 @@ class AttendanceActionManager extends SubActionManager
 
                     if (!empty($att->in_time) && !empty($att->out_time)) {
                         $dataDay['total'] = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employee->id);
+                    }else{
+                        $codeM = $codeA = '';
                     }
 
                 } else {
@@ -292,6 +304,58 @@ class AttendanceActionManager extends SubActionManager
                         'in' => '',
                         'out' => '',
                     ]);
+                }
+
+                if ($dataDay['total'] == 1) {
+                    $codeM = $codeA = 'CC';
+                } else {
+                    $leaveUtil = new EmployeeLeaveUtil();
+                    $employeeLeaveDays = $leaveUtil->getEmployeeLeave($employee->id, $startDate->format("Y-m-d"), $startDate->format("Y-m-d"), true);
+
+                    if (!empty($employeeLeaveDays)) {
+                        foreach ($employeeLeaveDays as $employeeLeaveDay) {
+                            foreach ($employeeLeaveDay as $day) {
+                                if ($day->leave_type == 'Full Day') {
+                                    $codeM = $codeA = $day->leaveTypeCode;
+                                } elseif ($day->leave_type == 'Half Day - Morning') {
+                                    $codeM = ($codeM != 'CC') ? $day->leaveTypeCode : $codeM;
+                                } elseif ($day->leave_type == 'Half Day - Afternoon') {
+                                    $codeA = ($codeA != 'CC') ? $day->leaveTypeCode : $codeA;
+                                }
+                                $dataDay['total'] += $day->period;
+                            }
+                        }
+
+                        if ($dayOfWeek == 6 && $dataDay['total'] > 0.5) {
+                            $dataDay['total'] = 0.5;
+                        } elseif ($dayOfWeek >= 1 && $dayOfWeek <= 6 && $dataDay['total'] > 1) {
+                            $dataDay['total'] = 1;
+                        }
+                    }
+
+                    $holidays = EmployeeLeaveUtil::getHolidays($startDate->format("Y-m-d"), $startDate->format("Y-m-d"));
+
+                    if (!empty($holidays)) {
+                        foreach ($holidays as $holiday) {
+                            if ($holiday->status == 'Full Day') {
+                                $dataDay['total'] = 1;
+                                $codeM = $codeA = 'NP';
+                            } else {
+                                $dataDay['total'] = 0.5;
+                                $codeM = 'NP';
+                            }
+                        }
+                    }
+                }
+
+                if ($codeM == $codeA) {
+                    $dataDay['code'] = $codeA;
+                } else {
+                    if ($dayOfWeek == 6) {
+                        $dataDay['code'] = "{$codeM}";
+                    } else {
+                        $dataDay['code'] = "{$codeM}/{$codeA}";
+                    }
                 }
 
                 if (AttendanceUtil::isFullWorkingDay($employee->id, $startDate)) {

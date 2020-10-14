@@ -235,6 +235,9 @@ class AttendanceAdapter extends AdapterBase {
     tableHeaderHtml += '<td>' +
       this.gt('Real Hours') +
       '</td>';
+    tableHeaderHtml += '<td>' +
+      this.gt('Working Type') +
+      '</td>';
     tableHeaderHtml += '</tr>';
     tableHeaderHtml += '</thead>';
 
@@ -288,12 +291,15 @@ class AttendanceAdapter extends AdapterBase {
       tableHtml += '<td>';
       tableHtml += row.total;
       tableHtml += '</td>';
+      tableHtml += '<td>';
+      tableHtml += row.code;
+      tableHtml += '</td>';
       tableHtml += '</tr>';
       total += row.total
       rowIndex++;
     })
     tableHtml += '<tr>';
-    tableHtml += '<td colspan="3">';
+    tableHtml += '<td colspan="4">';
     tableHtml += this.gt('Total');
     tableHtml += '</td>';
     tableHtml += '<td>';
