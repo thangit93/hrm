@@ -7,6 +7,7 @@ namespace Leaves\Admin\Api;
 use Attendance\Admin\Api\AttendanceUtil;
 use DateInterval;
 use DateTime;
+use Employees\Common\Model\Employee;
 use Leaves\Common\Model\EmployeeLeave;
 use Leaves\Common\Model\EmployeeLeaveDay;
 use Leaves\Common\Model\LeaveType;
@@ -20,8 +21,16 @@ class EmployeeLeaveUtil
         $startDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
         $endDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
         $total = 0;
+        $employee = new Employee();
+        $employee->Load('id = ?', [$employeeId]);
+        $joinedDate = DateTime::createFromFormat('Y-m-d H:i:s', "{$employee->joined_date} 00:00:00");
 
         while ($startDateObj <= $endDateObj) {
+            if ($joinedDate > $startDateObj) {
+                $startDateObj->add(\DateInterval::createFromDateString('1 day'));
+                continue;
+            }
+
             $dayOfWeek = $startDateObj->format('w');
             $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
             $holidays = EmployeeLeaveUtil::getHolidays($startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
@@ -116,7 +125,7 @@ class EmployeeLeaveUtil
         return $total;
     }
 
-    public function getEmployeeLeave($employeeId, $startDate, $endDate)
+    public function getEmployeeLeave($employeeId, $startDate, $endDate, $getAll = false)
     {
         $employeeLeavesModel = new EmployeeLeave();
         /** @var array $employeeLeaves */
@@ -131,17 +140,17 @@ class EmployeeLeaveUtil
         foreach ($employeeLeaves as $employeeLeave) {
             $leaveType = $this->getLeaveType($employeeLeave->leave_type);
 
-            if (empty($leaveType) || empty($leaveType->pay)) {
+            if (empty($leaveType) || (empty($leaveType->pay) && empty($getAll))) {
                 continue;
             }
 
-            $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate);
+            $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
         }
 
         return $leaveDays;
     }
 
-    public function getLeaveDays($employeeLeaveId, $startDate, $endDate)
+    public function getLeaveDays($employeeLeaveId, $startDate, $endDate, $leaveType = null)
     {
         $model = new EmployeeLeaveDay();
         $dates = $model->Find('employee_leave = ? and leave_date = ?', [
@@ -165,6 +174,10 @@ class EmployeeLeaveUtil
 
                 $date->period = ($period > 0) ? $period : 0;
                 $existedDates[$date->leave_date] += $period;
+            }
+
+            if (!empty($leaveType)) {
+                $date->leaveTypeCode = $leaveType->code;
             }
         }
 
