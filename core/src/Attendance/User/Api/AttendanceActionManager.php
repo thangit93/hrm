@@ -295,7 +295,7 @@ class AttendanceActionManager extends SubActionManager
 
                     if (!empty($att->in_time) && !empty($att->out_time)) {
                         $dataDay['total'] = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employee->id);
-                    }else{
+                    } else {
                         $codeM = $codeA = '';
                     }
 
@@ -334,9 +334,14 @@ class AttendanceActionManager extends SubActionManager
                     }
 
                     $holidays = EmployeeLeaveUtil::getHolidays($startDate->format("Y-m-d"), $startDate->format("Y-m-d"));
+                    $joinedDate = DateTime::createFromFormat('Y-m-d H:i:s', "{$employee->joined_date} 00:00:00");
 
                     if (!empty($holidays)) {
                         foreach ($holidays as $holiday) {
+                            if ($joinedDate > $startDate) {
+                                continue;
+                            }
+
                             if ($holiday->status == 'Full Day') {
                                 $dataDay['total'] = 1;
                                 $codeM = $codeA = 'NP';
