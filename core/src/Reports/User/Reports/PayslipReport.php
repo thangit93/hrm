@@ -91,6 +91,19 @@ class PayslipReport extends PDFReportBuilder implements PDFReportBuilderInterfac
         $data['fields'][] = $field;
         $data['fields'][] = $separatorField;
 
+        $employeeLeaveUtil = new EmployeeLeaveUtil();
+
+        $field = [
+            'id' => uniqid('data_'),
+            'type' => 'Payroll Column',
+            'status' => 'Show',
+            'text' => '',
+            'value' => $employeeLeaveUtil->calculateEmployeeLeave($employeeId, $payroll->date_start, $payroll->date_end),
+            'label' => LanguageManager::tran("Số ngày nghỉ có tính lương"),
+        ];
+        $data['fields'][] = $field;
+        $data['fields'][] = $separatorField;
+
         $salaryComponents = $salaryComponentModel->Find('1 = 1 ORDER BY id ASC');
         $salaryComponentIds = [];
 

@@ -65,6 +65,7 @@ class AttendanceUtil
 
         $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn);
         $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut);
+        $dayOfWeek = $checkIn->format('w');
 
         /** @var DateTime $timeStart */
         $timeStart = clone $checkIn;
@@ -73,10 +74,17 @@ class AttendanceUtil
         /** @var DateTime $timeEnd */
         $timeEnd = clone $checkOut;
         $timeEnd->setTime(17, 0, 0);
+        if ($dayOfWeek == 6) {
+            $timeEnd->setTime(12, 0, 0);
+        }
 
         if (!empty($employeeId) && self::isFullWorkingDay($employeeId, $checkIn)) {
             $checkIn = $timeStart;
             $checkOut = $timeEnd;
+        }
+
+        if ($timeEnd < $checkIn) {
+            return 0;
         }
 
         //start after 09:00 and left after 17:00
@@ -91,8 +99,6 @@ class AttendanceUtil
 
         //start before 09:00 and left after 17:00
         if ($timeStart >= $checkIn && $timeEnd <= $checkOut) {
-            $dayOfWeek = $checkIn->format('w');
-
             if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
                 return 1;
             } elseif ($dayOfWeek == 6) {
