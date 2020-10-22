@@ -277,7 +277,10 @@ class AttendanceActionManager extends SubActionManager
                     if (!empty($att->in_time)) {
                         $checkIn = \DateTime::createFromFormat('Y-m-d H:i:s', $att->in_time);
                         $checkInTime = $checkIn->format('H:i');
-                        $codeM = 'CC';
+
+                        if ($checkIn <= DateTime::createFromFormat('Y-m-d H:i', $checkIn->format('Y-m-d') . " 12:00")) {
+                            $codeM = 'CC';
+                        }
                     } else {
                         $codeM = 'KCGV';
                     }
