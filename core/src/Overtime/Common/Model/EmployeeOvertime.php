@@ -85,6 +85,8 @@ class EmployeeOvertime extends ApproveModel
 
         $employee = new Employee();
         $empInfo = $employee->find('id = ?', [$obj->employee]);
+        $totalTime = number_format((strtotime($obj->end_time) - strtotime($obj->start_time)) / 3600, 2);
+        $obj->total_time = $totalTime;
 
         if (!empty($empInfo[0]->supervisor) && $empInfo[0]->supervisor != "NULL") {
             $supervisor = $employee->find('id = ?', [$empInfo[0]->supervisor]);
