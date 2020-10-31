@@ -308,12 +308,13 @@ class PayrollDataAdapter extends TableEditAdapter {
         return req;
     }
 
-    sendPayslip() {
+    sendPayslip(review = 0) {
         let req = {};
         req.rowTable = this.rowTable;
         req.columnTable = this.columnTable;
         req.valueTable = this.valueTable;
         req.payrollId = this.payrollId;
+        req.review = review;
         const reqJson = JSON.stringify(req);
 
         const callBackData = [];

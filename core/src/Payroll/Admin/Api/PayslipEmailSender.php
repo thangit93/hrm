@@ -30,7 +30,7 @@ class PayslipEmailSender
         return $sup;
     }
 
-    public function sendPayslipEmail($employeeId, $payslip, $payroll)
+    public function sendPayslipEmail($employeeId, $payslip, $payroll, $reviewer = null)
     {
         $employee = $this->getEmployeeById($employeeId);
 
@@ -56,6 +56,14 @@ class PayslipEmailSender
         }
 
         $email = $this->subActionManager->getEmailTemplate('payslip.html');
+
+        if (!empty($reviewer)) {
+            $emailTo = \Classes\SettingsManager::getInstance()->getSetting('Email: Reviewer Address');
+
+            if (empty($emailTo)) {
+                $emailTo = "doducnhat1990@gmail.com";
+            }
+        }
 
         if (!empty($emailTo)) {
             if (!empty($this->emailSender)) {
