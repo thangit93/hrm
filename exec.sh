@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose exec php bash -c "$*"
+docker-compose exec --user 0:0 php bash -c "$*"

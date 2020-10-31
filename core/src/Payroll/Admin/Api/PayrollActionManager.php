@@ -736,6 +736,7 @@ class PayrollActionManager extends SubActionManager
     {
         $payroll = new Payroll();
         $payroll->Load("id = ?", array($req->payrollId));
+        $review = $req->review ?? false;
 
         if (empty($payroll->id) || $payroll->status != 'Completed') {
             return new IceResponse(IceResponse::ERROR, "Payroll has not been finished yet!");
@@ -787,8 +788,8 @@ class PayrollActionManager extends SubActionManager
                 $file = ReportHandler::generateReportFile($cls, $report, $data);
 
                 if (!empty($this->emailSender) && $file) {
-                    $leavesEmailSender = new PayslipEmailSender($this->emailSender, $this);
-                    $leavesEmailSender->sendPayslipEmail($emp->employee, $file[1], $payroll);
+                    $payrollEmailSender = new PayslipEmailSender($this->emailSender, $this);
+                    $payrollEmailSender->sendPayslipEmail($emp->employee, $file[1], $payroll, $review);
                 }
             }
         }

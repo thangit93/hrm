@@ -53,6 +53,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
                 <button class="downloadBtnTable6 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') . " ACB - SKB" ?></button>
                 <button class="downloadBtnTable7 btn btn-primary" style="margin-right:5px;"><i class="fa fa-check"></i> <?php echo t('Download') . " " . t('Payment on Behalf') ?> - SKB</button>
                 <button class="completeBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> <?php echo t('Finalize') ?></button>
+                <button class="reviewPayslipBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> <?php echo t('Review Payslip') ?></button>
                 <button class="sendPayslipBtnTable btn btn-primary" style="margin-right:5px;"><i class="fa fa-check-square-o"></i> <?php echo t('Send Payslip') ?></button>
             </div>
         </div>
@@ -172,6 +173,10 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
 
     $(".sendPayslipBtnTable").off().on('click',function(){
         modJsList['tabPayrollData'].sendPayslip();
+    });
+
+    $(".reviewPayslipBtnTable").off().on('click',function(){
+        modJsList['tabPayrollData'].sendPayslip(1);
     });
 
     $(".cancelBtnTable").off().on('click',function(){
