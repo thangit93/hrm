@@ -2526,3 +2526,6 @@ msgstr "nộp 1 yêu cầu xin nghỉ phép. Truy cập module quản lý nghỉ
 
 msgid "Working Type"
 msgstr "Loại Ngày Công"
+
+msgid "Custom Leave Days"
+msgstr "Tùy chình ngày phép"
