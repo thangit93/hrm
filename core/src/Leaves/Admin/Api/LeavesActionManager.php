@@ -258,7 +258,19 @@ class LeavesActionManager extends SubActionManager
 
                 $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod, $leaveTypeId, 'Approved'));
 
+                $leaveTypeObj = new LeaveType();
+                $leaveTypeData = $leaveTypeObj->Find("id = ?", array($leaveTypeId));
+
                 $leavesCarriedForward = intval($avalilable) - intval($approved);
+
+                if(!empty($leaveTypeData[0]->days_forward) && !empty($leaveTypeData[0]->date_reset) && $leavesCarriedForward > $leaveTypeData[0]->days_forward) {
+                    $leavesCarriedForward = $leaveTypeData[0]->days_forward;
+                }
+
+                if(!empty($leaveTypeData[0]->date_reset) && date('m-d', strtotime($leaveTypeData[0]->date_reset)) < date('m-d')) {
+                    $leavesCarriedForward = 0;
+                }
+
                 if ($leavesCarriedForward < 0) {
                     $leavesCarriedForward = 0;
                 }
