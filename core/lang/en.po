@@ -1950,3 +1950,6 @@ msgstr "Provide Feedback"
 
 msgid "Review Status"
 msgstr "Review Status"
+
+msgid "Custom Leave Days"
+msgstr "Custom Leave Days"

@@ -34,6 +34,7 @@ include APP_BASE_PATH.'modulejslibs.inc.php';
         <li ><a id="tabHoliDay" href="#tabPageHoliDay"><?=t('Holidays')?></a></li>
         <li ><a id="tabLeaveRule" href="#tabPageLeaveRule"><?=t('Leave Rules')?></a></li>
         <li ><a id="tabEmployeeLeave" href="#tabPageEmployeeLeave"><?=t('Employee Leaves')?></a></li>
+<!--        <li ><a id="tabEmployeeLeave" href="#tabPageEmployeeLeave">--><?//=t('Custom Leave Days')?><!--</a></li>-->
     </ul>
 
     <div class="tab-content">
