@@ -55,7 +55,8 @@ class PayslipEmailSender
             $emailTo = $employee->private_email;
         }
 
-        $email = $this->subActionManager->getEmailTemplate('payslip.html');
+//        $email = $this->subActionManager->getEmailTemplate('payslip.html');
+        $email = "#_content_#";
 
         if (!empty($reviewer)) {
             $emailTo = \Classes\SettingsManager::getInstance()->getSetting('Email: Reviewer Address');
