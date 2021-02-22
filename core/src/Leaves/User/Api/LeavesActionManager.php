@@ -700,7 +700,7 @@ class LeavesActionManager extends SubActionManager
             $leaves = array();
             $leaves['id'] = $leaveType->id;
             $leaves['name'] = t($leaveType->name);
-            $leaves['totalLeaves'] = floatval($leaveMatrix[0]);
+            $leaves['totalLeaves'] = floatval($leaveMatrix[4]['total']);
             $leaves['pendingLeaves'] = floatval($leaveMatrix[1]);
             $leaves['approvedLeaves'] = floatval($leaveMatrix[2]);
             $leaves['rejectedLeaves'] = floatval($leaveMatrix[3]);
