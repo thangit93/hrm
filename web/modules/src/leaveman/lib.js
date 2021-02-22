@@ -672,6 +672,7 @@ class EmployeeLeaveBalanceAdapter extends AdapterBase {
             "approvedLeaves",
             "rejectedLeaves",
             "pendingLeaves",
+            "carriedForward",
             "availableLeaves",
         ];
     }
@@ -686,6 +687,7 @@ class EmployeeLeaveBalanceAdapter extends AdapterBase {
             {"sTitle": "Approved Leaves"},
             {"sTitle": "Rejected Leaves"},
             {"sTitle": "Pending Leaves"},
+            {"sTitle": "Carried Forward"},
             {"sTitle": "Available Leaves"},
         ];
     }

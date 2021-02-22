@@ -2529,3 +2529,6 @@ msgstr "Loại Ngày Công"
 
 msgid "Custom Leave Days"
 msgstr "Tùy chình ngày phép"
+
+msgid "Carried Forward"
+msgstr "Được Chuyển Tiếp"
