@@ -706,6 +706,7 @@ class ReportLeaveAdapter extends AdapterBase {
             "name",
             "joinedDate",
             "approvedLeaves",
+            "carriedForward",
             "availableLeaves",
         ];
     }
@@ -716,6 +717,7 @@ class ReportLeaveAdapter extends AdapterBase {
             {"sTitle": "Name"},
             {"sTitle": "Joined Date"},
             {"sTitle": "Approved Leaves"},
+            {"sTitle": "Leaves Carried Forward"},
             {"sTitle": "Available Leaves"},
         ];
     }
