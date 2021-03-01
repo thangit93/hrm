@@ -68,6 +68,7 @@ class LeavesActionManager extends SubActionManager
             $leaves['joinedDate'] = $joinDate;
             $leaves['totalLeaves'] = floatval($leaveMatrix[0]);
             $leaves['approvedLeaves'] = floatval($leaveMatrix[1]);
+            $leaves['carriedForward'] = floatval($leaveMatrix[2]['carriedForward']);
             $leaves['availableLeaves'] = floatval($leaveMatrix[0]) - $leaves['approvedLeaves'];
             $leaves['bonusLeaveDays'] = 0;
             $leaves['previousBalanceDays'] = 0;
@@ -95,7 +96,8 @@ class LeavesActionManager extends SubActionManager
                 $sheet->setCellValueByColumnAndRow(2, $rowIndex, LanguageManager::tran("Name"));
                 $sheet->setCellValueByColumnAndRow(3, $rowIndex, LanguageManager::tran("Joined Date"));
                 $sheet->setCellValueByColumnAndRow(4, $rowIndex, LanguageManager::tran("Approved Leaves"));
-                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Available Leaves"));
+                $sheet->setCellValueByColumnAndRow(5, $rowIndex, LanguageManager::tran("Leaves Carried Forward"));
+                $sheet->setCellValueByColumnAndRow(6, $rowIndex, LanguageManager::tran("Available Leaves"));
 
                 //Set data
                 $rowIndex = 4;
@@ -104,7 +106,8 @@ class LeavesActionManager extends SubActionManager
                     $sheet->setCellValueByColumnAndRow(2, $rowIndex, $rowData['name']);
                     $sheet->setCellValueByColumnAndRow(3, $rowIndex, $rowData['joinedDate']);
                     $sheet->setCellValueByColumnAndRow(4, $rowIndex, $rowData['approvedLeaves']);
-                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, $rowData['availableLeaves']);
+                    $sheet->setCellValueByColumnAndRow(5, $rowIndex, $rowData['carriedForward']);
+                    $sheet->setCellValueByColumnAndRow(6, $rowIndex, $rowData['availableLeaves']);
 
                     $rowIndex++;
                 }
