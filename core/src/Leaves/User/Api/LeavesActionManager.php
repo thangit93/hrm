@@ -463,20 +463,37 @@ class LeavesActionManager extends SubActionManager
 
                 $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod->id, $leaveTypeId, 'Approved'));
 
-                if($available > $rule->days_forward){
+                $available = $available - $approved;
+
+                if ($available > $rule->days_forward) {
                     $available = $rule->days_forward;
                 }
 
-                if(date('m-d') > date('m-d', strtotime($rule->date_reset))){
+                if (date('m-d') > date('m-d', strtotime($rule->date_reset))) {
                     $available = 0;
                 }
 
-                $leavesCarriedForward = intval($available) - intval($approved);
+                $leavesCarriedForward = $available;
+                $leaveForwardHaveUsed = 0;
+                if ($leavesCarriedForward > 0) {
+                    $leaveForwardHaveUsed = $this->countLeaveAmountsWithLeaveDate(
+                        $this->getEmployeeLeaves($employee->id, $currentLeavePeriod->id, $leaveTypeId, 'Approved'),
+                        date('Y') . '-' . date('m-d', strtotime($rule->date_reset))
+                    );
+                }
+
+                #$leavesCarriedForward = intval($available) - intval($approved);
                 if ($leavesCarriedForward < 0) {
                     $leavesCarriedForward = 0;
                 }
                 $availableLeaveArray["carriedForward"] = $leavesCarriedForward;
-                $currentLeaves = intval($currentLeaves) + intval($leavesCarriedForward);
+                $availableLeaveArray["leaveForwardHaveUsed"] = $leaveForwardHaveUsed;
+                #$currentLeaves = intval($currentLeaves) + intval($leavesCarriedForward);
+                if (date('m-d') > date('m-d', strtotime($rule->date_reset))) {
+                    $currentLeaves = $currentLeaves + $leavesCarriedForward;
+                } else {
+                    $currentLeaves = $currentLeaves + $leaveForwardHaveUsed;
+                }
             }
         }
 
@@ -489,6 +506,25 @@ class LeavesActionManager extends SubActionManager
         foreach ($leaves as $leave) {
             $empLeaveDay = new EmployeeLeaveDay();
             $leaveDays = $empLeaveDay->Find("employee_leave = ?", array($leave->id));
+            foreach ($leaveDays as $leaveDay) {
+                if ($leaveDay->leave_type == 'Full Day') {
+                    $amount += 1;
+                } else if ($leaveDay->leave_type == 'Half Day - Morning') {
+                    $amount += 0.5;
+                } else if ($leaveDay->leave_type == 'Half Day - Afternoon') {
+                    $amount += 0.5;
+                }
+            }
+        }
+        return floatval($amount);
+    }
+
+    private function countLeaveAmountsWithLeaveDate($leaves, $leaveDate)
+    {
+        $amount = 0;
+        foreach ($leaves as $leave) {
+            $empLeaveDay = new EmployeeLeaveDay();
+            $leaveDays = $empLeaveDay->Find("employee_leave = ? and leave_date < ?", array($leave->id, $leaveDate));
             foreach ($leaveDays as $leaveDay) {
                 if ($leaveDay->leave_type == 'Full Day') {
                     $amount += 1;
@@ -530,8 +566,8 @@ class LeavesActionManager extends SubActionManager
                 return new IceResponse(IceResponse::ERROR, "You are trying to apply leaveman in two leave periods. You may apply leaveman til $leavePeriod1->date_end. Rest you have to apply seperately");
             } else {
                 $leavePeriod->name = 'Year ' . date('Y', strtotime($startDate));
-                $leavePeriod->date_start = date('Y-m-01', strtotime($startDate));
-                $leavePeriod->date_end = date('Y-m-t', strtotime($startDate));
+                $leavePeriod->date_start = date('Y-01-01', strtotime($startDate));
+                $leavePeriod->date_end = date('Y-12-t', strtotime($startDate));
                 $leavePeriod->status = 'Active';
                 $leavePeriod->save();
                 return new IceResponse(IceResponse::SUCCESS, $leavePeriod);
