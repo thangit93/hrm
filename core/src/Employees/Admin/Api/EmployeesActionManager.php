@@ -86,8 +86,8 @@ class EmployeesActionManager extends SubActionManager
         $archived = new ArchivedEmployee();
         $archived->ref_id = $employee->id;
         $archived->employee_id = $employee->employee_id;
-        $archived->first_name = $employee->first_name;
-        $archived->last_name = $employee->last_name;
+        $archived->first_name = empty($employee->first_name)? "" : $employee->first_name;
+        $archived->last_name = empty($employee->last_name)? "" : $employee->last_name;
         $archived->gender = $employee->gender;
         $archived->ssn_num = $employee->ssn_num;
         $archived->nic_num = $employee->nic_num;
