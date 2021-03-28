@@ -143,8 +143,8 @@ class LeavesActionManager extends SubActionManager
                 return new IceResponse(IceResponse::ERROR, "You are trying to apply leaveman in two leave periods. You may apply leaveman til $leavePeriod1->date_end. Rest you have to apply seperately");
             } else {
                 $leavePeriod->name = 'Year ' . date('Y');
-                $leavePeriod->date_start = date('Y-m-01');
-                $leavePeriod->date_end = date('Y-m-t');
+                $leavePeriod->date_start = date('Y-01-01');
+                $leavePeriod->date_end = date('Y-12-t');
                 $leavePeriod->status = 'Active';
                 $leavePeriod->save();
                 return new IceResponse(IceResponse::SUCCESS, $leavePeriod);
@@ -190,6 +190,25 @@ class LeavesActionManager extends SubActionManager
         return floatval($amount);
     }
 
+    private function countLeaveAmountsWithLeaveDate($leaves, $leaveDate)
+    {
+        $amount = 0;
+        foreach ($leaves as $leave) {
+            $empLeaveDay = new EmployeeLeaveDay();
+            $leaveDays = $empLeaveDay->Find("employee_leave = ? and leave_date < ?", array($leave->id, $leaveDate));
+            foreach ($leaveDays as $leaveDay) {
+                if ($leaveDay->leave_type == 'Full Day') {
+                    $amount += 1;
+                } else if ($leaveDay->leave_type == 'Half Day - Morning') {
+                    $amount += 0.5;
+                } else if ($leaveDay->leave_type == 'Half Day - Afternoon') {
+                    $amount += 0.5;
+                }
+            }
+        }
+        return floatval($amount);
+    }
+
     private function getEmployeeLeaves($employeeId, $leavePeriod, $leaveType, $status)
     {
         $employeeLeave = new EmployeeLeave();
@@ -199,7 +218,7 @@ class LeavesActionManager extends SubActionManager
                 date('Y-m-01', strtotime($leavePeriod->date_start)),
                 date('Y-m-t', strtotime($leavePeriod->date_end)),
                 $leaveType,
-                'Approved'
+                $status
             )
         );
         if (!$employeeLeaves) {
@@ -246,20 +265,21 @@ class LeavesActionManager extends SubActionManager
         if ($rule->carried_forward == "Yes" &&
             strtotime($currentLeavePeriod->date_start) > strtotime($employee->joined_date)) {
             //findPreviousLeavePeriod
+//            $dayInPreviousLeavePeriod = date('Y-m-d', strtotime($currentLeavePeriod->date_start . ' -1 day'));
             $dayInPreviousLeavePeriod = date('Y-m-d', strtotime($currentLeavePeriod->date_start . ' -1 day'));
             $resp = $this->getCurrentLeavePeriod($dayInPreviousLeavePeriod, $dayInPreviousLeavePeriod);
             if ($resp->getStatus() == "SUCCESS") {
                 $prvLeavePeriod = $resp->getData();
-                $avalilable = $rule->default_per_year;
+                $available = $rule->default_per_year;
 
                 //If the employee joined in this leave period, his leaveman should be calculated proportionally
                 if ($employee->joined_date != "0000-00-00 00:00:00" && !empty($employee->joined_date)) {
                     if (strtotime($prvLeavePeriod->date_start) < strtotime($employee->joined_date)) {
-                        $avalilable = intval($avalilable * (strtotime($prvLeavePeriod->date_end) - strtotime($employee->joined_date)) / (strtotime($prvLeavePeriod->date_end) - strtotime($prvLeavePeriod->date_start)));
+                        $available = intval($available * (strtotime($prvLeavePeriod->date_end) - strtotime($employee->joined_date)) / (strtotime($prvLeavePeriod->date_end) - strtotime($prvLeavePeriod->date_start)));
                     }
                 }
 
-                $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod, $leaveTypeId, 'Approved'));
+                /*$approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod, $leaveTypeId, 'Approved'));
 
                 $leaveTypeObj = new LeaveType();
                 $leaveTypeData = $leaveTypeObj->Find("id = ?", array($leaveTypeId));
@@ -278,7 +298,39 @@ class LeavesActionManager extends SubActionManager
                     $leavesCarriedForward = 0;
                 }
                 $availableLeaveArray["carriedForward"] = $leavesCarriedForward;
-                $currentLeaves = intval($currentLeaves) + intval($leavesCarriedForward);
+                $currentLeaves = intval($currentLeaves) + intval($leavesCarriedForward);*/
+                $approved = $this->countLeaveAmounts($this->getEmployeeLeaves($employee->id, $prvLeavePeriod, $leaveTypeId, 'Approved'));
+
+                $available = $available - $approved;
+
+                if($available > $rule->days_forward){
+                    $available = $rule->days_forward;
+                }
+
+                if(date('m-d') > date('m-d', strtotime($rule->date_reset))){
+                    $available = 0;
+                }
+
+                $leavesCarriedForward = $available;
+                if ($leavesCarriedForward > 0) {
+                    $leaveForwardHaveUsed = $this->countLeaveAmountsWithLeaveDate(
+                        $this->getEmployeeLeaves($employee->id, $currentLeavePeriod, $leaveTypeId, 'Approved'),
+                        date('Y') . '-' . date('m-d', strtotime($rule->date_reset))
+                    );
+                }
+
+                #$leavesCarriedForward = intval($available) - intval($approved);
+                if ($leavesCarriedForward < 0) {
+                    $leavesCarriedForward = 0;
+                }
+                $availableLeaveArray["carriedForward"] = $leavesCarriedForward;
+                $availableLeaveArray["leaveForwardHaveUsed"] = $leaveForwardHaveUsed;
+                #$currentLeaves = intval($currentLeaves) + intval($leavesCarriedForward);
+                if (date('m-d') > date('m-d', strtotime($rule->date_reset))){
+                    $currentLeaves = $currentLeaves + $leavesCarriedForward;
+                } else{
+                    $currentLeaves = $currentLeaves + $leaveForwardHaveUsed;
+                }
             }
         }
 
