@@ -36,6 +36,7 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             "employment_status" => ["EmploymentStatus", "id", "name"],
             "department" => ["CompanyStructure", "id", "title"],
             "supervisor" => ["Employee", "id", "last_name+middle_name+first_name"],
+//            "address" => ["Employee", "id", "address1+address2+city"],
 //            "indirect_supervisors" => ["Employee", "id", "last_name+middle_name+first_name", true],
         ];
 
@@ -48,13 +49,18 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             ['label' => LanguageManager::tran('Job Title'), 'column' => 'job_title'],
             ['label' => LanguageManager::tran('Department'), 'column' => 'department'],
             ['label' => LanguageManager::tran('Supervisor'), 'column' => 'supervisor'],
+            ['label' => LanguageManager::tran('Gender'), 'column' => 'gender'],
+            ['label' => LanguageManager::tran('Phone'), 'column' => 'mobile_phone'],
+            ['label' => LanguageManager::tran('Address'), 'column' => 'address'],
+            ['label' => LanguageManager::tran('Confirmed Date'), 'column' => 'confirmation_date'],
+            ['label' => LanguageManager::tran('Termination Date'), 'column' => 'termination_date'],
 //            ['label' => LanguageManager::tran('Indirect Supervisors'), 'column' => 'indirect_supervisors'],
         ];
 
         $customFieldsList = BaseService::getInstance()->getCustomFields('Employee');
 
         foreach ($customFieldsList as $customField) {
-            if (in_array($customField->name, ['emp_department', 'emp_level', 'full_working_days'])) {
+            if (in_array($customField->name, ['emp_level', 'full_working_days'])) {
                 continue;
             }
 
@@ -99,6 +105,18 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
                 } else {
                     if ($column['column'] == 'fullname') {
                         $row[] = "{$item->last_name} {$item->middle_name} {$item->first_name}";
+                    } elseif ($column['column'] == 'address') {
+                        $address = $item->address1;
+
+                        if (!empty($item->address2)) {
+                            $address .= (!empty($address)? ', ' : '') . "{$item->address2}";
+                        }
+
+                        if (!empty($item->city)) {
+                            $address .= (!empty($address)? ', ' : '') . "{$item->city}";
+                        }
+
+                        $row[] = $address;
                     } elseif (in_array($column['column'], ['birthday', 'joined_date', 'full_working_days'])) {
                         try {
                             $date = DateTime::createFromFormat('Y-m-d', $item->{$column['column']});
