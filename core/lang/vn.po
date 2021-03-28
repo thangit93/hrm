@@ -2532,3 +2532,6 @@ msgstr "Tùy chình ngày phép"
 
 msgid "Carried Forward"
 msgstr "Được Chuyển Tiếp"
+
+msgid "Confirmed Date"
+msgstr "Ngày kí chính thức"
