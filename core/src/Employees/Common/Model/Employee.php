@@ -189,6 +189,8 @@ class Employee extends BaseModel
 
         if (!empty($customField->value) && $customField->value != "NULL") {
             $obj->{$customField->name} = $customField->value;
+        }else{
+            unset($obj->{$customField->name});
         }
 
 //        var_dump($obj);die;
