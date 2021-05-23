@@ -54,6 +54,8 @@ class EmployeeDetailsReport extends ClassBasedReportBuilder implements ReportBui
             ['label' => LanguageManager::tran('Address'), 'column' => 'address'],
             ['label' => LanguageManager::tran('Confirmed Date'), 'column' => 'confirmation_date'],
             ['label' => LanguageManager::tran('Termination Date'), 'column' => 'termination_date'],
+            ['label' => LanguageManager::tran('Private Email'), 'column' => 'private_email'],
+            ['label' => LanguageManager::tran('Work Email'), 'column' => 'work_email'],
 //            ['label' => LanguageManager::tran('Indirect Supervisors'), 'column' => 'indirect_supervisors'],
         ];
 

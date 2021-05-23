@@ -17,6 +17,11 @@ class LeaveType extends BaseModel
         return array("get","element","save","delete");
     }
 
+    public function getManagerAccess()
+    {
+        return array("get","element","save","delete");
+    }
+
     public function postProcessGetData($obj)
     {
         $obj = FileService::getInstance()->updateSmallProfileImage($obj);
