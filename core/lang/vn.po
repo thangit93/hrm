@@ -2535,3 +2535,9 @@ msgstr "Được Chuyển Tiếp"
 
 msgid "Confirmed Date"
 msgstr "Ngày kí chính thức"
+
+msgid "Private Email"
+msgstr "Email cá nhân"
+
+msgid "Work Email"
+msgstr "Email công việc"
