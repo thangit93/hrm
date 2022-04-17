@@ -18,7 +18,7 @@ COPY apache-foreground.sh /
 COPY xdebug.ini /etc/php/7.3/apache2/conf.d/xdebug.ini
 COPY xdebug-cli.ini /etc/php/7.3/cli/conf.d/xdebug.ini
 
-RUN php -v
+RUN chmod 777 apache-foreground.sh
 
 EXPOSE 9001
 
