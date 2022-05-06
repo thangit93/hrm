@@ -12,8 +12,10 @@ app/data/*
 cache.properties
 node_modules/*
 web/dist/*.map
+/web/dist/*.js
 web/admin/dist/*.map
-web/modules/dist/*.map
+/web/admin/dist/*.js
+web/modules/dist/*
 .gitkeep
 yarn.lock
 /docker-compose.yml
