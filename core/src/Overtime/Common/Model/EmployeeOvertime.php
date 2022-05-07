@@ -14,6 +14,7 @@ use Classes\SettingsManager;
 use Employees\Common\Model\Employee;
 use Model\ApproveModel;
 use Utils\LogManager;
+use Leaves\Common\Model\LeaveType;
 
 class EmployeeOvertime extends ApproveModel
 {
@@ -100,18 +101,26 @@ class EmployeeOvertime extends ApproveModel
     {
         try {
             parent::executePostSaveActions($obj);
-    
+            // && $obj->status == 'Approved'
             if ($obj->formality == 'Nghỉ bù') {
                 $ovtCateModel = new OvertimeCategory();
+                $leaveType = new LeaveType();
+                $leaveType->Load('id = ?', [14]);
+                $defaultDay = $leaveType->default_per_year;
+
                 $ovtCateInfo = $ovtCateModel->find('id = ?', [$obj->category]);
                 $diffTime = number_format((strtotime($obj->end_time) - strtotime($obj->start_time)) / 3600, 2);
-                $baseDayCount = 1;
-                if ($diffTime <= 4) $baseDayCount = 0.5;
+                $baseDayCount = number_format($diffTime / 8, 2);
+                if ($baseDayCount < 0.5) $baseDayCount = 0.5;
+                if ($baseDayCount > 1) $baseDayCount = intval($baseDayCount);
                 $overTimeLeaveDays = $baseDayCount * $ovtCateInfo[0]->coefficient;
-    
+
                 $employee = new Employee();
                 $employee->Load('id = ?', [$obj->employee]);
-                $employee->overtime_leave_days = $overTimeLeaveDays;
+                $employee->overtime_leave_days += $overTimeLeaveDays;
+
+                if ($employee->overtime_leave_days > $defaultDay) $employee->overtime_leave_days = $defaultDay;
+
                 $employee->save();
             }
         } catch (\Exception $e) {
