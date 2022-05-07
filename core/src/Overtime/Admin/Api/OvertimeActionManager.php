@@ -11,6 +11,7 @@ namespace Overtime\Admin\Api;
 use Classes\Approval\ApproveAdminActionManager;
 use Classes\IceResponse;
 use Classes\LanguageManager;
+use DateTime;
 use Employees\Common\Model\Employee;
 use Leaves\Common\Model\LeaveType;
 use Overtime\Common\Model\EmployeeOvertime;
@@ -199,11 +200,34 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             $salary = $totalDays * $pricePerDay;
                         } else if ($rowData['cat_type'] == 5) {
                             $totalDays = ($totalDays > 0 && $totalDays < 1  ? 1 : $totalDays);
+                            $reqStartTime = new DateTime($rowData['start_time']);
+                            $hourStartTime = $reqStartTime->format('H');
+
                             $pricePerDay = 120000;
+                            $coefficient = 1;
+                            $bonus = 0;
+
+                            if ($hourStartTime > 23) {
+                                $bonus = 50000;
+                                $coefficient = 1.5;
+                            }
+
+                            if ($hourStartTime < 4 || $hourStartTime > 24) {
+                                $bonus = 100000;
+                                $coefficient = 2;
+                            }
+
+                            if ($hourStartTime < 4 && $hourStartTime > 24) {
+                                $bonus = 200000;
+                                $coefficient = 4;
+                            }
+
+                            $pricePerDay = $pricePerDay * $coefficient;
+
                             if ($rowData['total_time'] < 24) {
-                                $salary = $pricePerDay;
+                                $salary = $pricePerDay + $bonus;
                             } elseif ($rowData['total_time'] > 24){
-                                $salary = ($pricePerDay / 24) * $rowData['total_time'];
+                                $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
                             }
                         }
 
