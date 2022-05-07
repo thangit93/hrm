@@ -84,7 +84,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
         $startDate = (clone $currentDate)->setDate($currentDate->format('Y'), $currentDate->format('m') - 1, 26);
         $endDate = (clone $currentDate)->setDate($currentDate->format('Y'), $currentDate->format('m'), 25);
 
-        $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
+        $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' and formality = \'Trả lương\' '
             . 'and date_format(start_time, \'%Y-%m-%d\') >= \'' . $startDate->format('Y-m-d') . '\' and date_format(start_time, \'%Y-%m-%d\') <= \'' . $endDate->format('Y-m-d') . '\'');
 
         $responseData = [];
@@ -132,7 +132,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                              join OvertimeCategories oc on eo.category = oc.id
                              join EmployeeSalary es on e.id = es.employee
                              join SalaryComponent sc on es.component = sc.id
-                    where sc.componentType = 1 and eo.status = \"Approved\"
+                    where sc.componentType = 1 and eo.status = \"Approved\" and eo.formality = \"Trả lương\"
                     $dateFilter
                     group by eo.id;";
             $result = $this->db->Execute($sql);
