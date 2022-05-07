@@ -13,6 +13,7 @@ use Classes\IceResponse;
 use Classes\SettingsManager;
 use Employees\Common\Model\Employee;
 use Model\ApproveModel;
+use Utils\LogManager;
 
 class EmployeeOvertime extends ApproveModel
 {
@@ -93,5 +94,28 @@ class EmployeeOvertime extends ApproveModel
             $obj->supervisor = $supervisor[0]->first_name . ' ' . $supervisor[0]->last_name;
         }
         return $obj;
+    }
+
+    public function executePostSaveActions($obj)
+    {
+        try {
+            parent::executePostSaveActions($obj);
+    
+            if ($obj->formality == 'Nghỉ bù') {
+                $ovtCateModel = new OvertimeCategory();
+                $ovtCateInfo = $ovtCateModel->find('id = ?', [$obj->category]);
+                $diffTime = number_format((strtotime($obj->end_time) - strtotime($obj->start_time)) / 3600, 2);
+                $baseDayCount = 1;
+                if ($diffTime <= 4) $baseDayCount = 0.5;
+                $overTimeLeaveDays = $baseDayCount * $ovtCateInfo[0]->coefficient;
+    
+                $employee = new Employee();
+                $employee->Load('id = ?', [$obj->employee]);
+                $employee->overtime_leave_days = $overTimeLeaveDays;
+                $employee->save();
+            }
+        } catch (\Exception $e) {
+            LogManager::getInstance()->error($e);
+        }
     }
 }

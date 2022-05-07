@@ -426,6 +426,9 @@ class LeavesActionManager extends SubActionManager
             }
         }
 
+        if ($leaveTypeId == 14) {
+            $currentLeaves = $employee->overtime_leave_days;
+        }
         $availableLeaveArray["total"] = $currentLeaves;
 
         if ($rule->leave_accrue == "Yes") {
