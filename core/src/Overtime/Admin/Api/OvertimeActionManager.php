@@ -201,36 +201,93 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         } else if ($rowData['cat_type'] == 5) {
                             $totalDays = ($totalDays > 0 && $totalDays < 1  ? 1 : $totalDays);
                             $reqStartTime = new DateTime($rowData['start_time']);
-                            $hourStartTime = $reqStartTime->format('H');
+                            $reqEndTime = new DateTime($rowData['end_time']);
+                            $startDay = $reqStartTime->format('d');
+                            $endDay = $reqStartTime->format('d');
+                            $startTime = $reqStartTime->format('H:i:s');
+                            $endTime = $reqEndTime->format('H:i:s');
+                            $markTime1 = '04:00:00';
+                            $markTime2 = '05:00:00';
+                            $markTime3 = '08:00:00';
+                            $markTime4 = '20:00:00';
+                            $markTime5 = '23:00:00';
+                            $markTime6 = '00:00:00';
 
-                            $pricePerDay = 120000;
+                            $pricePerDay = 0;
                             $coefficient = 1;
                             $bonus = 0;
 
-                            if ($hourStartTime > 23) {
+                            if ($startTime < $markTime2 || $endTime > $markTime4) {
+                                $pricePerDay = 120000;
+                            } elseif ($startTime > $markTime5 || $startTime < $markTime3 && $endTime > $markTime4) {
                                 $bonus = 50000;
                                 $coefficient = 1.5;
-                            }
-
-                            if ($hourStartTime < 4 || $hourStartTime > 24) {
+                            } elseif ($startTime < $markTime1 && $startTime > $markTime6 && $endDay > $startDay) {
+                                $bonus = 200000;
+                                $coefficient = 4;
+                            } elseif ($startTime < $markTime1 || $startTime > $markTime6 && $endDay > $startDay || $startTime < $markTime3 && $endTime > $markTime5) {
                                 $bonus = 100000;
                                 $coefficient = 2;
                             }
 
-                            if ($hourStartTime < 4 && $hourStartTime > 24) {
-                                $bonus = 200000;
-                                $coefficient = 4;
-                            }
-
                             $pricePerDay = $pricePerDay * $coefficient;
 
-                            if ($rowData['total_time'] < 24) {
-                                $salary = $pricePerDay + $bonus;
-                            } elseif ($rowData['total_time'] > 24){
-                                $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
-                            }
-                        }
+                            $salary = $pricePerDay + $bonus;
+                            // if ($rowData['total_time'] < 24) {
+                            //     $salary = $pricePerDay + $bonus;
+                            // } elseif ($rowData['total_time'] > 24){
+                            //     $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
+                            // }
+                        } else if ($rowData['cat_type'] == 6) {
+                            $totalDays = ($totalDays > 0 && $totalDays < 1  ? 1 : $totalDays);
+                            $reqStartTime = new DateTime($rowData['start_time']);
+                            $reqEndTime = new DateTime($rowData['end_time']);
+                            $startDay = $reqStartTime->format('d');
+                            $endDay = $reqStartTime->format('d');
+                            $startTime = $reqStartTime->format('H:i:s');
+                            $endTime = $reqEndTime->format('H:i:s');
+                            $markTime1 = '04:00:00';
+                            $markTime2 = '05:00:00';
+                            $markTime3 = '08:00:00';
+                            $markTime4 = '20:30:00';
+                            $markTime5 = '23:00:00';
+                            $markTime6 = '00:00:00';
+                            $markTime7 = '06:00:00';
 
+                            $pricePerDay = 0;
+                            $coefficient = 1;
+                            $bonus = 0;
+
+                            if ($startTime <= $markTime2 && $endTime <= $markTime4) {
+                                $pricePerDay = 120000;
+                                $bonus = 150000;
+                            } elseif ($startTime < $markTime1 || $endTime > $markTime5 || $startTime <= $markTime7 && $endTime > '22:00:00') {
+                                $pricePerDay = 120000;
+                                $bonus = 150000;
+                                $coefficient = 2;
+                            } elseif ($startTime <= '05:00:00' && $endTime >= '20:30:00' && $endTime <= '23:00:00' || $startTime <= '06:00:00' && $endTime > '23:00:00') {
+                                $pricePerDay = 120000;
+                                $bonus = 150000;
+                                $coefficient = 3;
+                            } elseif ($startTime < '04:00:00' && $endTime > '23:00:00') {
+                                $pricePerDay = 120000;
+                                $bonus = 150000;
+                                $coefficient = 4;
+                            } elseif ($startTime <= $markTime2 || $endTime >= $markTime4 && $endTime <= $markTime5) {
+                                $pricePerDay = 120000;
+                                $bonus = 150000;
+                                $coefficient = 1.5;
+                            }
+                            $pricePerDay = $pricePerDay * $coefficient;
+
+                            $salary = $pricePerDay + $bonus;
+                            // if ($rowData['total_time'] < 24) {
+                            //     $salary = $pricePerDay + $bonus;
+                            // } elseif ($rowData['total_time'] > 24){
+                            //     $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
+                            // }
+                        }
+                        
                         $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['location']);
                         $sheet->setCellValueByColumnAndRow(2, $rowIndex, date('d/m/Y', strtotime($rowData['start_time'])));
                         $sheet->setCellValueByColumnAndRow(3, $rowIndex, date('d/m/Y', strtotime($rowData['end_time'])));
