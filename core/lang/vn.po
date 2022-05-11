@@ -2541,3 +2541,6 @@ msgstr "Email cá nhân"
 
 msgid "Work Email"
 msgstr "Email công việc"
+
+msgid "Formality"
+msgstr "Hình thức"

@@ -29,6 +29,7 @@ class Employee extends BaseModel
         "gender" => "gender",
         "marital_status" => "marital_status",
         "ssn_num" => "ssn_num",
+        "overtime_leave_days" => "overtime_leave_days",
         "nic_num" => "nic_num",
         "other_id" => "other_id",
         "employment_status" => "employment_status_Name",

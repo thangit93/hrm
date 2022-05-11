@@ -63,6 +63,7 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       // 'project',
       "notes",
       "total_time",
+      'formality',
       'status',
     ];
   }
@@ -77,6 +78,7 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
       // { sTitle: 'Project' },
       {"sTitle": "Location"},
       {"sTitle": "Total Time"},
+      {"sTitle": "Formality"},
       { sTitle: 'Status' },
     ];
   }
@@ -100,6 +102,7 @@ class EmployeeOvertimeAdminAdapter extends ApproveAdminAdapter {
         label: 'Project', type: 'select2', 'allow-null': true, 'null=label': 'none', 'remote-source': ['Project', 'id', 'name'],
       }],*/
       ['total_time', { label: 'Total Time', type: 'text', readonly: true, validation: 'none' }],
+      ['formality', { label: 'Formality', type: 'select2', source: [['Nghỉ bù', 'Nghỉ bù'], ['Trả lương', 'Trả lương']], 'allow-null': false, validation: 'none' }],
       ['notes', { label: 'Notes', type: 'textarea', validation: 'none' }],
     ];
   }
