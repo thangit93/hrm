@@ -108,6 +108,10 @@ class AttendanceActionManager extends SubActionManager
         }
 
         $attendance->employee = $req->employee;
+        // Nhân viên kinh doanh, tính full lương
+        if ($employee->job_title == 64 && !empty($req->in_time)) {
+            $note = 1;
+        } 
         $attendance->note = $note;
         $ok = $attendance->Save();
         if (!$ok) {
@@ -247,6 +251,7 @@ class AttendanceActionManager extends SubActionManager
 
     public function updateAttendance($req)
     {
+        $employee = $this->baseService->getElement('Employee', $req->employee_id, null, true);
         $date = $req->date;
         $fieldname = $req->fieldname;
         $employee_id = $req->employee_id;
@@ -294,6 +299,11 @@ class AttendanceActionManager extends SubActionManager
         if (!empty($attendance->in_time) && !empty($attendance->out_time)) {
             $total = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time, $attendance->employee);
         }
+
+        // Nhân viên kinh doanh, tính full lương
+        if ($employee->job_title == 64 && !empty($req->in_time)) {
+            $note = 1;
+        } 
 
         $attendance->note = $total;
         $attendance->Save();
