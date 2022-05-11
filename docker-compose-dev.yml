@@ -5,7 +5,7 @@ services:
 #        image: ducnhat/icehrm:latest
         build: ./docker
         volumes:
-            - .:/var/www/dev-php:cached
+            - .:/var/www/dev-php
         environment:
             APP_DEBUG: "true"
         ports:
@@ -24,3 +24,9 @@ services:
             MYSQL_PASSWORD: dev
         ports:
             - 3307:3306
+        volumes:
+            - mysql-vol:/var/lib/mysql
+
+volumes:
+  mysql-vol:
+    driver: local
