@@ -123,11 +123,6 @@ class AttendanceUtil
         $employee = array_shift($employee);
         $employee = $model->postProcessGetData($employee);
 
-        // Nhân viên kinh doanh, tính full lương
-        if ($employee->job_title == 64 && !empty($date)) {
-            return true;
-        }
-
         if (!empty($employee->full_working_days)) {
             $fullWorkingDayFrom = DateTime::createFromFormat('Y-m-d', $employee->full_working_days);
             $fullWorkingDayFrom->setTime(0, 0, 0);
