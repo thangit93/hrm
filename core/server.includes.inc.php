@@ -4,6 +4,7 @@ if (!defined("AWS_REGION")) {
 }
 include(APP_BASE_PATH.'lib/adodb512/adodb.inc.php');
 include(APP_BASE_PATH.'lib/adodb512/adodb-active-record.inc.php');
+include(APP_BASE_PATH.'lib/Session.php');
 $ADODB_ASSOC_CASE = 2;
 
 //detect admin and user modules
