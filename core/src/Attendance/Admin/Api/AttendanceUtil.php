@@ -174,6 +174,14 @@ class AttendanceUtil
         $startTime = \DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
         $endTime = \DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
         $totalDays = $endTime->diff($startTime)->days + 1;
+
+        $employee = new Employee();
+        $employee->Load('id = ?', [$employeeId]);
+
+        if ($employee->job_title == 72) {
+            return $startTime->format('t');
+        }
+
         LogManager::getInstance()->info("Total Days: " . $totalDays->days);
         while ($startTime <= $endTime) {
             $dayOfWeek = $startTime->format('w');
