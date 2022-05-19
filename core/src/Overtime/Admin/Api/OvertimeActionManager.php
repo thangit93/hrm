@@ -203,36 +203,42 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             $reqStartTime = new DateTime($rowData['start_time']);
                             $reqEndTime = new DateTime($rowData['end_time']);
                             $startDay = $reqStartTime->format('d');
-                            $endDay = $reqStartTime->format('d');
+                            $endDay = $reqEndTime->format('d');
                             $startTime = $reqStartTime->format('H:i:s');
                             $endTime = $reqEndTime->format('H:i:s');
-                            $markTime1 = '04:00:00';
-                            $markTime2 = '05:00:00';
-                            $markTime3 = '08:00:00';
-                            $markTime4 = '20:00:00';
-                            $markTime5 = '23:00:00';
-                            $markTime6 = '00:00:00';
+                            $differDay = $endDay - $startDay;
+                            $overDay = $endTime > '00:00:00' && $endTime < '04:00:00' && $differDay >= 1;
 
-                            $pricePerDay = 0;
+                            $pricePerDay = 120000;
                             $coefficient = 1;
                             $bonus = 0;
 
-                            if ($startTime < $markTime2 || $endTime > $markTime4) {
-                                $pricePerDay = 120000;
-                            } elseif ($startTime > $markTime5 || $startTime < $markTime3 && $endTime > $markTime4) {
+                            if ($startTime < '04:00:00' && $overDay) {
+                                $coefficient = 4;
+                                $bonus = 200000;
+                            } elseif ($startTime < '04:00:00' || $overDay) {
+                                $coefficient = 2;
+                                $bonus = 100000;
+                            } elseif ($endTime > '23:00:00' || $overDay) {
                                 $bonus = 50000;
                                 $coefficient = 1.5;
-                            } elseif ($startTime < $markTime1 && $startTime > $markTime6 && $endDay > $startDay) {
-                                $bonus = 200000;
-                                $coefficient = 4;
-                            } elseif ($startTime < $markTime1 || $startTime > $markTime6 && $endDay > $startDay || $startTime < $markTime3 && $endTime > $markTime5) {
-                                $bonus = 100000;
-                                $coefficient = 2;
+                            } elseif ($startTime < '05:00:00' || $endTime > '20:00:00') {
+                                if ($rowData['total_time'] <= 6 && $endTime <= '20:30:00') {
+                                    $pricePerDay = $pricePerDay * 0.5;
+                                }
+                                $coefficient = 1;
+                                $bonus = 0;
+                            } elseif ($startTime >= '08:00:00' && $endTime <= '20:00:00') {
+                                $coefficient = 0;
+                                $bonus = 0;
                             }
 
                             $pricePerDay = $pricePerDay * $coefficient;
 
                             $salary = $pricePerDay + $bonus;
+                            if ($differDay > 1 || ($differDay == 1 && $endTime > '04:00:00')) {
+                                $salary = $salary * ($differDay + 1);
+                            }
                             // if ($rowData['total_time'] < 24) {
                             //     $salary = $pricePerDay + $bonus;
                             // } elseif ($rowData['total_time'] > 24){
@@ -243,44 +249,39 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             $reqStartTime = new DateTime($rowData['start_time']);
                             $reqEndTime = new DateTime($rowData['end_time']);
                             $startDay = $reqStartTime->format('d');
-                            $endDay = $reqStartTime->format('d');
+                            $endDay = $reqEndTime->format('d');
                             $startTime = $reqStartTime->format('H:i:s');
                             $endTime = $reqEndTime->format('H:i:s');
-                            $markTime1 = '04:00:00';
-                            $markTime2 = '05:00:00';
-                            $markTime3 = '08:00:00';
-                            $markTime4 = '20:30:00';
-                            $markTime5 = '23:00:00';
-                            $markTime6 = '00:00:00';
-                            $markTime7 = '06:00:00';
-
-                            $pricePerDay = 0;
+                            $differDay = $endDay - $startDay;
+                            $overDay = $endTime > '00:00:00' && $endTime < '04:00:00' && $differDay >= 1;
+                            $pricePerDay = 120000;
                             $coefficient = 1;
                             $bonus = 0;
 
-                            if ($startTime <= $markTime2 && $endTime <= $markTime4) {
-                                $pricePerDay = 120000;
-                                $bonus = 150000;
-                            } elseif ($startTime < $markTime1 || $endTime > $markTime5 || $startTime <= $markTime7 && $endTime > '22:00:00') {
-                                $pricePerDay = 120000;
-                                $bonus = 150000;
-                                $coefficient = 2;
-                            } elseif ($startTime <= '05:00:00' && $endTime >= '20:30:00' && $endTime <= '23:00:00' || $startTime <= '06:00:00' && $endTime > '23:00:00') {
-                                $pricePerDay = 120000;
-                                $bonus = 150000;
-                                $coefficient = 3;
-                            } elseif ($startTime < '04:00:00' && $endTime > '23:00:00') {
-                                $pricePerDay = 120000;
-                                $bonus = 150000;
+                            if (($startTime < '04:00:00' && $endTime > '23:00:00') || ($startTime < '04:00:00' && $overDay)) {
                                 $coefficient = 4;
-                            } elseif ($startTime <= $markTime2 || $endTime >= $markTime4 && $endTime <= $markTime5) {
-                                $pricePerDay = 120000;
-                                $bonus = 150000;
+                            } elseif ($startTime < '05:00:00' && ($endTime > '20:30:00' || $overDay)) {
+                                $coefficient = 3;
+                            } elseif ($startTime < '04:00:00' || $endTime > '23:00:00' || $overDay) {
+                                $coefficient = 2;
+                            } elseif ($startTime < '05:00:00' || $endTime >= '20:30:00') {
+                                if ($rowData['total_time'] <= 6 && $endTime <= '20:30:00') {
+                                    $pricePerDay = $pricePerDay * 0.5;
+                                }
                                 $coefficient = 1.5;
+                            } elseif ($startTime >= '05:00:00' && $endTime <= '20:30:00') {
+                                $coefficient = 1;
+                                if ($rowData['total_time'] <= 6) {
+                                    $pricePerDay = $pricePerDay * 0.5;
+                                }
                             }
+
                             $pricePerDay = $pricePerDay * $coefficient;
 
                             $salary = $pricePerDay + $bonus;
+                            if ($differDay > 1 || ($differDay == 1 && $endTime > '04:00:00')) {
+                                $salary = $salary * ($differDay + 1);
+                            }
                             // if ($rowData['total_time'] < 24) {
                             //     $salary = $pricePerDay + $bonus;
                             // } elseif ($rowData['total_time'] > 24){
@@ -295,8 +296,13 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         $sheet->setCellValueByColumnAndRow(5, $rowIndex, date('H:i', strtotime($rowData['end_time'])));
                         $sheet->setCellValueByColumnAndRow(6, $rowIndex, $totalDays);
                         $sheet->setCellValueByColumnAndRow(7, $rowIndex, $rowData['total_time']);
-                        $sheet->setCellValueByColumnAndRow(8, $rowIndex, $rowData['coefficient']);
-                        $sheet->setCellValueByColumnAndRow(9, $rowIndex, round($pricePerDay));
+                        if ($rowData['cat_type'] == 5 || $rowData['cat_type'] == 6) {
+                            $sheet->setCellValueByColumnAndRow(8, $rowIndex, $coefficient);
+                            $sheet->setCellValueByColumnAndRow(9, $rowIndex, '120000');
+                        } else {
+                            $sheet->setCellValueByColumnAndRow(8, $rowIndex, $rowData['coefficient']);
+                            $sheet->setCellValueByColumnAndRow(9, $rowIndex, round($pricePerDay));
+                        }
                         $sheet->setCellValueByColumnAndRow(10, $rowIndex, round($salary));
                         $sheet->setCellValueByColumnAndRow(11, $rowIndex, $rowData['ot_type']);
 

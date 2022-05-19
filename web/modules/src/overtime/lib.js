@@ -63,7 +63,7 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
         'remote-source': ['Project', 'id', 'name'],
       }],*/
       ['total_time', { label: 'Total Time', type: 'text', readonly: true, validation: 'none' }],
-      ['formality', { label: 'Formality', type: 'select2', source: [['Nghỉ bù', 'Nghỉ bù'], ['Trả lương', 'Trả lương']], 'allow-null': false, validation: 'none' }],
+      ['formality', { label: 'Formality', type: 'select2', source: [['Trả lương', 'Trả lương'], ['Nghỉ bù', 'Nghỉ bù']], 'allow-null': false, validation: 'none' }],
       ['notes', { label: 'Location', type: 'textarea', validation: 'none' }],
     ];
   }

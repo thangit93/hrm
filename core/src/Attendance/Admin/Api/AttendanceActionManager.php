@@ -109,8 +109,12 @@ class AttendanceActionManager extends SubActionManager
 
         $attendance->employee = $req->employee;
         // Nhân viên kinh doanh, tính full lương
-        if ($employee->job_title == 64 && !empty($req->in_time)) {
+        if ($employee->job_title == 64 && (!empty($req->in_time) || !empty($req->out_time))) {
             $note = 1;
+            $date = \DateTime::createFromFormat('Y-m-d', $req->date);
+            if ($date->format('w') == 6) {
+                $note = 0.5;
+            }
         } 
         $attendance->note = $note;
         $ok = $attendance->Save();
@@ -221,6 +225,14 @@ class AttendanceActionManager extends SubActionManager
                         $dataDay['total'] = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employee->id);
                     }
 
+                    // Nhân viên kinh doanh, tính full lương
+                    if ($employee->job_title == 64 && (!empty($att->in_time) || !empty($att->out_time))) {
+                        $dataDay['total'] = 1;
+                        if ($startDate->format('w') == 6) {
+                            $dataDay['total'] = 0.5;
+
+                        }
+                    }
                 } else {
                     $dataDay = array_merge($dataDay, [
                         'in' => '',
@@ -228,7 +240,7 @@ class AttendanceActionManager extends SubActionManager
                     ]);
                 }
 
-                if (AttendanceUtil::isFullWorkingDay($employee->id, $startDate)) {
+                if (AttendanceUtil::isFullWorkingDay($employee->id, $startDate) && $employee->job_title != 64) {
                     $dataDay['total'] = AttendanceUtil::calculateWorkingDay($startDate->format('Y-m-d H:i:s'), $startDate->format('Y-m-d H:i:s'), $employee->id);
                 }
 
@@ -253,6 +265,7 @@ class AttendanceActionManager extends SubActionManager
     {
         $employee = $this->baseService->getElement('Employee', $req->employee_id, null, true);
         $date = $req->date;
+        $dateObject = \DateTime::createFromFormat('Y-m-d', $req->date);
         $fieldname = $req->fieldname;
         $employee_id = $req->employee_id;
         $in = $req->in;
@@ -266,7 +279,12 @@ class AttendanceActionManager extends SubActionManager
         }
 
         $oldTotal = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time, $attendance->employee);
-
+        if ($employee->job_title == 64 && (!empty($attendance->in_time) || !empty($attendance->out_time))) {
+            $oldTotal = 1;
+            if ($dateObject->format('w') == 6) {
+                $oldTotal = 0.5;
+            }
+        } 
         if ($fieldname == "in") {
             if (!empty($in)) {
                 $attendance->in_time = "{$date} {$in}:00";
@@ -301,9 +319,12 @@ class AttendanceActionManager extends SubActionManager
         }
 
         // Nhân viên kinh doanh, tính full lương
-        if ($employee->job_title == 64 && !empty($req->in_time)) {
-            $note = 1;
-        } 
+        if ($employee->job_title == 64 && (!empty($attendance->in_time) || !empty($attendance->out_time))) {
+            $total = 1;
+            if ($dateObject->format('w') == 6) {
+                $total = 0.5;
+            }
+        }
 
         $attendance->note = $total;
         $attendance->Save();
