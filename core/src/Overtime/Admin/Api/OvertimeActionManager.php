@@ -207,22 +207,23 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             $startTime = $reqStartTime->format('H:i:s');
                             $endTime = $reqEndTime->format('H:i:s');
                             $differDay = $endDay - $startDay;
+                            $overDay = $endTime > '00:00:00' && $endTime < '04:00:00' && $differDay >= 1;
 
                             $pricePerDay = 120000;
                             $coefficient = 1;
                             $bonus = 0;
 
-                            if ($startTime < '04:00:00' && $endTime > '00:00:00' && $endTime < '04:00:00' && $differDay >= 1) {
+                            if ($startTime < '04:00:00' && $overDay) {
                                 $coefficient = 4;
                                 $bonus = 200000;
-                            } elseif ($startTime < '04:00:00' || ($endTime > '00:00:00' && $endTime < '04:00:00' && $differDay >= 1) || ($startTime < '08:00:00' && $endTime > '23:00:00')) {
+                            } elseif ($startTime < '04:00:00' || $overDay) {
                                 $coefficient = 2;
                                 $bonus = 100000;
-                            } elseif ($endTime > '23:00:00' || ($startTime < '08:00:00' && $endTime > '20:00:00')) {
+                            } elseif ($endTime > '23:00:00' || $overDay) {
                                 $bonus = 50000;
                                 $coefficient = 1.5;
                             } elseif ($startTime < '05:00:00' || $endTime > '20:00:00') {
-                                if ($rowData['total_time'] <= 6) {
+                                if ($rowData['total_time'] <= 6 && $endTime <= '20:30:00') {
                                     $pricePerDay = $pricePerDay * 0.5;
                                 }
                                 $coefficient = 1;
@@ -235,8 +236,8 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             $pricePerDay = $pricePerDay * $coefficient;
 
                             $salary = $pricePerDay + $bonus;
-                            if ($differDay > 1) {
-                                $salary = $salary * $differDay;
+                            if ($differDay > 1 || ($differDay == 1 && $endTime > '04:00:00')) {
+                                $salary = $salary * ($differDay + 1);
                             }
                             // if ($rowData['total_time'] < 24) {
                             //     $salary = $pricePerDay + $bonus;
@@ -259,12 +260,12 @@ class OvertimeActionManager extends ApproveAdminActionManager
 
                             if (($startTime < '04:00:00' && $endTime > '23:00:00') || ($startTime < '04:00:00' && $overDay)) {
                                 $coefficient = 4;
-                            } elseif (($startTime < '05:00:00' && $endTime > '20:30:00') || ($startTime < '06:00:00' && $endTime > '23:00:00') || ($startTime < '06:00:00'  && $overDay)) {
+                            } elseif ($startTime < '05:00:00' && ($endTime > '20:30:00' || $overDay)) {
                                 $coefficient = 3;
-                            } elseif ($startTime < '04:00:00' || $endTime > '23:00:00' || $overDay || ($startTime < '06:00:00' && $endTime > '22:00:00')) {
+                            } elseif ($startTime < '04:00:00' || $endTime > '23:00:00' || $overDay) {
                                 $coefficient = 2;
                             } elseif ($startTime < '05:00:00' || $endTime >= '20:30:00') {
-                                if ($rowData['total_time'] <= 6) {
+                                if ($rowData['total_time'] <= 6 && $endTime <= '20:30:00') {
                                     $pricePerDay = $pricePerDay * 0.5;
                                 }
                                 $coefficient = 1.5;
@@ -278,8 +279,8 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             $pricePerDay = $pricePerDay * $coefficient;
 
                             $salary = $pricePerDay + $bonus;
-                            if ($differDay > 1) {
-                                $salary = $salary * $differDay;
+                            if ($differDay > 1 || ($differDay == 1 && $endTime > '04:00:00')) {
+                                $salary = $salary * ($differDay + 1);
                             }
                             // if ($rowData['total_time'] < 24) {
                             //     $salary = $pricePerDay + $bonus;

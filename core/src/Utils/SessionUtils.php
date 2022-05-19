@@ -4,7 +4,7 @@ namespace Utils;
 class SessionUtils
 {
     public static function getSessionObject($name)
-    {var_dump($_SESSION);exit;
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
