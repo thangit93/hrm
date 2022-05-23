@@ -17,6 +17,7 @@ RUN apt install -y default-jre && apt install -y default-jdk && \
 COPY apache-foreground.sh /
 COPY xdebug.ini /etc/php/7.3/apache2/conf.d/xdebug.ini
 COPY xdebug-cli.ini /etc/php/7.3/cli/conf.d/xdebug.ini
+COPY php.ini /etc/php/7.3/apache2/php.ini
 
 RUN chmod 777 apache-foreground.sh
 
