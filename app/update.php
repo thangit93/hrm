@@ -1,5 +1,6 @@
 <?php
 include ('config.php');
+include(APP_BASE_PATH.'lib/Session.php');
 if(!isset($_REQUEST['g']) || !isset($_REQUEST['n'])){
     header("Location:".CLIENT_BASE_URL."login.php");
     exit();
