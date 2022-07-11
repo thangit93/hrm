@@ -272,7 +272,6 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
   }
 
   getActionButtonsHtml(id, data) {
-    console.log(data, this.user);
     const editButton = '<img class="tableActionButton" src="_BASE_images/edit.png" style="cursor:pointer;" rel="tooltip" title="Edit" onclick="modJs.edit(_id_);return false;"></img>';
     const deleteButton = '<img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Delete" onclick="modJs.deleteRow(_id_);return false;"></img>';
     const requestCancellationButton = `<img class="tableActionButton" src="_BASE_images/delete.png" style="margin-left:15px;cursor:pointer;" rel="tooltip" title="Cancel ${this.itemName}" onclick="modJs.cancelRequest(_id_);return false;"></img>`;
@@ -282,11 +281,10 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
     let html = '<div style="width:120px;">_edit__logs__delete_</div>';
 
     html = html.replace('_logs_', viewLogsButton);
-
     if (this.showDelete) {
-      if (data[7] === 'Approved') {
+      if (data[8] === 'Approved') {
         html = html.replace('_delete_', requestCancellationButton);
-      } else if (data[7] === 'Pending' || this.user.user_level === 'Admin') {
+      } else if (data[8] === 'Pending' || this.user.user_level === 'Admin') {
         html = html.replace('_delete_', deleteButton);
       } else {
         html = html.replace('_delete_', '');
@@ -296,7 +294,7 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
     }
 
     if (this.showEdit) {
-      if (data[7] === 'Pending') {
+      if (data[8] === 'Pending') {
         html = html.replace('_edit_', editButton);
       } else {
         html = html.replace('_edit_', '');
@@ -304,7 +302,6 @@ class EmployeeOvertimeAdapter extends ApproveModuleAdapter {
     } else {
       html = html.replace('_edit_', '');
     }
-
     html = html.replace(/_id_/g, id);
     html = html.replace(/_BASE_/g, this.baseUrl);
     return html;
