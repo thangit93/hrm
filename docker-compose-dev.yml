@@ -19,7 +19,7 @@ services:
         image: percona:5.5
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: icehrm
+            MYSQL_DATABASE: yviet
             MYSQL_USER: dev
             MYSQL_PASSWORD: dev
         ports:
