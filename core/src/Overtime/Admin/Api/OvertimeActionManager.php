@@ -102,6 +102,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
 //                    'totalTime' => $overtime->total_time,
                     'totalTime' => $totalTime,
                     'notes' => $overtime->notes,
+                    'formality' => $overtime->formality
                 ];
             }
         }
@@ -127,7 +128,8 @@ class OvertimeActionManager extends ApproveAdminActionManager
                            oc.name                                as ot_type,
                            es.amount                              as total_salary,
                            oc.type                                as cat_type,                           
-                           concat(e.first_name, ' ', e.last_name) as name
+                           concat(e.first_name, ' ', e.last_name) as name,
+                           formality
                     from EmployeeOvertime eo
                              join Employees e on eo.employee = e.id
                              join OvertimeCategories oc on eo.category = oc.id
@@ -148,6 +150,8 @@ class OvertimeActionManager extends ApproveAdminActionManager
                 unset($r[6]);
                 unset($r[7]);
                 unset($r[8]);
+                unset($r[9]);
+                unset($r[10]);
                 $employee[$r['employee_id']][] = $r;
             }
 
@@ -176,6 +180,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                     $sheet->setCellValueByColumnAndRow(9, $rowIndex, LanguageManager::tran("Base salary / day"));
                     $sheet->setCellValueByColumnAndRow(10, $rowIndex, LanguageManager::tran("Salary get"));
                     $sheet->setCellValueByColumnAndRow(11, $rowIndex, LanguageManager::tran("Category"));
+                    $sheet->setCellValueByColumnAndRow(12, $rowIndex, LanguageManager::tran("Formality"));
                     $sheet->setTitle($data[0]['name']);
                     $sheet->getStyle('A1:K1')->getFont()->setBold(true);
 
@@ -282,13 +287,16 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             if ($differDay > 1 || ($differDay == 1 && $endTime > '04:00:00')) {
                                 $salary = $salary * ($differDay + 1);
                             }
+                            if ($rowData['formality'] == 'Nghỉ bù') {
+                                $salary = 0;
+                            }
                             // if ($rowData['total_time'] < 24) {
                             //     $salary = $pricePerDay + $bonus;
                             // } elseif ($rowData['total_time'] > 24){
                             //     $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
                             // }
                         }
-                        
+
                         $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['location']);
                         $sheet->setCellValueByColumnAndRow(2, $rowIndex, date('d/m/Y', strtotime($rowData['start_time'])));
                         $sheet->setCellValueByColumnAndRow(3, $rowIndex, date('d/m/Y', strtotime($rowData['end_time'])));
@@ -305,6 +313,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         }
                         $sheet->setCellValueByColumnAndRow(10, $rowIndex, round($salary));
                         $sheet->setCellValueByColumnAndRow(11, $rowIndex, $rowData['ot_type']);
+                        $sheet->setCellValueByColumnAndRow(12, $rowIndex, $rowData['formality']);
 
                         $rowIndex++;
                     }
