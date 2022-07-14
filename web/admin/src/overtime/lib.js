@@ -320,6 +320,7 @@ class ReportOvertimeAdapter extends AdapterBase {
       "endTime",
       "totalTime",
       "notes",
+      "formality",
     ];
   }
 
@@ -331,6 +332,7 @@ class ReportOvertimeAdapter extends AdapterBase {
       {"sTitle": "End Time"},
       {"sTitle": "Total Time"},
       {"sTitle": "Location"},
+      {"sTitle": "Formality"},
     ];
   }
 
