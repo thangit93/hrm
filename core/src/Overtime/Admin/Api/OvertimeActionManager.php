@@ -85,7 +85,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
         $startDate = (clone $currentDate)->setDate($currentDate->format('Y'), $currentDate->format('m') - 1, 26);
         $endDate = (clone $currentDate)->setDate($currentDate->format('Y'), $currentDate->format('m'), 25);
 
-        $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' and formality = \'Trả lương\' '
+        $overtimes = $mEmployeeOvertime->Find('status = \'Approved\' '
             . 'and date_format(start_time, \'%Y-%m-%d\') >= \'' . $startDate->format('Y-m-d') . '\' and date_format(start_time, \'%Y-%m-%d\') <= \'' . $endDate->format('Y-m-d') . '\'');
 
         $responseData = [];
@@ -135,7 +135,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                              join OvertimeCategories oc on eo.category = oc.id
                              join EmployeeSalary es on e.id = es.employee
                              join SalaryComponent sc on es.component = sc.id
-                    where sc.componentType = 1 and eo.status = \"Approved\" and eo.formality = \"Trả lương\"
+                    where sc.componentType = 1 and eo.status = \"Approved\"
                     $dateFilter
                     group by eo.id;";
             $result = $this->db->Execute($sql);
@@ -199,11 +199,12 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         $pricePerDay = $rowData['total_salary'] / $daysWorkingOfMonth;
                         $pricePerHour = round($pricePerDay) / 8;
                         $salary = (round($pricePerHour) * $rowData['total_time']) * $rowData['coefficient'];
+                        // Làm thêm ngoài giờ ngày lễ
                         if ($rowData['cat_type'] == 4) {
                             $totalDays = ($totalDays > 0 && $totalDays < 1 ? 1 : $totalDays);
                             $pricePerDay = 500000;
                             $salary = $totalDays * $pricePerDay;
-                        } else if ($rowData['cat_type'] == 5) {
+                        } else if ($rowData['cat_type'] == 5) { // Nhân viên tiếp khách ngoài giờ
                             $totalDays = ($totalDays > 0 && $totalDays < 1  ? 1 : $totalDays);
                             $reqStartTime = new DateTime($rowData['start_time']);
                             $reqEndTime = new DateTime($rowData['end_time']);
@@ -249,7 +250,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             // } elseif ($rowData['total_time'] > 24){
                             //     $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
                             // }
-                        } else if ($rowData['cat_type'] == 6) {
+                        } else if ($rowData['cat_type'] == 6) { // Tài xế làm ngoài giờ trong TP sau 20h
                             $totalDays = ($totalDays > 0 && $totalDays < 1  ? 1 : $totalDays);
                             $reqStartTime = new DateTime($rowData['start_time']);
                             $reqEndTime = new DateTime($rowData['end_time']);
@@ -287,14 +288,16 @@ class OvertimeActionManager extends ApproveAdminActionManager
                             if ($differDay > 1 || ($differDay == 1 && $endTime > '04:00:00')) {
                                 $salary = $salary * ($differDay + 1);
                             }
-                            if ($rowData['formality'] == 'Nghỉ bù') {
-                                $salary = 0;
-                            }
                             // if ($rowData['total_time'] < 24) {
                             //     $salary = $pricePerDay + $bonus;
                             // } elseif ($rowData['total_time'] > 24){
                             //     $salary = ($pricePerDay / 24) * $rowData['total_time'] + $bonus;
                             // }
+                        }
+
+                        // Nghỉ bù không tính lương
+                        if ($rowData['formality'] == 'Nghỉ bù') {
+                            $salary = $pricePerDay = 0;
                         }
 
                         $sheet->setCellValueByColumnAndRow(1, $rowIndex, $rowData['location']);
@@ -304,7 +307,7 @@ class OvertimeActionManager extends ApproveAdminActionManager
                         $sheet->setCellValueByColumnAndRow(5, $rowIndex, date('H:i', strtotime($rowData['end_time'])));
                         $sheet->setCellValueByColumnAndRow(6, $rowIndex, $totalDays);
                         $sheet->setCellValueByColumnAndRow(7, $rowIndex, $rowData['total_time']);
-                        if ($rowData['cat_type'] == 5 || $rowData['cat_type'] == 6) {
+                        if ($rowData['cat_type'] == 5 || $rowData['cat_type'] == 6) { // Nhân viên tiếp khách ngoài giờ + Tài xế làm ngoài giờ trong TP sau 20h
                             $sheet->setCellValueByColumnAndRow(8, $rowIndex, $coefficient);
                             $sheet->setCellValueByColumnAndRow(9, $rowIndex, '120000');
                         } else {
