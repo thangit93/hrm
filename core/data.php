@@ -45,6 +45,16 @@ if (isset($_REQUEST['skip']) && $_REQUEST['type'] = "1") {
 }
 
 $sortData = \Classes\BaseService::getInstance()->getSortingData($_REQUEST);
+
+if ($_REQUEST['t'] == 'EmployeeLeave') {
+    $ft = ['is_deleted' => '0'];
+    if (json_decode($_REQUEST['ft'])) {
+        $ft = array_merge($ft, json_decode($_REQUEST['ft'], true));
+    }
+    $_REQUEST['ft'] = json_encode($ft);
+}
+
+
 $data = \Classes\BaseService::getInstance()->getData(
     $_REQUEST['t'],
     $_REQUEST['sm'],

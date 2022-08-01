@@ -184,7 +184,7 @@ class BaseService
         $query = "";
         $queryData = array();
         foreach ($filter as $k => $v) {
-            if (empty($v)) {
+            if (empty($v) && $v !== '0') {
                 continue;
             }
             if (is_array($v)) {
@@ -207,7 +207,7 @@ class BaseService
                     $queryData[] = "%" . $v[$i] . "%";
                 }
             } else {
-                if (!empty($v) && $v != 'NULL') {
+                if (isset($v) && $v != 'NULL') {
                     $query .= " and " . $k . "=?";
                     if ($v == '__myid__') {
                         $v = $this->getCurrentProfileId();
