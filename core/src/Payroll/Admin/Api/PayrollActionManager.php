@@ -507,8 +507,8 @@ class PayrollActionManager extends SubActionManager
 
                     $rowIndex++;
                 }
-
-                $filename = uniqid("{$payroll->name}_");
+                $payrollName = $this->removeSpecialChar($payroll->name);
+                $filename = uniqid("{$payrollName}_");
                 $filePath = CLIENT_BASE_PATH . "/data/payroll_{$filename}.xlsx";
                 $fileUrl = CLIENT_BASE_URL . "/data/payroll_{$filename}.xlsx";
                 $writer = new Xlsx($spreadsheet);
@@ -517,7 +517,7 @@ class PayrollActionManager extends SubActionManager
                     'url' => $fileUrl,
                     'name' => "{$filename}.xlsx"
                 ];
-            } catch (Exception $e) {
+            } catch (Exception $e) {var_dump($e);exit;
                 LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
             }
         }
@@ -591,8 +591,8 @@ class PayrollActionManager extends SubActionManager
                     $rowIndex++;
                     $index++;
                 }
-
-                $filename = uniqid("payment_on_behalf_ACB_{$payroll->name}_");
+                $payrollName = $this->removeSpecialChar($payroll->name);
+                $filename = uniqid("payment_on_behalf_ACB_{$payrollName}_");
                 $filePath = CLIENT_BASE_PATH . "/data/payment_on_behalf_ACB_{$filename}.xlsx";
                 $fileUrl = CLIENT_BASE_URL . "/data/payment_on_behalf_ACB_{$filename}.xlsx";
                 $writer = new Xlsx($spreadsheet);
@@ -667,7 +667,8 @@ class PayrollActionManager extends SubActionManager
                     $index++;
                 }
 
-                $filename = uniqid("payment_on_behalf_{$payroll->name}_");
+                $payrollName = $this->removeSpecialChar($payroll->name);
+                $filename = uniqid("payment_on_behalf_{$payrollName}_");
                 $filePath = CLIENT_BASE_PATH . "/data/payment_on_behalf_{$filename}.xlsx";
                 $fileUrl = CLIENT_BASE_URL . "/data/payment_on_behalf_{$filename}.xlsx";
                 $writer = new Xlsx($spreadsheet);
@@ -682,6 +683,13 @@ class PayrollActionManager extends SubActionManager
         }
 
         return new IceResponse(IceResponse::SUCCESS, $responseData);
+    }
+
+    private function removeSpecialChar($str)
+    {
+        $str = str_replace("/","-", $str);
+        $str = str_replace(" ","-", $str);
+        return $str;
     }
 
     public function updateAllData($req)

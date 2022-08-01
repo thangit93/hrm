@@ -129,7 +129,7 @@ class EmployeeLeaveUtil
     {
         $employeeLeavesModel = new EmployeeLeave();
         /** @var array $employeeLeaves */
-        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ?', [
+        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted = 0', [
             $employeeId,
             $startDate,
             $endDate,
