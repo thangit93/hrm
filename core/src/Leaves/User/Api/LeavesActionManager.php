@@ -56,7 +56,7 @@ class LeavesActionManager extends SubActionManager
         $days = json_decode($req->days);
         foreach ($days as $day => $type) {
 
-            $sql = "select ld.id as leaveId from EmployeeLeaveDays ld join EmployeeLeaves el on ld.employee_leave = el.id where el.employee = ? and ld.leave_date = ? and ld.leave_type = ? and el.status <> 'Rejected'  and el.is_deleted = 0";
+            $sql = "select ld.id as leaveId from EmployeeLeaveDays ld join EmployeeLeaves el on ld.employee_leave = el.id where el.employee = ? and ld.leave_date = ? and ld.leave_type = ? and el.status <> 'Rejected'  and el.is_deleted <> 1";
             $rs = $this->baseService->getDB()->Execute($sql, array($employee->id, date("Y-m-d", strtotime($day)), $type));
             $counter = 0;
             foreach ($rs as $k => $v) {
@@ -78,6 +78,7 @@ class LeavesActionManager extends SubActionManager
         $employeeLeave->details = $req->details;
         $employeeLeave->status = "Pending";
         $employeeLeave->details = $req->details;
+        $employeeLeave->is_deleted = 0;
         $employeeLeave->attachment = isset($req->attachment) ? $req->attachment : "";
 
         $ok = $employeeLeave->Save();
@@ -544,7 +545,7 @@ class LeavesActionManager extends SubActionManager
     private function getEmployeeLeaves($employeeId, $leavePeriod, $leaveType, $status)
     {
         $employeeLeave = new EmployeeLeave();
-        $employeeLeaves = $employeeLeave->Find("employee = ? and leave_period = ? and leave_type = ? and status = ?  and is_deleted = 0",
+        $employeeLeaves = $employeeLeave->Find("employee = ? and leave_period = ? and leave_type = ? and status = ?  and is_deleted <> 1",
             array($employeeId, $leavePeriod, $leaveType, $status));
         if (!$employeeLeaves) {
             error_log($employeeLeave->ErrorMsg());

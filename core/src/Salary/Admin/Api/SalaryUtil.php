@@ -275,7 +275,7 @@ class SalaryUtil
     {
         $employeeLeavesModel = new EmployeeLeave();
         /** @var array $employeeLeaves */
-        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ?  and is_deleted = 0', [
+        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ?  and is_deleted <> 1', [
             $employeeId,
             $startDate,
             $endDate,

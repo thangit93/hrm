@@ -212,7 +212,7 @@ class LeavesActionManager extends SubActionManager
     private function getEmployeeLeaves($employeeId, $leavePeriod, $leaveType, $status)
     {
         $employeeLeave = new EmployeeLeave();
-        $employeeLeaves = $employeeLeave->Find("employee = ? and date_start >= ? and date_end <= ? and leave_type = ? and status = ? and is_deleted = 0",
+        $employeeLeaves = $employeeLeave->Find("employee = ? and date_start >= ? and date_end <= ? and leave_type = ? and status = ? and is_deleted <> 1",
             array(
                 $employeeId,
                 date('Y-m-01', strtotime($leavePeriod->date_start)),
@@ -371,7 +371,7 @@ class LeavesActionManager extends SubActionManager
 
     private function getAllApproveLeave($leavePeriod, $leaveTypeId) {
         $employeeLeave = new EmployeeLeave();
-        $employeeLeaves = $employeeLeave->Find("date_start >= ? and date_end <= ? and leave_type = ? and status = ? and is_deleted = 0",
+        $employeeLeaves = $employeeLeave->Find("date_start >= ? and date_end <= ? and leave_type = ? and status = ? and is_deleted <> 1",
             array(
                 date('Y-m-01', strtotime($leavePeriod->date_start)),
                 date('Y-m-t', strtotime($leavePeriod->date_end)),
