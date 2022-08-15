@@ -230,7 +230,6 @@ class AttendanceActionManager extends SubActionManager
                         $dataDay['total'] = 1;
                         if ($startDate->format('w') == 6) {
                             $dataDay['total'] = 0.5;
-
                         }
                     }
                 } else {

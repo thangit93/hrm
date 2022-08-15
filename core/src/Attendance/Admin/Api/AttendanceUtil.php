@@ -63,6 +63,9 @@ class AttendanceUtil
             return 0;
         }
 
+        $employee = new Employee();
+        $employee->Load('id = ?', [$employeeId]);
+
         $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn);
         $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut);
         $dayOfWeek = $checkIn->format('w');
@@ -74,7 +77,8 @@ class AttendanceUtil
         /** @var DateTime $timeEnd */
         $timeEnd = clone $checkOut;
         $timeEnd->setTime(17, 0, 0);
-        if ($dayOfWeek == 6) {
+        // Bảo vệ không logic tính nửa ngày thứ 7, chủ nhật
+        if ($dayOfWeek == 6 && !in_array($employee->job_title, [72])) {
             $timeEnd->setTime(12, 0, 0);
         }
 
@@ -99,6 +103,10 @@ class AttendanceUtil
 
         //start before 09:00 and left after 17:00
         if ($timeStart >= $checkIn && $timeEnd <= $checkOut) {
+            // Bảo vệ vẫn tính chấm công thứ 7, chủ nhật
+            if (in_array($employee->job_title, [72])) {
+                return 1;
+            }
             if ($dayOfWeek >= 1 && $dayOfWeek < 6) {
                 return 1;
             } elseif ($dayOfWeek == 6) {
@@ -178,18 +186,17 @@ class AttendanceUtil
         $employee = new Employee();
         $employee->Load('id = ?', [$employeeId]);
 
-        if ($employee->job_title == 72) {
-            return $startTime->format('t');
-        }
-
         LogManager::getInstance()->info("Total Days: " . $totalDays->days);
         while ($startTime <= $endTime) {
             $dayOfWeek = $startTime->format('w');
 
-            if ($dayOfWeek < 1) {
-                $totalDays -= 1;
-            } elseif ($dayOfWeek == 6) {
-                $totalDays -= 0.5;
+            // Bảo vệ không trừ ngày nghỉ
+            if (!in_array($employee->job_title, [72])) {
+                if ($dayOfWeek < 1) {
+                    $totalDays -= 1;
+                } elseif ($dayOfWeek == 6) {
+                    $totalDays -= 0.5;
+                }
             }
 
             LogManager::getInstance()->info("Date: " . $startTime->format('w, Y-m-d'));
