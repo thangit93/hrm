@@ -147,6 +147,10 @@ class AttendanceDataImporter extends AbstractDataImporter
                     }
 
                     $workingDay = AttendanceUtil::calculateWorkingDay($attendance['in_time'], $attendance['out_time']);
+                    // Sale tính chỉ cần check in/out 1 lần cũng tính full
+                    if ($employee->job_title == 64) {
+                        $workingDay = 1;
+                    }
                     $attendance['note'] = $workingDay;
                     $attendances[] = $attendance;
                 }
