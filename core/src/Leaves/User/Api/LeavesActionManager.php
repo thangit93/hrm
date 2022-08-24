@@ -202,8 +202,15 @@ class LeavesActionManager extends SubActionManager
         $days = array();
         $days = $this->getDays($startDate, $endDate);
         $dayMap = array();
+
+        $isFullDay = false;
+        // Bảo vệ không có ngày nghỉ
+        if (in_array($employee->job_title, [72])) {
+            $isFullDay = true;
+        }
+
         foreach ($days as $day) {
-            $dayMap[$day] = $this->getDayWorkTime($day, $employeeCountry);
+            $dayMap[$day] = $this->getDayWorkTime($day, $employeeCountry, $isFullDay);
         }
 
         return new IceResponse(IceResponse::SUCCESS, array($dayMap, $leaves, $rule));
@@ -287,7 +294,7 @@ class LeavesActionManager extends SubActionManager
         return $days;
     }
 
-    private function getDayWorkTime($day, $countryId)
+    private function getDayWorkTime($day, $countryId, $isFullDay = false)
     {
         $holiday = $this->getHoliday($day, $countryId);
         if (!empty($holiday)) {
@@ -300,6 +307,10 @@ class LeavesActionManager extends SubActionManager
 
         $workday = $this->getWorkDay($day, $countryId);
         if (empty($workday)) {
+            return self::FULLDAY;
+        }
+
+        if ($isFullDay) {
             return self::FULLDAY;
         }
 
