@@ -63,19 +63,20 @@ class AttendanceUtil
         $employee = new Employee();
         $employee->Load('id = ?', [$employeeId]);
 
-        if (empty($checkIn) || empty($checkOut)) {
-            // Sale tính chỉ cần check in/out 1 lần cũng tính full
-            if ($employee->job_title == 64 && (!empty($checkIn) || !empty($checkOut))) {
-                if (!empty($checkIn)) {
-                    $dayOfWeek = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn)->format('w');
-                } else {
-                    $dayOfWeek = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut)->format('w');
-                }
-                if ($dayOfWeek == 6) {
-                    return 0.5;
-                }
-                return 1;
+        // Sale tính chỉ cần check in/out 1 lần cũng tính full
+        if ($employee->job_title == 64 && (!empty($checkIn) || !empty($checkOut))) {
+            if (!empty($checkIn)) {
+                $dayOfWeek = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn)->format('w');
+            } else {
+                $dayOfWeek = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut)->format('w');
             }
+            if ($dayOfWeek == 6) {
+                return 0.5;
+            }
+            return 1;
+        }
+
+        if (empty($checkIn) || empty($checkOut)) {
             return 0;
         }
 

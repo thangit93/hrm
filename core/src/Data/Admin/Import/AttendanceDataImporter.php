@@ -116,7 +116,7 @@ class AttendanceDataImporter extends AbstractDataImporter
             //first check in/out column in file
             $column = 3;
             $days = $diff->days;
-
+            
             //loop from start date to end date
             while ($days > 0) {
                 $this->clearOldData($startDate->format('Y-m-d'));
@@ -131,7 +131,7 @@ class AttendanceDataImporter extends AbstractDataImporter
                 //get check in/out time from file
                 $checkInTime = $cells[$column];
                 $checkOutTime = $cells[$column + 1];
-
+                
                 if (!empty($checkInTime) || !empty($checkOutTime)) {
 
                     //create check in time if not empty
@@ -146,7 +146,7 @@ class AttendanceDataImporter extends AbstractDataImporter
                         $attendance['out_time'] = $startDate->setTime($checkOutTime->format('H'), $checkOutTime->format('i'), 0)->format('Y-m-d H:i:s');
                     }
 
-                    $workingDay = AttendanceUtil::calculateWorkingDay($attendance['in_time'], $attendance['out_time']);
+                    $workingDay = AttendanceUtil::calculateWorkingDay($attendance['in_time'], $attendance['out_time'], $employee->id);
                     $attendance['note'] = $workingDay;
                     $attendances[] = $attendance;
                 }

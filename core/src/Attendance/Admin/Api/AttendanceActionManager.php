@@ -38,7 +38,7 @@ class AttendanceActionManager extends SubActionManager
         $outDateTime = !empty($outDateTime) ? "{$outDate} {$outDateTime}:00" : "";
 
         if (!empty($inDateTime) && !empty($outDateTime)) {
-            $workingDay = AttendanceUtil::calculateWorkingDay($inDateTime, $outDateTime);
+            $workingDay = AttendanceUtil::calculateWorkingDay($inDateTime, $outDateTime, $employee->id);
         }
 
         $note = $workingDay;

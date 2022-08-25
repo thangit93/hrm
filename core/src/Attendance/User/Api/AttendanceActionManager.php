@@ -296,7 +296,7 @@ class AttendanceActionManager extends SubActionManager
                     $dataDay['in'] = $checkInTime;
                     $dataDay['out'] = $checkOutTime;
 
-                    if (!empty($att->in_time) && !empty($att->out_time)) {
+                    if (!empty($att->in_time) || !empty($att->out_time)) {
                         $dataDay['total'] = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employee->id);
                     } else {
                         $codeM = $codeA = '';
