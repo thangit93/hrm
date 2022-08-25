@@ -27,9 +27,10 @@ class AttendanceUtil
         $startTime = $startDate . " 00:00:00";
         $endTime = $endDate . " 23:59:59";
         $attendance = new Attendance();
+
         return $attendance->Find(
-            "employee = ? and in_time >= ? and out_time <= ?",
-            array($employeeId, $startTime, $endTime)
+            "employee = ? and (DATE(in_time) = ? or DATE(out_time) = ?)",
+            array($employeeId, $startDate, $endDate)
         );
     }
 
@@ -59,12 +60,24 @@ class AttendanceUtil
      */
     public static function calculateWorkingDay($checkIn, $checkOut, $employeeId = null)
     {
-        if (empty($checkIn) || empty($checkOut)) {
-            return 0;
-        }
-
         $employee = new Employee();
         $employee->Load('id = ?', [$employeeId]);
+
+        if (empty($checkIn) || empty($checkOut)) {
+            // Sale tính chỉ cần check in/out 1 lần cũng tính full
+            if ($employee->job_title == 64 && (!empty($checkIn) || !empty($checkOut))) {
+                if (!empty($checkIn)) {
+                    $dayOfWeek = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn)->format('w');
+                } else {
+                    $dayOfWeek = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut)->format('w');
+                }
+                if ($dayOfWeek == 6) {
+                    return 0.5;
+                }
+                return 1;
+            }
+            return 0;
+        }
 
         $checkIn = DateTime::createFromFormat('Y-m-d H:i:s', $checkIn);
         $checkOut = DateTime::createFromFormat('Y-m-d H:i:s', $checkOut);

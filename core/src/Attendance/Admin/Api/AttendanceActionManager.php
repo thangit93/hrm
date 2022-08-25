@@ -278,12 +278,7 @@ class AttendanceActionManager extends SubActionManager
         }
 
         $oldTotal = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time, $attendance->employee);
-        if ($employee->job_title == 64 && (!empty($attendance->in_time) || !empty($attendance->out_time))) {
-            $oldTotal = 1;
-            if ($dateObject->format('w') == 6) {
-                $oldTotal = 0.5;
-            }
-        } 
+
         if ($fieldname == "in") {
             if (!empty($in)) {
                 $attendance->in_time = "{$date} {$in}:00";
@@ -315,14 +310,6 @@ class AttendanceActionManager extends SubActionManager
 
         if (!empty($attendance->in_time) && !empty($attendance->out_time)) {
             $total = AttendanceUtil::calculateWorkingDay($attendance->in_time, $attendance->out_time, $attendance->employee);
-        }
-
-        // Nhân viên kinh doanh, tính full lương
-        if ($employee->job_title == 64 && (!empty($attendance->in_time) || !empty($attendance->out_time))) {
-            $total = 1;
-            if ($dateObject->format('w') == 6) {
-                $total = 0.5;
-            }
         }
 
         $attendance->note = $total;
