@@ -282,7 +282,7 @@ class AttendanceActionManager extends SubActionManager
                             $codeM = 'CC';
                         }
                     } else {
-                        $codeM = 'KCGV';
+                        $codeM = ''; // Old text KCGV
                     }
 
                     if ($att->out_time) {
@@ -290,7 +290,7 @@ class AttendanceActionManager extends SubActionManager
                         $checkOutTime = $checkOut->format('H:i');
                         $codeA = 'CC';
                     } else {
-                        $codeA = 'KCGR';
+                        $codeA = ''; // Old text KCGR
                     }
 
                     $dataDay['in'] = $checkInTime;
@@ -362,7 +362,13 @@ class AttendanceActionManager extends SubActionManager
                     if ($dayOfWeek == 6) {
                         $dataDay['code'] = "{$codeM}";
                     } else {
-                        $dataDay['code'] = "{$codeM}/{$codeA}";
+                        if (empty($codeM)) {
+                            $dataDay['code'] = "{$codeA}";
+                        } elseif (empty($codeA)) {
+                            $dataDay['code'] = "{$codeM}";
+                        } else {
+                            $dataDay['code'] = "{$codeM}/{$codeA}";
+                        }
                     }
                 }
 
