@@ -95,6 +95,85 @@ class EmployeeLeaveUtil
         return $total;
     }
 
+    public function calculateEmployeeLeaveNoPay($employeeId, $startDate, $endDate)
+    {
+        $startDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
+        $endDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
+        $total = 0;
+        $employee = new Employee();
+        $employee->Load('id = ?', [$employeeId]);
+        $joinedDate = DateTime::createFromFormat('Y-m-d H:i:s', "{$employee->joined_date} 00:00:00");
+
+        while ($startDateObj <= $endDateObj) {
+            if ($joinedDate > $startDateObj) {
+                $startDateObj->add(\DateInterval::createFromDateString('1 day'));
+                continue;
+            }
+
+            $dayOfWeek = $startDateObj->format('w');
+            $employeeLeaveDays = $this->getEmployeeLeaveNoPay($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            $holidays = EmployeeLeaveUtil::getHolidays($startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+
+            if (empty($employeeLeaveDays) && empty($holidays)) {
+                $startDateObj->add(DateInterval::createFromDateString('1 day'));
+                continue;
+            }
+
+            $atSum = 0;
+
+            if (!empty($employeeLeaveDays)) {
+                foreach ($employeeLeaveDays as $employeeLeaveDay) {
+                    foreach ($employeeLeaveDay as $day) {
+                        $atSum += $day->period;
+
+                        if ($dayOfWeek < 6 && $dayOfWeek >= 1 && $atSum > 1) {
+                            $atSum = 1;
+                        } elseif ($dayOfWeek == 6 && $atSum > 0.5) {
+                            $atSum = 0.5;
+                        }
+                    }
+                }
+            }
+
+            if (!empty($holidays)) {
+                foreach ($holidays as $holiday) {
+                    $atSum = ($holiday->status == "Full Day") ? 1 : 0.5;
+                }
+            }
+
+            $atSum = SalaryUtil::maxAt($startDateObj->format('Y-m-d'), $atSum);
+
+            $atts = AttendanceUtil::getAttendancesData($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            if (!empty($atts)) {
+                $att = array_shift($atts);
+                $at = AttendanceUtil::calculateWorkingDay($att->in_time, $att->out_time, $employeeId);
+                $atSum2 = $at + $atSum;
+                if ($dayOfWeek < 6 && $dayOfWeek >= 1 && $atSum2 > 1) {
+                    $atSum = 1 - $at;
+                } elseif ($dayOfWeek == 6 && $atSum2 > 0.5) {
+                    $atSum = 0.5 - $at;
+                }
+            }
+
+            $atSum = ($atSum < 0) ? 0 : $atSum;
+
+            $total += $atSum;
+
+            $startDateObj->add(\DateInterval::createFromDateString('1 day'));
+        }
+
+        $attUtil = new AttendanceUtil();
+        $totalWorkingDaysInMonth = $attUtil->getTotalWorkingDaysInMonth($employeeId, $startDate, $endDate);
+        $totalWorkedDaysInMonth = $attUtil->getDaysWorked($employeeId, $startDate, $endDate);
+        $totalWorkedDaysAndLeave = $total + $totalWorkedDaysInMonth;
+
+        if ($totalWorkedDaysAndLeave > $totalWorkingDaysInMonth) {
+            $total = $totalWorkingDaysInMonth - $totalWorkedDaysInMonth;
+        }
+
+        return $total;
+    }
+
     public function calculateEmployeeLeave2($employeeId, $startDate, $endDate)
     {
         $total = 0;
@@ -145,6 +224,29 @@ class EmployeeLeaveUtil
             }
 
             $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
+        }
+
+        return $leaveDays;
+    }
+
+    public function getEmployeeLeaveNoPay($employeeId, $startDate, $endDate, $getAll = false)
+    {
+        $employeeLeavesModel = new EmployeeLeave();
+        /** @var array $employeeLeaves */
+        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1', [
+            $employeeId,
+            $startDate,
+            $endDate,
+        ]);
+
+        $leaveDays = [];
+        foreach ($employeeLeaves as $employeeLeave) {
+            $leaveType = $this->getLeaveType($employeeLeave->leave_type);
+
+            if (empty($leaveType) || (empty($leaveType->pay) && empty($getAll))) {
+                $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
+            }
+            continue;
         }
 
         return $leaveDays;

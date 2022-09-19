@@ -37,5 +37,12 @@ class LeavesAdminManager extends AbstractModuleManager
             EmployeeLeaveUtil::class,
             'calculateEmployeeLeave'
         );
+
+        $this->addCalculationHook(
+            'EmployeeLeaveUtil_getEmployeeLeaveNoPay',
+            LanguageManager::tran('Leave Days No Pay'),
+            EmployeeLeaveUtil::class,
+            'calculateEmployeeLeaveNoPay'
+        );
     }
 }
