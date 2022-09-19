@@ -2092,6 +2092,9 @@ msgstr "Lý do xin nghỉ phép"
 msgid "Leave Days"
 msgstr "Số ngày nghỉ"
 
+msgid "Leave Days No Pay"
+msgstr "Số ngày nghỉ không lương"
+
 msgid "Number of Leaves available"
 msgstr "Số ngày nghỉ khả dụng"
 
