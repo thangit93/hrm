@@ -35,7 +35,7 @@ class LeavesAdminManager extends AbstractModuleManager
             'EmployeeLeaveUtil_getEmployeeLeave',
             LanguageManager::tran('Leave Days'),
             EmployeeLeaveUtil::class,
-            'calculateEmployeeLeave'
+            'calculateEmployeeLeaveWithPay'
         );
 
         $this->addCalculationHook(
