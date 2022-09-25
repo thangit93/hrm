@@ -210,11 +210,22 @@ class EmployeeLeaveUtil
 
     public function getLeaveDays($employeeLeaveId, $startDate, $endDate, $leaveType = null)
     {
-        $model = new EmployeeLeaveDay();
-        $dates = $model->Find('employee_leave = ? and leave_date = ?', [
-            $employeeLeaveId,
-            $startDate,
-        ]);
+        // $model = new EmployeeLeaveDay();
+        // $dates = $model->Find('employee_leave = ? and leave_date = ?', [
+        //     $employeeLeaveId,
+        //     $startDate,
+        // ]);
+
+        $dates = BaseService::getInstance()->getModelFromCache(
+            "EmployeeLeaveDay",
+            'employee_leave = ? and leave_date = ?',
+            [
+                $employeeLeaveId,
+                $startDate
+            ],
+            $employeeLeaveId . '-' . $startDate
+        );
+
         $existedDates = [];
 
         foreach ($dates as $index => $date) {

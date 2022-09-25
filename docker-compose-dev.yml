@@ -32,11 +32,7 @@ services:
     memcached:
         image: memcached:1.6.17-alpine
         restart: always
-        volumes:
-            - memcached-vol:/data
 
 volumes:
     mysql-vol:
-        driver: local
-    memcached-vol:
         driver: local
