@@ -22,9 +22,8 @@ class EmployeeLeaveUtil
         $startDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
         $endDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
         $total = 0;
-        $employee = BaseService::getInstance()->getItemFromCache("Employee", $employeeId);
-        // $employee = new Employee();
-        // $employee->Load('id = ?', [$employeeId]);
+        $employee = new Employee();
+        $employee->Load('id = ?', [$employeeId]);
         $joinedDate = DateTime::createFromFormat('Y-m-d H:i:s', "{$employee->joined_date} 00:00:00");
 
         while ($startDateObj <= $endDateObj) {
@@ -35,7 +34,7 @@ class EmployeeLeaveUtil
 
             $dayOfWeek = $startDateObj->format('w');
             if ($isPay) {
-                $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+                $employeeLeaveDays = $this->getEmployeeLeaveWithPay($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
             } else {
                 $employeeLeaveDays = $this->getEmployeeLeaveNoPay($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
             }
@@ -148,24 +147,13 @@ class EmployeeLeaveUtil
 
     public function getEmployeeLeave($employeeId, $startDate, $endDate, $getAll = false)
     {
-        // $employeeLeavesModel = new EmployeeLeave();
-        // /** @var array $employeeLeaves */
-        // $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1', [
-        //     $employeeId,
-        //     $startDate,
-        //     $endDate,
-        // ]);
-
-        $employeeLeaves = BaseService::getInstance()->getModelFromCache(
-            "EmployeeLeave",
-            'employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1',
-            [
-                $employeeId,
-                $startDate,
-                $endDate,
-            ],
-            $employeeId . '-' . $startDate . '-' . $endDate
-        );
+        $employeeLeavesModel = new EmployeeLeave();
+        /** @var array $employeeLeaves */
+        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1', [
+            $employeeId,
+            $startDate,
+            $endDate,
+        ]);
 
         $leaveDays = [];
 
@@ -173,58 +161,46 @@ class EmployeeLeaveUtil
             $leaveType = $this->getLeaveType($employeeLeave->leave_type);
 
             if (empty($leaveType) || (empty($leaveType->pay) && empty($getAll))) {
+                $leaveDays['noPay'] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
                 continue;
             }
 
-            $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
+            $leaveDays['withPay'][] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
         }
 
+        BaseService::getInstance()->setDataFromCache($leaveDays['withPay'], 'getEmployeeLeaveWithPay');
+        BaseService::getInstance()->setDataFromCache($leaveDays['noPay'], 'getEmployeeLeaveNoPay');
+
         return $leaveDays;
+    }
+
+    public function getEmployeeLeaveWithPay($employeeId, $startDate, $endDate, $getAll = false)
+    {
+        $leaveDays = BaseService::getInstance()->getDataFromCache('getEmployeeLeaveWithPay');
+        if (!empty($leaveDays)) {
+            return $leaveDays;
+        }
+        $leaveDays = $this->getEmployeeLeave($employeeId, $startDate, $endDate, $getAll = false);
+        return $leaveDays['withPay'];
     }
 
     public function getEmployeeLeaveNoPay($employeeId, $startDate, $endDate, $getAll = false)
     {
-        $employeeLeaves = BaseService::getInstance()->getModelFromCache(
-            "EmployeeLeave",
-            'employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1',
-            [
-                $employeeId,
-                $startDate,
-                $endDate,
-            ],
-            $employeeId . '-' . $startDate . '-' . $endDate
-        );
-
-        $leaveDays = [];
-        foreach ($employeeLeaves as $employeeLeave) {
-            $leaveType = $this->getLeaveType($employeeLeave->leave_type);
-
-            if (empty($leaveType) || (empty($leaveType->pay) && empty($getAll))) {
-                $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
-            }
-            continue;
+        $leaveDays = BaseService::getInstance()->getDataFromCache('getEmployeeLeaveNoPay');
+        if (!empty($leaveDays)) {
+            return $leaveDays;
         }
-
-        return $leaveDays;
+        $leaveDays = $this->getEmployeeLeave($employeeId, $startDate, $endDate, $getAll = false);
+        return $leaveDays['noPay'];
     }
 
     public function getLeaveDays($employeeLeaveId, $startDate, $endDate, $leaveType = null)
     {
-        // $model = new EmployeeLeaveDay();
-        // $dates = $model->Find('employee_leave = ? and leave_date = ?', [
-        //     $employeeLeaveId,
-        //     $startDate,
-        // ]);
-
-        $dates = BaseService::getInstance()->getModelFromCache(
-            "EmployeeLeaveDay",
-            'employee_leave = ? and leave_date = ?',
-            [
-                $employeeLeaveId,
-                $startDate
-            ],
-            $employeeLeaveId . '-' . $startDate
-        );
+        $model = new EmployeeLeaveDay();
+        $dates = $model->Find('employee_leave = ? and leave_date = ?', [
+            $employeeLeaveId,
+            $startDate,
+        ]);
 
         $existedDates = [];
 
@@ -257,7 +233,7 @@ class EmployeeLeaveUtil
     {
         $model = new LeaveType();
         /** @var array $obj */
-        $obj = BaseService::getInstance()->getItemFromCache("LeaveType", $id);
+        $obj = $model->Find('id = ?', [$id]);
         return array_shift($obj);
     }
 

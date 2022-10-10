@@ -87,6 +87,20 @@ class MemcacheService
         }
     }
 
+    public function delete($key)
+    {
+        if (!class_exists('\\Memcached')) {
+            return false;
+        }
+        $key = $this->compressKey($key);
+        $memcache = $this->connect();
+        if (!empty($memcache) && $this->isConnected()) {
+            return $memcache->delete($key);
+        } else {
+            return false;
+        }
+    }
+
     public function close()
     {
         if ($this->connection != null) {

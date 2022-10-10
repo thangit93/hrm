@@ -1545,20 +1545,29 @@ class BaseService
         return false;
     }
 
-    public function getModelFromCache($class, $query, $params, $key)
+    public function getDataFromCache($key)
     {
-        $class = $this->getFullQualifiedModelClassName($class);
-        $data = MemcacheService::getInstance()->get($class . "-" . $key);
+        $data = MemcacheService::getInstance()->get($key);
         if ($data !== false) {
             return unserialize($data);
         }
 
-        $obj = new $class();
-        $obj->Load($query, $params);
+        return null;
+    }
 
-        MemcacheService::getInstance()->set($class . "-" . $key, serialize($obj), 10 * 60);
+    public function setDataFromCache($data, $key)
+    {
+        MemcacheService::getInstance()->set($key, serialize($data), 10 * 60);
 
-        return $obj;
+        return $data;
+    }
+
+    public function deleteDataFromCache($data, $key)
+    {
+        $data = MemcacheService::getInstance()->get($key);
+        if ($data !== false) {
+            MemcacheService::getInstance()->delete($key);
+        }
     }
 
     public function getItemFromCache($class, $id)
