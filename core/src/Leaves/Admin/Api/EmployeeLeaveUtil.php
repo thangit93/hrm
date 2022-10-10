@@ -7,6 +7,7 @@ namespace Leaves\Admin\Api;
 use Attendance\Admin\Api\AttendanceUtil;
 use DateInterval;
 use DateTime;
+use Classes\BaseService;
 use Employees\Common\Model\Employee;
 use Leaves\Common\Model\EmployeeLeave;
 use Leaves\Common\Model\EmployeeLeaveDay;
@@ -16,13 +17,14 @@ use Salary\Admin\Api\SalaryUtil;
 
 class EmployeeLeaveUtil
 {
-    public function calculateEmployeeLeave($employeeId, $startDate, $endDate)
+    public function calculateEmployeeLeave($employeeId, $startDate, $endDate, $isPay = true)
     {
         $startDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $startDate . " 00:00:00");
         $endDateObj = DateTime::createFromFormat('Y-m-d H:i:s', $endDate . " 23:59:59");
         $total = 0;
-        $employee = new Employee();
-        $employee->Load('id = ?', [$employeeId]);
+        $employee = BaseService::getInstance()->getItemFromCache("Employee", $employeeId);
+        // $employee = new Employee();
+        // $employee->Load('id = ?', [$employeeId]);
         $joinedDate = DateTime::createFromFormat('Y-m-d H:i:s', "{$employee->joined_date} 00:00:00");
 
         while ($startDateObj <= $endDateObj) {
@@ -32,7 +34,12 @@ class EmployeeLeaveUtil
             }
 
             $dayOfWeek = $startDateObj->format('w');
-            $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            if ($isPay) {
+                $employeeLeaveDays = $this->getEmployeeLeave($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            } else {
+                $employeeLeaveDays = $this->getEmployeeLeaveNoPay($employeeId, $startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
+            }
+
             $holidays = EmployeeLeaveUtil::getHolidays($startDateObj->format('Y-m-d'), $startDateObj->format('Y-m-d'));
 
             if (empty($employeeLeaveDays) && empty($holidays)) {
@@ -95,6 +102,20 @@ class EmployeeLeaveUtil
         return $total;
     }
 
+    public function calculateEmployeeLeaveWithPay($employeeId, $startDate, $endDate)
+    {
+        $total = $this->calculateEmployeeLeave($employeeId, $startDate, $endDate);
+
+        return $total;
+    }
+
+    public function calculateEmployeeLeaveNoPay($employeeId, $startDate, $endDate)
+    {
+        $total = $this->calculateEmployeeLeave($employeeId, $startDate, $endDate, false);
+
+        return $total;
+    }
+
     public function calculateEmployeeLeave2($employeeId, $startDate, $endDate)
     {
         $total = 0;
@@ -127,13 +148,24 @@ class EmployeeLeaveUtil
 
     public function getEmployeeLeave($employeeId, $startDate, $endDate, $getAll = false)
     {
-        $employeeLeavesModel = new EmployeeLeave();
-        /** @var array $employeeLeaves */
-        $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1', [
-            $employeeId,
-            $startDate,
-            $endDate,
-        ]);
+        // $employeeLeavesModel = new EmployeeLeave();
+        // /** @var array $employeeLeaves */
+        // $employeeLeaves = $employeeLeavesModel->Find('employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1', [
+        //     $employeeId,
+        //     $startDate,
+        //     $endDate,
+        // ]);
+
+        $employeeLeaves = BaseService::getInstance()->getModelFromCache(
+            "EmployeeLeave",
+            'employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1',
+            [
+                $employeeId,
+                $startDate,
+                $endDate,
+            ],
+            $employeeId . '-' . $startDate . '-' . $endDate
+        );
 
         $leaveDays = [];
 
@@ -150,13 +182,50 @@ class EmployeeLeaveUtil
         return $leaveDays;
     }
 
+    public function getEmployeeLeaveNoPay($employeeId, $startDate, $endDate, $getAll = false)
+    {
+        $employeeLeaves = BaseService::getInstance()->getModelFromCache(
+            "EmployeeLeave",
+            'employee = ? and status = "Approved" and date_start <= ? and date_end >= ? and is_deleted <> 1',
+            [
+                $employeeId,
+                $startDate,
+                $endDate,
+            ],
+            $employeeId . '-' . $startDate . '-' . $endDate
+        );
+
+        $leaveDays = [];
+        foreach ($employeeLeaves as $employeeLeave) {
+            $leaveType = $this->getLeaveType($employeeLeave->leave_type);
+
+            if (empty($leaveType) || (empty($leaveType->pay) && empty($getAll))) {
+                $leaveDays[] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
+            }
+            continue;
+        }
+
+        return $leaveDays;
+    }
+
     public function getLeaveDays($employeeLeaveId, $startDate, $endDate, $leaveType = null)
     {
-        $model = new EmployeeLeaveDay();
-        $dates = $model->Find('employee_leave = ? and leave_date = ?', [
-            $employeeLeaveId,
-            $startDate,
-        ]);
+        // $model = new EmployeeLeaveDay();
+        // $dates = $model->Find('employee_leave = ? and leave_date = ?', [
+        //     $employeeLeaveId,
+        //     $startDate,
+        // ]);
+
+        $dates = BaseService::getInstance()->getModelFromCache(
+            "EmployeeLeaveDay",
+            'employee_leave = ? and leave_date = ?',
+            [
+                $employeeLeaveId,
+                $startDate
+            ],
+            $employeeLeaveId . '-' . $startDate
+        );
+
         $existedDates = [];
 
         foreach ($dates as $index => $date) {
@@ -188,7 +257,7 @@ class EmployeeLeaveUtil
     {
         $model = new LeaveType();
         /** @var array $obj */
-        $obj = $model->Find('id = ?', [$id]);
+        $obj = BaseService::getInstance()->getItemFromCache("LeaveType", $id);
         return array_shift($obj);
     }
 

@@ -1545,6 +1545,22 @@ class BaseService
         return false;
     }
 
+    public function getModelFromCache($class, $query, $params, $key)
+    {
+        $class = $this->getFullQualifiedModelClassName($class);
+        $data = MemcacheService::getInstance()->get($class . "-" . $key);
+        if ($data !== false) {
+            return unserialize($data);
+        }
+
+        $obj = new $class();
+        $obj->Load($query, $params);
+
+        MemcacheService::getInstance()->set($class . "-" . $key, serialize($obj), 10 * 60);
+
+        return $obj;
+    }
+
     public function getItemFromCache($class, $id)
     {
         $class = $this->getFullQualifiedModelClassName($class);

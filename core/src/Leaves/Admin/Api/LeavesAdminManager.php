@@ -26,6 +26,7 @@ class LeavesAdminManager extends AbstractModuleManager
     public function setupModuleClassDefinitions()
     {
         $this->addModelClass('EmployeeLeave');
+        $this->addModelClass('EmployeeLeaveDay');
         $this->addModelClass('LeaveType');
     }
 
@@ -35,7 +36,14 @@ class LeavesAdminManager extends AbstractModuleManager
             'EmployeeLeaveUtil_getEmployeeLeave',
             LanguageManager::tran('Leave Days'),
             EmployeeLeaveUtil::class,
-            'calculateEmployeeLeave'
+            'calculateEmployeeLeaveWithPay'
+        );
+
+        $this->addCalculationHook(
+            'EmployeeLeaveUtil_getEmployeeLeaveNoPay',
+            LanguageManager::tran('Leave Days No Pay'),
+            EmployeeLeaveUtil::class,
+            'calculateEmployeeLeaveNoPay'
         );
     }
 }
