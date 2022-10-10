@@ -8,6 +8,7 @@ deployment/clients/test/data/
 deployment/clients/local/data/
 .vagrant
 app/config.php
+app/_LOG_
 app/data/*
 cache.properties
 node_modules/*
@@ -20,3 +21,5 @@ web/modules/dist/*
 yarn.lock
 /docker-compose.yml
 supervisord.*
+.v8flags*
+*/.DS_Store

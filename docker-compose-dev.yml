@@ -12,8 +12,10 @@ services:
             - 8080:80
         links:
             - mysql
+            - memcached
         depends_on:
             - mysql
+            - memcached
 
     mysql:
         image: percona:5.5
@@ -27,6 +29,10 @@ services:
         volumes:
             - mysql-vol:/var/lib/mysql
 
+    memcached:
+        image: memcached:1.6.17-alpine
+        restart: always
+
 volumes:
-  mysql-vol:
-    driver: local
+    mysql-vol:
+        driver: local

@@ -25,7 +25,7 @@ if(!defined('APP_SEC')){define('APP_SEC','dbcs234d2saaqw');}
 define('UI_SHOW_SWITCH_PROFILE', true);
 define('CRON_LOG', ini_get('error_log'));
 
-define('MEMCACHE_HOST', '127.0.0.1');
+define('MEMCACHE_HOST', 'memcached');
 define('MEMCACHE_PORT', '11211');
 
 if(!defined('WK_HTML_PATH')){

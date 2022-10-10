@@ -517,7 +517,7 @@ class PayrollActionManager extends SubActionManager
                     'url' => $fileUrl,
                     'name' => "{$filename}.xlsx"
                 ];
-            } catch (Exception $e) {var_dump($e);exit;
+            } catch (Exception $e) {
                 LogManager::getInstance()->error("Export to EXCEL Error\r\n" . $e->getMessage() . "\r\n" . $e->getTraceAsString());
             }
         }
