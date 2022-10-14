@@ -1562,7 +1562,7 @@ class BaseService
         return $data;
     }
 
-    public function deleteDataFromCache($data, $key)
+    public function deleteDataFromCache($key)
     {
         $data = MemcacheService::getInstance()->get($key);
         if ($data !== false) {

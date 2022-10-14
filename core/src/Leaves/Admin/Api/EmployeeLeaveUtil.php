@@ -168,15 +168,15 @@ class EmployeeLeaveUtil
             $leaveDays['withPay'][] = $this->getLeaveDays($employeeLeave->id, $startDate, $endDate, $leaveType);
         }
 
-        BaseService::getInstance()->setDataFromCache($leaveDays['withPay'], 'getEmployeeLeaveWithPay');
-        BaseService::getInstance()->setDataFromCache($leaveDays['noPay'], 'getEmployeeLeaveNoPay');
+        BaseService::getInstance()->setDataFromCache($leaveDays['withPay'], 'getEmployeeLeaveWithPay_' . $employeeId);
+        BaseService::getInstance()->setDataFromCache($leaveDays['noPay'], 'getEmployeeLeaveNoPay_' . $employeeId);
 
         return $leaveDays;
     }
 
     public function getEmployeeLeaveWithPay($employeeId, $startDate, $endDate, $getAll = false)
     {
-        $leaveDays = BaseService::getInstance()->getDataFromCache('getEmployeeLeaveWithPay');
+        $leaveDays = BaseService::getInstance()->getDataFromCache('getEmployeeLeaveWithPay_' . $employeeId);
         if (!empty($leaveDays)) {
             return $leaveDays;
         }
@@ -186,7 +186,7 @@ class EmployeeLeaveUtil
 
     public function getEmployeeLeaveNoPay($employeeId, $startDate, $endDate, $getAll = false)
     {
-        $leaveDays = BaseService::getInstance()->getDataFromCache('getEmployeeLeaveNoPay');
+        $leaveDays = BaseService::getInstance()->getDataFromCache('getEmployeeLeaveNoPay_' . $employeeId);
         if (!empty($leaveDays)) {
             return $leaveDays;
         }

@@ -14,9 +14,11 @@ class MemcacheService
     private $connection             = null;
     public static $openConnections  = array();
     private static $me  = null;
+    public $session = null;
 
     private function __construct()
     {
+        $this->session = uniqid();
     }
 
     public static function getInstance()
@@ -52,7 +54,7 @@ class MemcacheService
 
     private function compressKey($key)
     {
-        return crc32(APP_DB.$key).md5(CLIENT_NAME);
+        return crc32(APP_DB.$key).md5(CLIENT_NAME).$this->session;
     }
 
     public function set($key, $value, $expiry = 3600)
